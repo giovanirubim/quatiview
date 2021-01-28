@@ -1,0 +1,13 @@
+{
+  "name": "source-consumer",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "source-consumer.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [],
+  "author": "Giovani Rubim Francisco <giovanirubim.f@gmail.com>",
+  "license": "ISC",
+  "description": ""
+}
