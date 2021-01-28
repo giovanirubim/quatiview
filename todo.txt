@@ -1,0 +1,23 @@
+03-21 - revisão pronta
+05-21 * revisão bibliográfica 
+07-17 * apresentação de 10 min sobre o trabalho em desenvolviemnto
+09-03 * monografia + submissão artigo + membro extra
+09-17 * apresentação
+
+Implementação:
+	BNF da linguagem
+	Parser:
+		Analisador sintático
+		Analisador semântico
+	Módulo de memória virtual
+	Módulo de execução
+	Interface de edição
+	Painel de controle de execução
+	Módulo de visualização de blocos de memória:
+		Visualização manual
+		Opção de mover os blocos com o cursor
+
+Extra:
+	Módulo de edição de visualização de estruturas
+	Importação de scripts de disposição automática dos blocos
+	Funções de entrada/saída
