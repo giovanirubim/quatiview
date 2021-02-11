@@ -60,21 +60,22 @@
 	</body>
 </html>
 <script type="text/javascript">
-	const main = document.querySelector('#main')
-	document.querySelector('form').onsubmit = () => false
+	const main = $('#main')
+	$('form').on('submit', () => false)
 	const getSrc = () => {
 		let src = '';
-		[...main.children].forEach((child) => {
-			if (child.tagName === 'INPUT') {
-				src += child.value.trim() + '\n'
+		main.children().each(function() {
+			const child = $(this)
+			if (child.is('input')) {
+				src += child.val().trim() + '\n'
 			} else {
-				src += child.innerText.trim() + '\n'
+				src += child.text().trim() + '\n'
 			}
 		})
 		return src
 	}
 	const store = () => {
-		$.post({ url: '/', data: getSrc() })
+		$.post('/', {data: getSrc()})
 		check()
 	}
 	let translate = (str) => {
@@ -121,7 +122,7 @@
 		const solve = () => {
 			if (solved) return null
 			solved = true
-			const value = input.value.trim()
+			const value = input.val().trim()
 			if (!value) {
 				input.remove()
 				store()
@@ -132,54 +133,48 @@
 			store()
 			return line
 		}
-		input.onkeydown = (e) => {
+		input.on('keydown', (e) => {
 			if (e.key !== 'Enter') return
 			const line = solve()
 			if (!line) return
-			const next = line.nextSibling
+			const next = line.next()
 			const input = createInput()
-			main.appendChild(input)
+			main.append(input)
 			if (next) {
-				main.insertBefore(input, next)
+				input.insertBefore(next)
 			}
-			input.focus()
-		}
-		input.onblur = () => {
-			solve()
-		}
+			input.trigger('focus')
+		})
+		input.on('blur', solve)
 	}
-	const bindLine = (line) => {
-		line.onfocus = () => {
-			const input = createInput(line.innerText)
-			line.replaceWith(input)
-			input.focus()
-		}
-	}
+	$('body').on('focus', '.line', function(){
+		const line = $(this)
+		const input = createInput(line.text())
+		line.replaceWith(input)
+		input.trigger('focus')
+	})
 	const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|\w+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
 	const parseLine = (src) => {
-		const div = document.createElement('div')
-		div.innerHTML = '<div class="line" tabindex="0">'
+		const div = $(document.createElement('div'))
+		div.html('<div class="line" tabindex="0">'
 			+ [...src.matchAll(tokenRegex)]
 				.map(match => match[0])
 				.map(toSpan)
 				.join('')
-			+ '</div>'
-		const line = div.firstChild
-		bindLine(line)
+			+ '</div>')
+		const line = div.children().first()
 		return line
 	}
 	const createInput = (value = '') => {
-		const input = document.createElement('input')
-		input.setAttribute('type', 'text')
-		input.value = value
-		bindInput(input)
+		const input = $(document.createElement('input'))
+		bindInput(input.attr('type', 'text').val(value))
 		return input
 	}
 	const setSrc = (src) => {
 		src.trim()
 			.replace(/\s*\n\s*/g, '\n')
 			.split('\n')
-			.forEach((line) => main.appendChild(parseLine(line)))
+			.forEach((line) => main.append(parseLine(line)))
 		check()
 	}
 	const check = () => {
@@ -199,7 +194,5 @@
 			}
 		})
 	}
-	$.get('/bnf.txt').then(res => {
-		setSrc(res)
-	})
+	$.get('/bnf.txt').then(setSrc)
 </script>
