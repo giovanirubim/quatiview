@@ -7,6 +7,7 @@ const mimeMap = {
 	'html': 'text/html',
 	'js': 'application/javascript',
 	'txt': 'text/plain',
+	'css': 'text/css',
 }
 const getMime = (path) => {
 	return mimeMap[path.replace(/^.*\.(\w+)$/, '$1')] || 'application/octet-stream'
