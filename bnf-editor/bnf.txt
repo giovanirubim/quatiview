@@ -1,16 +1,17 @@
-id ::= /[\dA-Za-z]\w*/
+id ::= /[\d_a-z]\w*/i
 integer ::= /\d+/
-char ::= /'([^\s\\]|\\[^\s])'/
-string ::= /'([^'\n\\]|\\(.|\n))*'/
+char ::= /'([^\s\\]|\x20|\\[^\s])'/
+string ::= /"([^"\n\\]|\\(.|\n))*"/
 integer_type ::= ['unsigned'] ('int' | 'char')
 type ::= integer_type | id
 new_variable ::= var_list ';'
 arg_list ::= [arg_item (',' arg_item)*]
 arg_item ::= type var_item
 var_list::= type var_item (',' var_item)*
-var_item ::= ('*')* id ('[' [expr] ']')*
+var_item ::= '*'* id ('[' [expr] ']')*
 ord_cmp ::= '>=' | '<=' | '>' | '<'
-l_val ::= ('*') id ('[' expr']' | ('.' | '->') id)*
+l_val ::= [ptr_access] id ('[' expr ']' | ('.' | '->') id)* | ptr_access '(' expr ')'
+ptr_access ::= '*'+
 expr ::= expr_a ('||' expr_a)*
 expr_a ::= expr_b ('&&' expr_b)*
 expr_b ::= expr_c (('==' | '!=') expr_c)*
@@ -26,3 +27,5 @@ exec_line ::= new_variable | expr ';' | while | if
 while ::= 'while' '(' expr ')' ([expr] ';' | scope)
 if ::= 'if' '(' expr ')' ([expr] ';' | scope)
 scope ::= '{' exec_line* '}'
+struct_def ::= 'struct' id '{' new_variable* '}' ';'
+assign ::= l_val '=' expr ';'
