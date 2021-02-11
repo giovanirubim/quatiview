@@ -155,7 +155,7 @@
 			input.focus()
 		}
 	}
-	const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|\w+|\/([^\\\/]|\\.)*\/|.)/g
+	const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|\w+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
 	const parseLine = (src) => {
 		const div = document.createElement('div')
 		div.innerHTML = '<div class="line" tabindex="0">'
