@@ -1,0 +1,51 @@
+body {
+	background-color: #2a2a2a;
+	margin: 50px;
+}
+div, input[type="text"] {
+	font-family: monospace;
+	font-size: 14px;
+}
+input[type="text"] {
+	border: none;
+	outline: none;
+	padding: 0px;
+	background-color: #333;
+	width: 100%;
+	color: #fff;
+	margin: 0px;
+}
+div {
+	cursor: default;
+}
+.undefined {
+	background-color: #711;
+	border-radius: 5px;
+	color: #fbb;
+}
+.id {
+	color: #bbb;
+	font-style: italic;
+}
+.string {
+	color: #aa7;
+}
+.desc {
+	color: #69c;
+}
+.or {
+	color: #a6b;
+}
+.bracket {
+	color: #666;
+	font-weight: bold;
+}
+.optional {
+	color: #0f7;
+}
+.asterisk {
+	color: #f70;
+}
+.regex {
+	color: #7db;
+}
