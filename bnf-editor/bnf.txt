@@ -1,0 +1,28 @@
+id ::= /[\dA-Za-z]\w*/
+integer ::= /\d+/
+char ::= /'([^\s\\]|\\[^\s])'/
+string ::= /'([^'\n\\]|\\(.|\n))*'/
+integer_type ::= ['unsigned'] ('int' | 'char')
+type ::= integer_type | id
+new_variable ::= var_list ';'
+arg_list ::= [arg_item (',' arg_item)*]
+arg_item ::= type var_item
+var_list::= type var_item (',' var_item)*
+var_item ::= ('*')* id ('[' [expr] ']')*
+ord_cmp ::= '>=' | '<=' | '>' | '<'
+l_val ::= ('*') id ('[' expr']' | ('.' | '->') id)*
+expr ::= expr_a ('||' expr_a)*
+expr_a ::= expr_b ('&&' expr_b)*
+expr_b ::= expr_c (('==' | '!=') expr_c)*
+expr_c ::= expr_d (ord_cmp expr_d)*
+expr_d ::= expr_e (('+' | '-') expr_e)*
+expr_e ::= expr_f (('*' | '/' | '%') expr_f)*
+expr_f ::= fn_call | const | '(' expr ')' | l_val
+fn_call ::= id '(' [expr(',' expr)*] ')'
+fn ::= type ('*')* id '(' arg_list ')' scope
+const ::= null | integer | char | string
+null ::= 'NULL'
+exec_line ::= new_variable | expr ';' | while | if
+while ::= 'while' '(' expr ')' ([expr] ';' | scope)
+if ::= 'if' '(' expr ')' ([expr] ';' | scope)
+scope ::= '{' exec_line* '}'
