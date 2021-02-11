@@ -35,7 +35,6 @@ http.createServer((req, res) => {
 	const chunks = []
 	req.on('data', chunk => chunks.push(chunk))
 	req.on('end', () => {
-		console.log('stored')
 		const str = Buffer.concat(chunks).toString('utf8')
 		fs.writeFileSync(filePath, str)
 		res.writeHead(200)
