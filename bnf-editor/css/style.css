@@ -3,7 +3,7 @@ body {
 	margin: 50px;
 }
 div, input[type="text"] {
-	font-family: monospace;
+	font-family: 'Roboto Mono', monospace;
 	font-size: 14px;
 }
 input[type="text"] {
@@ -28,7 +28,7 @@ div.error {
 }
 .id {
 	color: #bbb;
-	font-style: italic;
+	/*font-style: italic;*/
 }
 .string {
 	color: #aa7;
