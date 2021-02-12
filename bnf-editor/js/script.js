@@ -75,16 +75,20 @@ const bindInput = (input) => {
 		return line
 	}
 	input.on('keydown', (e) => {
-		if (e.key !== 'Enter') return
-		const line = solve()
-		if (!line) return
-		const next = line.next()
-		const input = createInput()
-		main.append(input)
-		if (next) {
-			input.insertBefore(next)
+		if (e.key === 'Enter') {
+			const line = solve()
+			if (!line) return
+			const next = line.next()
+			const input = createInput()
+			main.append(input)
+			if (next) {
+				input.insertBefore(next)
+			}
+			input.trigger('focus')
 		}
-		input.trigger('focus')
+		if (e.key === 'Escape') {
+			solve()
+		}
 	})
 	input.on('blur', solve)
 }
