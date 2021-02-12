@@ -1,107 +1,191 @@
 import SourceConsumer from './source-consumer.js'
-import fs from 'fs'
+let source
 const irrelevantRegex = /^(\s+|\/\*([^*]|\*[^/])*\*\/)+/
-const source = fs.readFileSync('./huffman.c').toString('utf8')
-const src = new SourceConsumer(source, irrelevantRegex)
-const idRegex = /^[a-z_]\w*/i
-const intRegex = /^([1-9]\d*|\d)\b/
-const parseNumericType = () => {
-	let unsigned = false
-	let mainType = null
-	if (src.consumeIfMatches(/^long\b/)) {
-		if (src.consumeIfMatches(/^unsigned\b/)) {
-			unsigned = true
+
+const mapHead = (pattern) => {
+	const head = {}
+	if (pattern instanceof RegExp) {
+		for (let i=1; i<127; ++i) {
+			const char = String.fromCharCode(i)
+			if (pattern.test(char)) {
+				head[char] = true
+			}
 		}
-		mainType = 'long ' + src.consume(/^int\b/)
 	} else {
-		if (src.consumeIfMatches(/^unsigned\b/)) {
-			unsigned = true
+		head[pattern[0]] = true
+	}
+	return head
+}
+
+class Match {
+	constructor(head = {}, parse) {
+		if (head instanceof RegExp || typeof head === 'string') {
+			head = mapHead(head)
 		}
-		mainType = src.consume(/^(int|char)\b/)
+		this.head = head
+		this.parse = parse
 	}
-	return unsigned? `unsigned ${mainType}`: mainType
-}
-const parseStructDesc = () => {
-	src.consume(/^struct\b/)
-	let name = src.consumeIfMatches(idRegex)
-	src.consume('{')
-	let content = []
-	while (!src.matches('}')) {
-		content.push(parseVarDeclaration())
-	}
-	src.consume('}')
-	return {type: 'struct-desc', content}
-}
-const parseId = () => {
-	return src.consume(idRegex)
-}
-const parseVarDeclaration = () => {
-	const type = parseType()
-	let pointerDepth = 0
-	while (src.consumeIfMatches('*')) {
-		++ pointerDepth
-	}
-	const name = parseId()
-	const indices = []
-	while (src.consumeIfMatches('[')) {
-		if (src.matches(intRegex)) {
-			indices.push(src.consume(intRegex))
-		} else {
-			indices.push(src.consume(idRegex))
+	mergeHead(...matches) {
+		for (let match of matches) {
+			const other = match.head
+			const {head} = this
+			for (let attr in other) {
+				head[attr] = head[attr] || other[attr]
+			}
 		}
-		src.consume(']')
+		return this
 	}
-	src.consume(';')
-	return {type, pointerDepth, name, indices}
+	setParse(parse) {
+		this.parse = parse
+		return this
+	}
+	parseSafe() {
+		const {index} = source
+		try {
+			return this.parse()
+		} catch(err) {
+			source.index = index
+			return null
+		}
+	}
+	matchHead() {
+		return this.head[source.nextChar()] ?? false
+	}
 }
-const parseInclude = () => {
-	src.consume(/^#include\b/)
-	let lib = src.consume(/^<\w+(\.\w+)?>/)
+
+class Terminal extends Match {
+	constructor(name, pattern, head_pattern) {
+		if (typeof pattern === 'string') {
+			head_pattern = pattern[0]
+			pattern = new RegExp(pattern)
+		}
+		const regex = new RegExp(`^(${pattern.source})`, pattern.flags)
+		const head = mapHead(head_pattern)
+		const parse = () => {
+			const {index} = source
+			const content = source.consume(regex)
+			const end = index + content.length
+			return {type: name, index, end, content}
+		}
+		super(head, parse)
+	}
+}
+
+const forkMatch = (...matches) => {
+	const next = source.nextChar()
+	for (let match of matches) {
+		if (match.head[next]) {
+			return match.parse()
+		}
+	}
+	throw source.error()
+}
+
+const int = new Terminal('int', /\d+/, /\d/);
+const id = new Terminal('id', /[\d_a-z]\w*/i, /[\d_a-z]/i);
+const char = new Terminal('char', /'([^\s\\]|\x20|\\[^\s])'/, "'");
+const string = new Terminal('string', /"([^"\n\\]|\\(.|\n))*"/, '"');
+const nil = new Terminal('nil', 'NULL');
+const ord_cmp = new Terminal('ord_cmp', /<=|>=|<|>/, /[<>]/)
+const signed_type = new Terminal('signed_type', /char|int/, /[ci]/)
+const asterisk = new Terminal('asterisk', /\*/, '*')
+const semicolon = new Terminal('semicolon', ';')
+const constant = new Match()
+	.mergeHead(nil, int, char, string)
+	.setParse(() => {
+		const content = forkMatch(nil, int, char, string)
+		return {
+			type: 'constant',
+			index: content.index,
+			end: content.end,
+			content
+		}
+	})
+
+const int_type = new Match(/[uic]/, () => {
+	const {index} = source
+	const signed = !source.consumeIfMatches(/^unsigned\b/)
+	const type = signed_type.parse()
 	return {
-		type: 'include',
-		lib: lib.replace(/^<|>$/g, '')
+		type: 'int_type',
+		name: type.content,
+		signed,
+		index,
+		end: type.end
 	}
-}
-const parseType = () => {
-	if (src.matches(/^struct\b/)) {
-		if (src.matches(/^struct(\s*\w+)?\s*{/)) {
-			return parseStructDesc()
+})
+
+const raw_type = new Match()
+	.setParse(() => int_type.parseSafe() ?? id.parse())
+	.mergeHead(int, id)
+
+const var_list = new Match(raw_type.head, () => {
+	const {index} = source
+	const type = raw_type.parse()
+	const content = []
+	for (;;) {
+		content.push(var_item.parse())
+		if (!source.consumeIfMatches(/^,/)) break
+	}
+	return {
+		type: 'var_list',
+		raw_type: type,
+		content,
+		index,
+		end: content[content.length - 1].end
+	}
+})
+
+const array_size = new Match('[', () => {
+	source.consume('[')
+	const expr = expr.parse()
+	source.consume(']')
+	return expr
+})
+
+const var_item = new Match()
+	.mergeHead(asterisk, id)
+	.setParse(() => {
+		const {index} = source
+		let nAsterisks = 0
+		while (asterisk.parseSafe()) ++ nAsterisks;
+		const name = id.parse()
+		let arr = []
+		for (;;) {
+			if (!array_size.matchHead()) break
+			arr.push(array_size.parse())
 		}
-		src.consume('struct')
-		let structName = src.consume(idRegex)
-		return `struct ${structName}`
+		return {
+			type: 'var_item',
+			nAsterisks,
+			name,
+			index,
+			end: arr[arr.length - 1]?.end ?? name.end
+		}
+	})
+
+const var_def = new Match(var_list.head, () => {
+	const content = var_list.parse()
+	const end = semicolon.parse().end
+	return {type: 'var_def', content, index: content.index, end}
+})
+
+const struct_def = new Match('s', () => {
+	const {index} = source
+	source.consume(/^struct\b/)
+	let name = id.parse()
+	source.consume(/^{/)
+	let var_defs = []
+	for (;;) {
+		var_defs.push(var_def.parse())
+		if (source.nextChar() === '}') break
 	}
-	if (src.matches(/^(int|long|unsigned|char)\b/)) {
-		return parseNumericType()
-	}
-	return src.consume(idRegex)
-}
-const parseTypedef = () => {
-	src.consume(/^typedef\b/)
-	const type = parseType()
-	const name = parseId()
-	src.consume(';')
-	return {type: 'typedef', content: type, name}
-}
-const parseDefine = () => {
-	src.consume(/^#define\b/)
-	let content = src.consume(/^([^\n\\]|\\(.|\s))*/)
-	return {type: 'define', content}
-}
-const parseLine = () => {
-	if (src.matches('#include')) {
-		return parseInclude()
-	}
-	if (src.matches('#define')) {
-		return parseDefine()
-	}
-	if (src.matches('typedef')) {
-		return parseTypedef()
-	}
-	return parseVarDeclaration()
-}
-let line = null
-while (!src.end()) {
-	line = parseLine()
-	console.log(JSON.stringify(line, null, '  '))
+	const end = source.index + 1
+	source.consume(/^}/)
+	return {type: 'struct_def', name, var_defs, index, end}
+})
+
+export const parse = (str) => {
+	source = new SourceConsumer(str, irrelevantRegex)
+	return struct_def.parse()
 }

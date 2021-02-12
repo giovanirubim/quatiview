@@ -32,34 +32,23 @@ class SourceConsumer {
 		this.remaining = this.remaining.replace(irrelevantRegex, '')
 	}
 	nextChar() {
-		return this.remaining[0]
+		return this.remaining[0] ?? ''
 	}
-	matches(pattern) {
-		if (pattern instanceof RegExp) {
-			return pattern.test(this.remaining)
-		}
-		return this.remaining.startsWith(pattern)
+	matches(regex) {
+		return regex.test(this.remaining)
 	}
-	consumeIfMatches(pattern) {
-		if (pattern instanceof RegExp) {
-			const match = this.remaining.match(pattern)
-			if (match === null) {
-				return null
-			}
-			const result = match[0]
-			this.skip(result.length)
-			this.skipIrrelevant()
-			return result
-		}
-		if (!this.remaining.startsWith(pattern)) {
+	consumeIfMatches(regex) {
+		const match = this.remaining.match(regex)
+		if (match === null) {
 			return null
 		}
-		this.skip(pattern.length)
+		const result = match[0]
+		this.skip(result.length)
 		this.skipIrrelevant()
-		return pattern
+		return result
 	}
-	consume(pattern) {
-		const result = this.consumeIfMatches(pattern)
+	consume(regex) {
+		const result = this.consumeIfMatches(regex)
 		if (result === null) {
 			throw this.error()
 		}
