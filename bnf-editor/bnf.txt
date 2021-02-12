@@ -2,34 +2,37 @@ int ::= /\d+/
 char ::= /'([^\s\\]|\x20|\\[^\s])'/
 id ::= /[\d_a-z]\w*/i
 string ::= /"([^"\n\\]|\\(.|\n))*"/
-const ::= 'NULL' | int | char | string | sizeof
-sizeof ::= 'sizeof' '(' (type ('*')* | expr) ')'
+nil ::= 'NULL'
+constant::= nil | int | char | string | sizeof
+int_type ::= ['unsigned'] signed_type
+signed_type ::= 'int' | 'char'
+ord_cmp ::= '>=' | '<=' | '>' | '<'
+sizeof ::= 'sizeof' '(' (raw_type ('*')* | expr) ')'
 expr ::= expr_a ('||' expr_a)*
 expr_a ::= expr_b ('&&' expr_b)*
 expr_b ::= expr_c (('==' | '!=') expr_c)*
 expr_c ::= expr_d (ord_cmp expr_d)*
-ord_cmp ::= '>=' | '<=' | '>' | '<'
 expr_d ::= expr_e (('+' | '-') expr_e)*
 expr_e ::= expr_f (('*' | '/' | '%') expr_f)*
-expr_f ::= fn_call | const | '(' expr ')' | l_val
+expr_f ::= fn_call | constant | '(' expr ')' | ['&'] l_val
 fn_call ::= id '(' [expr (',' expr)*] ')'
 l_val ::= (id | ptr_access) (index_access | attr_access)*
 ptr_access ::= '*' (ptr_access | id | '(' expr ')')
 index_access ::= '[' expr ']'
 attr_access ::= ('->' | '.') id
-var_declaration ::= var_list ';'
-var_list ::= type var_item (',' var_item)*
-struct_def ::= 'struct' id '{' var_declaration* '}' ';'
-fn ::= type ('*')* id '(' arg_list ')' scope
-arg_item ::= type var_item
+var_def ::= var_list ';'
+var_list ::= raw_type var_item (',' var_item)*
+struct_def ::= 'struct' id '{' var_def+ '}' ';'
+fn_def ::= raw_type ('*')* id '(' arg_list ')' scope
+arg_item ::= raw_type var_item
 arg_list ::= [arg_item (',' arg_item)*]
 assign ::= l_val '=' expr ';'
-exec_line ::= var_declaration | expr ';' | while | if | assign
-if ::= 'if' '(' expr ')' ([expr] ';' | scope)
-int_type ::= ['unsigned'] ('int' | 'char')
+exec_line ::= var_def | expr ';' | while | if | assign
+if ::= 'if' '(' expr ')' scope ['else' scope]
 ord_cmp ::= '>=' | '<=' | '>' | '<'
 scope ::= '{' exec_line* '}'
-type ::= int_type | id
-var_item ::= '*'* id ('[' [expr] ']')*
-while ::= 'while' '(' expr ')' ([expr] ';' | scope)
-program ::= struct_def | var_declaration | fn
+raw_type ::= int_type | id
+var_item ::= '*'* id array_size*
+array_size ::= ('[' [expr] ']')
+while ::= 'while' '(' expr ')' scope
+program ::= struct_def | var_def | fn_def
