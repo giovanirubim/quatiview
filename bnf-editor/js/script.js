@@ -69,7 +69,7 @@ const bindInput = (input) => {
 			store()
 			return null
 		}
-		const line = parseLine(value)
+		const line = bnfLineToDOM(value)
 		input.replaceWith(line)
 		store()
 		return line
@@ -93,7 +93,7 @@ const bindInput = (input) => {
 	input.on('blur', solve)
 }
 const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|\w+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
-const parseLine = (src) => {
+const bnfLineToDOM = (src) => {
 	const div = $(document.createElement('div'))
 	div.html('<div class="line" tabindex="0">'
 		+ [...src.matchAll(tokenRegex)]
@@ -113,7 +113,7 @@ const setSrc = (src) => {
 	src.trim()
 		.replace(/\s*\n\s*/g, '\n')
 		.split('\n')
-		.forEach((line) => main.append(parseLine(line)))
+		.forEach((line) => main.append(bnfLineToDOM(line)))
 	check()
 }
 const check = () => {
