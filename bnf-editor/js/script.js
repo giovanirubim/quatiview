@@ -143,7 +143,7 @@ let toSpan = (text) => {
 	} else if (text.match(/[\(\)]/)) {
 		type = 'bracket'
 	} else if (text.match(/^\w+$/)) {
-		type = 'id'
+		type = 'id" name="' + text
 	} else {
 		type = 'unknown'
 	}
@@ -195,7 +195,10 @@ const bnfLineToDOM = (src) => {
 			toTokenList(src).map(toSpan).join('') +
 		'</div>'
 	)
-	const line = div.children().first()
+	const line = div.children()
+	const ids = line.find('span.id')
+	ids.not(':first').addClass('instance')
+	ids.first().addClass('def')
 	return line
 }
 const createInput = (value = '') => {
@@ -255,6 +258,19 @@ $(document).ready(() => {
 		const input = createInput(line.text())
 		line.replaceWith(input)
 		input.trigger('focus')
+	})
+	main.on('mouseover', 'span.id', (e) => {
+		if (!e.shiftKey && !e.altKey) return
+		const target = $(e.target ?? e.srcElement)
+		const name = target.attr('name')
+		if (target.hasClass('def')) {
+			$(`span[name="${name}"].instance`).addClass('highlight')
+		} else {
+			$(`span[name="${name}"].def`).addClass('highlight')
+		}
+	})
+	main.on('mouseout', 'span.id', (e) => {
+		$('span.highlight').removeClass('highlight')
 	})
 	$.get('/bnf.txt').then(setSrc)
 })

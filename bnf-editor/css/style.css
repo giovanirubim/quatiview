@@ -21,23 +21,29 @@ div {
 div.error {
 	background-color: #435;
 }
+span.highlight {
+	background-color: #175;
+	border-radius: 5px;
+	color: #fff;
+}
 .undefined {
 	background-color: #711;
 	border-radius: 5px;
 	color: #fbb;
 }
 .id {
-	color: #bbb;
-	/*font-style: italic;*/
+	color: #ccc;
 }
 .string {
-	color: #aa7;
+	color: #fe8;
 }
 .desc {
 	color: #69c;
+	font-weight: bold;
 }
 .or {
 	color: #a6b;
+	font-weight: bold;
 }
 .bracket {
 	color: #666;
