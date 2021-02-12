@@ -12,7 +12,11 @@ const getSrc = () => {
 	return src
 }
 const store = () => {
-	$.post('/', {data: getSrc()})
+	$.post({
+		url: '/',
+		processData: false,
+		data: getSrc()
+	})
 	check()
 }
 let translate = (str) => {
