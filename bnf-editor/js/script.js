@@ -19,6 +19,97 @@ const store = () => {
 	})
 	check()
 }
+const parseLine = (line) => {
+	let tokens = toTokenList(line).filter((token) => /[^\s]/.test(token))
+	let next = () => tokens[0] || ''
+	let pop = () => tokens.splice(0, 1)[0]
+	let abort = () => {throw new Error()}
+	let tabs = ''
+	let tab = '|  '
+	let callMap = {}
+	let logs = false
+	let log = (msg) => {
+		if (logs) console.log(msg)
+	}
+	let addToMap = (name) => {
+		let {length} = tokens
+		let key = name + ':' + length
+		if (callMap[key]) {
+			log('loop detected in ' + name)
+			abort()
+		}
+		callMap[key] = true
+	}
+	let call = (fn) => {
+		let {name} = fn
+		log(tabs + name + ' { // tokens: ' + tokens.join('').substr(0, 16))
+		addToMap(name)
+		tabs += tab
+		let ret = fn()
+		tabs = tabs.substr(tab.length)
+		log(tabs + '} // tokens: ' + tokens.join('').substr(0, 16))
+		return ret
+	}
+	let popTerminal = () => {
+		if (!next().match(/^['/]/)) abort()
+		return {type: 'terminal', content: pop()}
+	}
+	let popOptional = () => {
+		if (pop() !== '[') abort()
+		let content = call(popExpr)
+		if (pop() !== ']') abort()
+		return {type: 'optional', content}
+	}
+	let popId = () => {
+		if (!next().match(/^\w+$/)) abort()
+		return {type: 'id', content: pop()}
+	}
+	let popWrappedExpr = () => {
+		if (pop() !== '(') abort()
+		let content = call(popExpr)
+		if (pop() !== ')') abort()
+		return content
+	}
+	let popAtom = () => {
+		if (next() === '[') return call(popOptional)
+		if (next().match(/^['/]/)) return call(popTerminal)
+		if (next() === '(') return call(popWrappedExpr)
+		return call(popId)
+	}
+	let popItem = () => {
+		let atom = call(popAtom)
+		if (next().match(/^[*+]$/)) {
+			return {type: pop(), content: atom}
+		}
+		return atom
+	}
+	let popConcat = () => {
+		let content = [call(popItem)]
+		while (tokens.length) {
+			if (next().match(/^[)\]|]/)) break
+			content.push(call(popItem))
+		}
+		if (content.length === 1) return content[0]
+		return {type: 'concat', content}
+	}
+	let popExpr = () => {
+		let content = [call(popConcat)]
+		while (tokens.length && !next().match(/^[\])]$/)) {
+			if (pop() !== '|') abort()
+			content.push(call(popConcat))
+		}
+		if (content.length === 1) return content[0]
+		return {type: 'fork', content}
+	}
+	let popLine = () => {
+		let id = call(popId)
+		if (pop() !== '::=') abort()
+		let content = call(popExpr)
+		if (tokens.length) abort()
+		return {name: id.content, content}
+	}
+	return call(popLine)
+}
 let translate = (str) => {
 	let res = ''
 	for (let char of str) {
@@ -93,14 +184,17 @@ const bindInput = (input) => {
 	input.on('blur', solve)
 }
 const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|\w+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
+const toTokenList = (str) => {
+	const matches = [...str.matchAll(tokenRegex)]
+	return matches.map((match) => match[0])
+}
 const bnfLineToDOM = (src) => {
 	const div = $(document.createElement('div'))
-	div.html('<div class="line" tabindex="0">'
-		+ [...src.matchAll(tokenRegex)]
-			.map(match => match[0])
-			.map(toSpan)
-			.join('')
-		+ '</div>')
+	div.html(
+		'<div class="line" tabindex="0">' +
+			toTokenList(src).map(toSpan).join('') +
+		'</div>'
+	)
 	const line = div.children().first()
 	return line
 }
@@ -116,7 +210,7 @@ const setSrc = (src) => {
 		.forEach((line) => main.append(bnfLineToDOM(line)))
 	check()
 }
-const check = () => {
+const checkUsage = () => {
 	let src = getSrc()
 	let defined = {}
 	src.trim().split('\n').forEach(line => {
@@ -132,6 +226,26 @@ const check = () => {
 			span.removeClass('undefined')
 		}
 	})
+}
+const checkSyntax = () => {
+	let map = {}
+	$('.line,input[type="text"]').each(function(){
+		const item = $(this).removeClass('error')
+		let line = item.is('input')? item.val(): item.text().trim()
+		if (!line) return
+		let parsed
+		try {
+			parsed = parseLine(line)
+		} catch(err) {
+			item.addClass('error')
+			return
+		}
+		map[parsed.name] = parsed.content
+	})
+}
+const check = () => {
+	checkUsage()
+	checkSyntax()
 }
 $(document).ready(() => {
 	main = $('#main')
