@@ -1,8 +1,8 @@
-03-21 - revisão pronta
-05-21 * revisão bibliográfica 
-07-17 * apresentação de 10 min sobre o trabalho em desenvolviemnto
-09-03 * monografia + submissão artigo + membro extra
-09-17 * apresentação
+21/04 - revisão pronta (agora vai)
+21/05 * revisão bibliográfica 
+17/07 * apresentação de 10 min sobre o trabalho em desenvolviemnto
+03/09 * monografia + submissão artigo + membro extra
+17/09 * apresentação
 
 Implementação:
 	BNF da linguagem

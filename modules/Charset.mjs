@@ -1,0 +1,39 @@
+const defaultMap = new Array(256).fill(false);
+
+class Charset {
+	constructor(pattern) {
+		this.map = defaultMap.slice();
+		if (pattern) {
+			const groups = pattern.split(';');
+			for (let group of groups) {
+				const [a, b = a] = group.split('-');
+				const first = a.charCodeAt(0);
+				const last = b.charCodeAt(0);
+				for (let i=first; i<=last; ++i) {
+					this.addByte(i);
+				}
+			}
+		}
+	}
+	add(char) {
+		this.addByte(char.charCodeAt(0));
+	}
+	addByte(byte) {
+		this.map[byte] = true;
+	}
+	fill() {
+		this.map.forEach((_, index, map) => map[index] = true);
+		return this;
+	}
+	has(char) {
+		return this.map[char.charCodeAt(0)];
+	}
+	all() {
+		return this.map
+			.map((value, index) => value? index: null)
+			.filter((item) => item !== null)
+			.map((byte) => String.fromCharCode(byte));
+	}
+}
+
+export default Charset;
