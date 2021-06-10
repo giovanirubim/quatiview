@@ -15,11 +15,12 @@ class Charset {
 			}
 		}
 	}
-	add(char) {
-		this.addByte(char.charCodeAt(0));
-	}
 	addByte(byte) {
 		this.map[byte] = true;
+	}
+	add(char) {
+		this.addByte(char.charCodeAt(0));
+		return this;
 	}
 	fill() {
 		this.map.forEach((_, index, map) => map[index] = true);

@@ -17,14 +17,28 @@ class SourceConsumer {
 		}
 		this.skip(match[0].length);
 	}
-	get index() {
+	getIndex() {
 		return this.sourceCode.length - this.remainig.length;
 	}
-	set index(index) {
+	setIndex(index) {
 		this.remainig = this.sourceCode.substr(index);
+		return this;
 	}
 	nextChar() {
 		return this.remainig[0] ?? null;
+	}
+	next(pattern) {
+		const match = this.remainig.match(pattern);
+		if (match === null || match.index !== 0) {
+			return null;
+		}
+		const [result] = match;
+		this.skip(result.length);
+		this.findNext();
+		return result;
+	}
+	end() {
+		return this.remainig === '';
 	}
 }
 
