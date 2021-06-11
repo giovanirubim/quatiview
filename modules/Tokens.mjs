@@ -1,7 +1,7 @@
 import Token from './Token.mjs';
 import Charset from './Charset.mjs';
 
-// All C reserved words
+// All reserved words
 const reservedWords = [
 	'auto',
 	'break',
@@ -12,6 +12,7 @@ const reservedWords = [
 	'goto',
 	'if', 'int',
 	'long',
+	'NULL',
 	'register', 'return',
 	'short', 'signed', 'sizeof', 'static', 'struct', 'switch',
 	'typedef',
