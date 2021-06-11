@@ -39,24 +39,3 @@ class TokenGenerator {
 	}
 }
 
-const sample = `
-for (int i=0; i<10; i+=1) {
-	j = j + x;
-}
-char str[10];
-y = y - 15 - x*10 + (z%w - k/p);
-a(object->attr + 4.5 + var.n);
-chr = 'k';
-chr = '\\n';
-print("this is a string", '\\0');
-array[x] = 95;
-if (x >= 10 || y == z || n <= p && a != 1) {
-	return;
-}
-`;
-import fs from 'fs';
-const src = fs.readFileSync('./SourceConsumer.mjs').toString();
-const generator = new TokenGenerator(sample);
-console.log(generator.all().map((match) => {
-	return `${match.type.name}: [${match.content}]`;
-}).join('\n'));
