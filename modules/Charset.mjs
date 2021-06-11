@@ -6,7 +6,7 @@ class Charset {
 		if (pattern) {
 			const groups = pattern.split(';');
 			for (let group of groups) {
-				const [a, b = a] = group.split('-');
+				const [a, b = a] = group === '-' ? ['-', '-'] : group.split('-');
 				const first = a.charCodeAt(0);
 				const last = b.charCodeAt(0);
 				for (let i=first; i<=last; ++i) {
