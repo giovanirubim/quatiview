@@ -4,38 +4,29 @@ import Token from './Token.mjs';
 import * as Tokens from './Tokens.mjs';
 import { LexycalError } from './Errors.mjs'
 
-class TokenGenerator {
-	constructor(sourceCode) {
-		this.sourceCode = sourceCode;
-		this.consumer = new SourceConsumer(sourceCode);
-	}
-	next() {
-		const { consumer } = this;
+export default function* (sourceCode) {
+	const consumer = new SourceConsumer(sourceCode);
+	while (!consumer.end()) {
 		const startsAt = consumer.getIndex();
 		const nextChar = consumer.nextChar();
 		const tokens = Tokens.getByHeadChar(nextChar);
+		let result = null;
 		for (let token of tokens) {
 			const match = consumer.next(token.pattern);
 			if (match !== null) {
-				return new SyntaticMatch({
+				result = new SyntaticMatch({
 					type: token,
 					startsAt: startsAt,
 					endsAt: startsAt + match.length,
 					content: match,
 				});
+				break;
 			}
 		}
-		throw new LexycalError(consumer.getIndex());
-	}
-	end() {
-		return this.consumer.end();
-	}
-	all() {
-		const res = [];
-		while (!this.end()) {
-			res.push(this.next());
+		if (result) {
+			yield result;
+		} else {
+			throw new LexycalError(consumer.getIndex());		
 		}
-		return res;
 	}
-}
-
+};
