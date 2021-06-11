@@ -1,4 +1,4 @@
-// Add possibility of /***/ comment
+// TODO: Add possibility of /***/ comment
 const skipableCode = /^(\s+|\/\/[^\n]*|\/\*([^*]|\*[^\/])*\*\/)+/;
 
 class SourceConsumer {
