@@ -4,17 +4,34 @@ import Token from './Token.mjs';
 import * as Tokens from './Tokens.mjs';
 import { LexycalError } from './Errors.mjs'
 
-export default function* (sourceCode) {
-	const consumer = new SourceConsumer(sourceCode);
-	while (!consumer.end()) {
-		const startsAt = consumer.getIndex();
-		const nextChar = consumer.nextChar();
+class TokenGenerator {
+	constructor(sourceConsumer) {
+		this.sourceConsumer = sourceConsumer;
+		this._next = null;
+	}
+	next() {
+		if (this._next !== null) {
+			return this._next;
+		}
+		if (this.sourceConsumer.end()) {
+			return null;
+		}
+		return this._next = this.pop();
+	}
+	pop() {
+		if (this._next !== null) {
+			const token = this._next;
+			this._next = null;
+			return token;
+		}
+		const { sourceConsumer } = this;
+		const startsAt = sourceConsumer.getIndex();
+		const nextChar = sourceConsumer.nextChar();
 		const tokens = Tokens.getByHeadChar(nextChar);
-		let result = null;
 		for (let token of tokens) {
-			const match = consumer.next(token.pattern);
+			const match = sourceConsumer.next(token.pattern);
 			if (match !== null) {
-				result = new SyntaticMatch({
+				return new SyntaticMatch({
 					type: token,
 					startsAt: startsAt,
 					endsAt: startsAt + match.length,
@@ -23,10 +40,13 @@ export default function* (sourceCode) {
 				break;
 			}
 		}
-		if (result) {
-			yield result;
-		} else {
-			throw new LexycalError(consumer.getIndex());		
-		}
+		throw new LexycalError(sourceConsumer.getIndex());		
 	}
-};
+	all() {
+		const res = [];
+		while (this.next() !== null) {
+			res.push(this.pop());
+		}
+		return res;
+	}
+}
