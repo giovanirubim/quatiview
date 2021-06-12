@@ -2,18 +2,21 @@ import SourceConsumer from './SourceConsumer.mjs';
 import SyntaticMatch from './SyntaticMatch.mjs';
 import Token from './Token.mjs';
 import * as Tokens from './Tokens.mjs';
-import { LexycalError } from './Errors.mjs'
+import { LexycalError, SyntaticError } from './Errors.mjs'
 
 class TokenGenerator {
 	constructor(sourceConsumer) {
 		this.sourceConsumer = sourceConsumer;
 		this._next = null;
 	}
-	next() {
+	next(force = false) {
 		if (this._next !== null) {
 			return this._next;
 		}
 		if (this.sourceConsumer.end()) {
+			if (force) {
+				return new SyntaticError(sourceConsumer.getIndex());
+			}
 			return null;
 		}
 		return this._next = this.pop();
