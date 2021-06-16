@@ -1,19 +1,21 @@
-import SourceConsumer from './SourceConsumer.mjs';
-import SyntaticMatch from './SyntaticMatch.mjs';
-import Token from './Token.mjs';
-import * as Tokens from './Tokens.mjs';
-import { LexycalError, SyntaticError } from './Errors.mjs'
+import SourceConsumer from './SourceConsumer.js';
+import SyntaticMatch from './SyntaticMatch.js';
+import Token from './Token.js';
 
-class TokenGenerator {
-	constructor(sourceConsumer) {
+import { LexycalError, SyntaticError } from '../errors/index.js';
+
+export default class TokenGenerator {
+	constructor(sourceConsumer, tokenSet) {
 		this.sourceConsumer = sourceConsumer;
+		this.tokenSet = tokenSet;
 		this._next = null;
 	}
 	next(force = false) {
 		if (this._next !== null) {
 			return this._next;
 		}
-		if (this.sourceConsumer.end()) {
+		const { sourceConsumer } = this;
+		if (sourceConsumer.end()) {
 			if (force) {
 				return new SyntaticError(sourceConsumer.getIndex());
 			}
@@ -27,10 +29,10 @@ class TokenGenerator {
 			this._next = null;
 			return token;
 		}
-		const { sourceConsumer } = this;
+		const { sourceConsumer, tokenSet } = this;
 		const startsAt = sourceConsumer.getIndex();
 		const nextChar = sourceConsumer.nextChar();
-		const tokens = Tokens.getByHeadChar(nextChar);
+		const tokens = tokenSet.getByHeadChar(nextChar);
 		for (let token of tokens) {
 			const match = sourceConsumer.next(token.pattern);
 			if (match !== null) {

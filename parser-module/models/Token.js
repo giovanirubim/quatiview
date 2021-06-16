@@ -1,4 +1,4 @@
-import Charset from './Charset.mjs';
+import Charset from './Charset.js';
 
 const stringToRegex = (pattern) => {
 	let strRegex = '^';
