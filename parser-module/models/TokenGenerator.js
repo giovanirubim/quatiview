@@ -14,7 +14,7 @@ export default class TokenGenerator {
 		const { sourceConsumer } = this;
 		if (sourceConsumer.end()) {
 			if (force) {
-				return new SyntaticError(sourceConsumer.getIndex());
+				throw new SyntaticError(sourceConsumer.getIndex());
 			}
 			return null;
 		}
