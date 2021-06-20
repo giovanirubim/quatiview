@@ -20,11 +20,14 @@ export default class TokenGenerator {
 		}
 		return this.loadedNext = this.pop();
 	}
-	pop() {
+	pop(tokenName) {
 		if (this.loadedNext !== null) {
-			const token = this.loadedNext;
+			const match = this.loadedNext;
 			this.loadedNext = null;
-			return token;
+			if (tokenName != null && match.type.name !== tokenName) {
+				throw new SyntaticError(match.startsAt);
+			}
+			return match;
 		}
 		const { sourceConsumer, tokenTypeSet } = this;
 		const startsAt = sourceConsumer.getIndex();
