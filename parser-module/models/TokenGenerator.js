@@ -1,6 +1,6 @@
 import SourceConsumer from './SourceConsumer.js';
 import SyntaticMatch from './SyntaticMatch.js';
-import Token from './Token.js';
+import TokenType from './TokenType.js';
 
 import { LexycalError, SyntaticError } from '../errors/index.js';
 

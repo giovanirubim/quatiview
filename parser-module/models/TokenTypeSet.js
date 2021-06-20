@@ -1,6 +1,6 @@
-import Token from './Token.js';
+import TokenType from './TokenType.js';
 
-export default class TokenSet {
+export default class TokenTypeSet {
 
 	constructor() {
 		// Builds an object that maps for each character what group of tokens can start with that
@@ -13,7 +13,7 @@ export default class TokenSet {
 	}
 
 	add(...args) {
-		const token = new Token(...args);
+		const token = new TokenType(...args);
 		const { byHeadMap } = this;
 		token.headCharset.all().forEach((char) => {
 			byHeadMap[char].push(token);

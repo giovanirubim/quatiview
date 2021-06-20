@@ -1,7 +1,7 @@
-import TokenSet from '../models/TokenSet.js';
+import TokenTypeSet from '../models/TokenTypeSet.js';
 import Charset from '../models/Charset.js';
 
-const set = new TokenSet();
+const set = new TokenTypeSet();
 
 // All reserved words
 const reservedWords = [

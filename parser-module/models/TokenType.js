@@ -9,7 +9,7 @@ const stringToRegex = (pattern) => {
 	return new RegExp(strRegex);
 };
 
-class Token {
+class TokenType {
 	constructor(args) {
 		if (typeof args === 'string') {
 			this.pattern = stringToRegex(args);
@@ -29,4 +29,4 @@ class Token {
 	}
 }
 
-export default Token;
+export default TokenType;
