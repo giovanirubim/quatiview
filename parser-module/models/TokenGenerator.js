@@ -1,18 +1,15 @@
-import SourceConsumer from './SourceConsumer.js';
 import SyntaticMatch from './SyntaticMatch.js';
-import TokenType from './TokenType.js';
-
 import { LexycalError, SyntaticError } from '../errors/index.js';
 
 export default class TokenGenerator {
-	constructor(sourceConsumer, tokenSet) {
+	constructor(sourceConsumer, tokenTypeSet) {
 		this.sourceConsumer = sourceConsumer;
-		this.tokenSet = tokenSet;
-		this._next = null;
+		this.tokenTypeSet = tokenTypeSet;
+		this.loadedNext = null;
 	}
 	next(force = false) {
-		if (this._next !== null) {
-			return this._next;
+		if (this.loadedNext !== null) {
+			return this.loadedNext;
 		}
 		const { sourceConsumer } = this;
 		if (sourceConsumer.end()) {
@@ -21,18 +18,18 @@ export default class TokenGenerator {
 			}
 			return null;
 		}
-		return this._next = this.pop();
+		return this.loadedNext = this.pop();
 	}
 	pop() {
-		if (this._next !== null) {
-			const token = this._next;
-			this._next = null;
+		if (this.loadedNext !== null) {
+			const token = this.loadedNext;
+			this.loadedNext = null;
 			return token;
 		}
-		const { sourceConsumer, tokenSet } = this;
+		const { sourceConsumer, tokenTypeSet } = this;
 		const startsAt = sourceConsumer.getIndex();
 		const nextChar = sourceConsumer.nextChar();
-		const tokens = tokenSet.getByHeadChar(nextChar);
+		const tokens = tokenTypeSet.getByHeadChar(nextChar);
 		for (let token of tokens) {
 			const match = sourceConsumer.next(token.pattern);
 			if (match !== null) {
