@@ -3,3 +3,5 @@ class NonTerminal {
 		this.name = name;
 	}
 }
+
+module.exports.NonTerminal = NonTerminal;

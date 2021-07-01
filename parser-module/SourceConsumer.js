@@ -42,4 +42,4 @@ class SourceConsumer {
 	}
 }
 
-export default SourceConsumer;
+module.exports = SourceConsumer;

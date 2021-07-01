@@ -1,7 +1,7 @@
-import TokenTypeSet from '../models/TokenTypeSet.js';
-import Charset from '../models/Charset.js';
+const TokenSet = require('../models/TokenSet.js');
+const Charset = require('../models/Charset.js');
 
-const set = new TokenTypeSet();
+const set = new TokenSet();
 
 // All reserved words
 const reservedWords = [
@@ -84,4 +84,4 @@ set.add({
 	headCharset: new Charset('a-z;A-Z;_'),
 });
 
-export default set;
+module.exports = set;

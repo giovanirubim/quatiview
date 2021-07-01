@@ -1,6 +1,6 @@
-import TokenType from './TokenType.js';
+const Token = require('./Token.js');
 
-export default class TokenTypeSet {
+class TokenSet {
 
 	constructor() {
 		// Builds an object that maps for each character what group of tokens can start with that
@@ -13,7 +13,7 @@ export default class TokenTypeSet {
 	}
 
 	add(...args) {
-		const token = new TokenType(...args);
+		const token = new Token(...args);
 		const { byHeadMap } = this;
 		token.headCharset.all().forEach((char) => {
 			byHeadMap[char].push(token);
@@ -25,3 +25,5 @@ export default class TokenTypeSet {
 		return byHeadMap[char];
 	}
 }
+
+module.exports = TokenSet;

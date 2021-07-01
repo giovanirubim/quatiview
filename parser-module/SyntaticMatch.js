@@ -1,4 +1,4 @@
-export default class SyntaticMatch {
+class SyntaticMatch {
 	constructor({ type, startsAt, endsAt, content }) {
 		this.type = type;
 		this.startsAt = startsAt;
@@ -6,3 +6,5 @@ export default class SyntaticMatch {
 		this.content = content;
 	}
 }
+
+module.exports = SyntaticMatch;

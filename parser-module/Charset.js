@@ -37,4 +37,4 @@ class Charset {
 	}
 }
 
-export default Charset;
+module.exports = Charset;

@@ -1,4 +1,5 @@
-import Charset from './Charset.js';
+const Token = require('./SyntaticElement.js');
+const Charset = require('./Charset.js');
 
 const stringToRegex = (pattern) => {
 	let strRegex = '^';
@@ -9,7 +10,7 @@ const stringToRegex = (pattern) => {
 	return new RegExp(strRegex);
 };
 
-class TokenType {
+class Token {
 	constructor(args) {
 		if (typeof args === 'string') {
 			this.pattern = stringToRegex(args);
@@ -29,4 +30,4 @@ class TokenType {
 	}
 }
 
-export default TokenType;
+module.exports = Token;

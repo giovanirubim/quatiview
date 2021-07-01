@@ -1,7 +1,7 @@
-import SyntaticMatch from './SyntaticMatch.js';
-import { LexycalError, SyntaticError } from '../errors/index.js';
+const SyntaticMatch = require('./SyntaticMatch.js');
+const { LexycalError, SyntaticError } = require('../errors/index.js');
 
-export default class TokenGenerator {
+class TokenGenerator {
 	constructor(sourceConsumer, tokenTypeSet) {
 		this.sourceConsumer = sourceConsumer;
 		this.tokenTypeSet = tokenTypeSet;
@@ -55,3 +55,5 @@ export default class TokenGenerator {
 		return res;
 	}
 }
+
+module.exports = TokenGenerator;
