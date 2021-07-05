@@ -1,8 +1,6 @@
-const defaultMap = new Array(256).fill(false);
-
 class Charset {
 	constructor(pattern) {
-		this.map = defaultMap.slice();
+		this.map = new Array(256).fill(false);
 		if (pattern) {
 			const groups = pattern.split(';');
 			for (let group of groups) {

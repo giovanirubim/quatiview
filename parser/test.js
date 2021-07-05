@@ -1,5 +1,5 @@
-import * as fs from 'fs'
-import * as syntax from './syntax.js'
+const fs = require('fs');
+const syntax = require('./syntax.js');
 
 const src = fs.readFileSync('./sample.c')
 	.toString('utf8')

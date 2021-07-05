@@ -1,5 +1,5 @@
-const TokenSet = require('../models/TokenSet.js');
-const Charset = require('../models/Charset.js');
+const TokenSet = require('./TokenSet');
+const Charset = require('../Charset');
 
 const set = new TokenSet();
 
@@ -21,7 +21,7 @@ const reservedWords = [
 	'union', 'unsigned',
 	'void', 'volatile',
 	'while',
-	'_Packed', 
+	'_Packed',
 ];
 
 reservedWords.forEach((word) => set.add(word));

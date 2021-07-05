@@ -1,43 +1,47 @@
-const SyntaticMatch = require('./SyntaticMatch.js');
-const { LexycalError, SyntaticError } = require('../errors/index.js');
+const { LexycalError, SyntaticError } = require('../Errors');
+const TokenSet = require('../PatternDefinitions/Tokens');
+const ParseTreeNode = require('../ParseTreeNode');
 
 class TokenGenerator {
-	constructor(sourceConsumer, tokenTypeSet) {
+	constructor({ sourceConsumer }) {
 		this.sourceConsumer = sourceConsumer;
-		this.tokenTypeSet = tokenTypeSet;
 		this.loadedNext = null;
 	}
-	next(force = false) {
+	next() {
 		if (this.loadedNext !== null) {
 			return this.loadedNext;
 		}
 		const { sourceConsumer } = this;
 		if (sourceConsumer.end()) {
-			if (force) {
-				throw new SyntaticError(sourceConsumer.getIndex());
-			}
 			return null;
 		}
 		return this.loadedNext = this.pop();
 	}
-	pop(tokenName) {
+	nextIs(typeName) {
+		const next = this.next();
+		if (next === null) {
+			return false;
+		}
+		return next.typeName === typeName;
+	}
+	pop(...typeNames) {
 		if (this.loadedNext !== null) {
 			const match = this.loadedNext;
 			this.loadedNext = null;
-			if (tokenName != null && match.type.name !== tokenName) {
+			if (!typeNames.includes(match.typeName)) {
 				throw new SyntaticError(match.startsAt);
 			}
 			return match;
 		}
-		const { sourceConsumer, tokenTypeSet } = this;
+		const { sourceConsumer } = this;
 		const startsAt = sourceConsumer.getIndex();
 		const nextChar = sourceConsumer.nextChar();
-		const tokens = tokenTypeSet.getByHeadChar(nextChar);
+		const tokens = TokenSet.getByHeadChar(nextChar);
 		for (let token of tokens) {
 			const match = sourceConsumer.next(token.pattern);
 			if (match !== null) {
-				return new SyntaticMatch({
-					type: token,
+				return new ParseTreeNode({
+					typeName: token.name,
 					startsAt: startsAt,
 					endsAt: startsAt + match.length,
 					content: match,
@@ -45,7 +49,20 @@ class TokenGenerator {
 				break;
 			}
 		}
-		throw new LexycalError(sourceConsumer.getIndex());		
+		throw new LexycalError(sourceConsumer.getIndex());
+	}
+	throwSyntaticError() {
+		throw new SyntaticError(sourceConsumer.getIndex());
+	}
+	popIfIs(...typeNames) {
+		const next = this.next();
+		if (next === null) {
+			return null;
+		}
+		if (!typeNames.includes(next.typeName)) {
+			return null;
+		}
+		return this.pop();
 	}
 	all() {
 		const res = [];
