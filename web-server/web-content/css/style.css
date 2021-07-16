@@ -1,6 +1,9 @@
+* {
+	font-family: monospace;
+}
 body {
 	--panel-height: 36px;
-	--editor-width: 400px;
+	--editor-width: 450px;
 	--terminal-height: 275px;
 }
 #control-panel {
@@ -9,6 +12,12 @@ body {
 	left: 0px;
 	right: 0px;
 	height: var(--panel-height);
+}
+#control-panel .panel-button {
+	float: left;
+	margin-top: 10px;
+	margin-left: 10px;
+	cursor: pointer;
 }
 #editor-section {
 	position: absolute;
@@ -39,6 +48,32 @@ body {
 	right: 0px;
 	height: var(--terminal-height);
 	background-color: #111;
+	--padding: 10px;
+	--input-height: 30px;
+	font-size: 0px;
+}
+#terminal-section textarea {
+	border: none;
+	resize: none;
+	overflow: hidden;
+	width: calc(100% - var(--padding)*2);
+	padding-top: var(--padding);
+	padding-left: var(--padding);
+	padding-right: var(--padding);
+	padding-bottom: 0px;
+	height: calc(var(--terminal-height) - var(--padding)*3 - var(--input-height));
+}
+#terminal-section input {
+	width: calc(100% - var(--padding)*2);
+	border: none;
+	padding: var(--padding);
+	height: var(--input-height);
+}
+#terminal-section textarea,
+#terminal-section input {
+	background-color: transparent;
+	color: #7f7;
+	outline: none;
 }
 #mem-view-section {
 	position: absolute;

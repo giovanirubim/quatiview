@@ -1,5 +1,7 @@
 import * as editor from './editor.js';
 import * as render from './render.js';
+import * as panel from './panel.js';
+import * as terminal from './terminal.js';
 
 const loadMemView = () => {
 	const memView = $('#mem-view-section');
@@ -19,4 +21,9 @@ $(document).ready(() => {
 	editor.focus();
 	loadMemView();
 	render.start();
+	terminal.load();
+	terminal.write('((-,2,-),5,(-,9,-))\n');
+	terminal.write('Program exited with code 0');
+	panel.load();
+	panel.onupload((source) => editor.setText(source));
 });

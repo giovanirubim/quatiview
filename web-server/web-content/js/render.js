@@ -3,7 +3,7 @@ const TAU = Math.PI*2;
 let ctx = null;
 let dom = null;
 let cellSize = 20;
-let fontSize = 14;
+let fontSize = 12;
 let instances = [];
 let backgroundColor = '#444';
 let addressMap = {};
@@ -23,7 +23,8 @@ class Address {
 const drawArrow = (ax, ay, bx, by) => {
 	ctx.beginPath();
 	ctx.moveTo(ax, ay);
-	ctx.lineTo(bx, by);
+	const midy = (ay*2 + by)/3;
+	ctx.bezierCurveTo(ax, midy, bx, midy, bx, by);
 	ctx.stroke();
 };
 
@@ -36,6 +37,12 @@ class Grid {
 	static calcPosition({ row, col }) {
 		return {
 			x: (col + 2)*cellSize,
+			y: (row + 2)*cellSize,
+		};
+	}
+	static calcPositionCenterTop({ row, col, nRows, nCols }) {
+		return {
+			x: (col + 2 + nCols/2)*cellSize,
 			y: (row + 2)*cellSize,
 		};
 	}
@@ -56,7 +63,7 @@ class Grid {
 			ctx.fillStyle = '#fff';
 			if (content instanceof Address && content.toString() !== 'NULL') {
 				const { target } = content;
-				const { x: x2, y: y2 } = Grid.calcPosition(target);
+				const { x: x2, y: y2 } = Grid.calcPositionCenterTop(target);
 				ctx.lineWidth = fontSize*0.2;
 				ctx.strokeStyle = '#fff';
 				ctx.beginPath();
@@ -92,7 +99,8 @@ class AttributeTemplate {
 	constructor({ row, col, size, color, getValue }) {
 		this.row = row;
 		this.col = col;
-		this.size = size;
+		this.nRows = 1;
+		this.nCols = size;
 		this.color = color;
 		this.getValue = getValue;
 	}
@@ -118,8 +126,8 @@ class StructureTemplate {
 			Grid.drawBlock({
 				row: attribute.row + row,
 				col: attribute.col + col,
-				nRows: 1,
-				nCols: attribute.size,
+				nRows: attribute.nRows,
+				nCols: attribute.nCols,
 				color: attribute.color,
 				content: valueGetter?.(i),
 			});
@@ -136,6 +144,8 @@ class StructureInstance {
 		this.valueGetter = valueGetter;
 		addressMap[address] = this;
 	}
+	get nRows() { return this.template.nRows; }
+	get nCols() { return this.template.nCols; }
 	render() {
 		const { row, col, template, address, valueGetter } = this;
 		template.render({ row, col, valueGetter });
@@ -186,7 +196,21 @@ const treeNodeTemplate = new StructureTemplate()
 		color: '#07f',
 	});
 
-const addNode = ({
+const listNodeTemplate = new StructureTemplate()
+	.add({
+		row: 0,
+		col: 0,
+		size: 3,
+		color: '#a43',
+	})
+	.add({
+		row: 1,
+		col: 0,
+		size: 3,
+		color: '#0bf',
+	});
+
+const addTreeNode = ({
 	row, col, value, left, right, address 
 }) => {
 	const values = [value, left, right];
@@ -199,7 +223,20 @@ const addNode = ({
 	instances.push(instance);
 };
 
-addNode({
+const addListNode = ({
+	row, col, value, next, address 
+}) => {
+	const values = [value, next];
+	const instance = new StructureInstance({
+		row, col,
+		template: listNodeTemplate,
+		address,
+		valueGetter: (i) => values[i],
+	});
+	instances.push(instance);
+};
+
+addTreeNode({
 	row: 0,
 	col: 3,
 	value: 5,
@@ -208,7 +245,7 @@ addNode({
 	address: 1624,
 });
 
-addNode({
+addTreeNode({
 	row: 4,
 	col: 0,
 	value: 2,
@@ -217,11 +254,35 @@ addNode({
 	address: 1024,
 });
 
-addNode({
+addTreeNode({
 	row: 4,
 	col: 8,
 	value: 9,
 	left: new Address(0),
 	right: new Address(0),
 	address: 1402,
+});
+
+addListNode({
+	row: 0,
+	col: 16,
+	address: new Address(2044),
+	value: 1,
+	next: new Address(2004),
+});
+
+addListNode({
+	row: 4,
+	col: 16,
+	address: new Address(2004),
+	value: 5,
+	next: new Address(1288),
+});
+
+addListNode({
+	row: 8,
+	col: 16,
+	address: new Address(1288),
+	value: 5,
+	next: new Address(0),
 });
