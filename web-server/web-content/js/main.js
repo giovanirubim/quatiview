@@ -2,6 +2,7 @@ import * as editor from './editor.js';
 import * as render from './render.js';
 import * as panel from './panel.js';
 import * as terminal from './terminal.js';
+import * as memory from './memory.js';
 
 const loadMemView = () => {
 	const memView = $('#mem-view-section');
