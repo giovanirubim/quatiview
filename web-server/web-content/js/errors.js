@@ -20,3 +20,17 @@ export class UninitializedMemoryAccess extends RuntimeError {
 		this.address = address;
 	}
 }
+
+export class FreeingInvalidAddress extends RuntimeError {
+	constructor(address) {
+		super(`Address ${address} was not allocated`);
+		this.address = address;
+	}
+}
+
+export class FreeingUnallocatedMemory extends RuntimeError {
+	constructor(address) {
+		super(`Address ${address} was not allocated`);
+		this.address = address;
+	}
+}
