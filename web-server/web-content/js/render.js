@@ -256,33 +256,51 @@ addTreeNode({
 
 addTreeNode({
 	row: 4,
-	col: 8,
+	col: 9,
 	value: 9,
-	left: new Address(0),
-	right: new Address(0),
+	left: new Address(1220),
+	right: new Address(1542),
 	address: 1402,
 });
 
-addListNode({
-	row: 0,
-	col: 16,
-	address: new Address(2044),
-	value: 1,
-	next: new Address(2004),
-});
-
-addListNode({
-	row: 4,
-	col: 16,
-	address: new Address(2004),
-	value: 5,
-	next: new Address(1288),
-});
-
-addListNode({
+addTreeNode({
 	row: 8,
-	col: 16,
-	address: new Address(1288),
-	value: 5,
-	next: new Address(0),
+	col: 12,
+	value: 12,
+	left: new Address(0),
+	right: new Address(0),
+	address: 1542,
 });
+
+addTreeNode({
+	row: 8,
+	col: 6,
+	value: 10,
+	left: new Address(0),
+	right: new Address(0),
+	address: 1220,
+});
+	
+// addListNode({
+// 	row: 0,
+// 	col: 16,
+// 	address: new Address(2044),
+// 	value: 1,
+// 	next: new Address(2004),
+// });
+
+// addListNode({
+// 	row: 4,
+// 	col: 16,
+// 	address: new Address(2004),
+// 	value: 5,
+// 	next: new Address(1288),
+// });
+
+// addListNode({
+// 	row: 8,
+// 	col: 16,
+// 	address: new Address(1288),
+// 	value: 5,
+// 	next: new Address(0),
+// });
