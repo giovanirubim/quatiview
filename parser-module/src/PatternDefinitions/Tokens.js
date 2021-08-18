@@ -39,12 +39,12 @@ set.add({
 });
 set.add({
 	name: 'char-constant',
-	pattern: /^'([^'\\]|\\[\x21-\x7e])'/,
+	pattern: /^'([^\n'\\]|\\[\x21-\x7e])'/,
 	headCharset: new Charset("'"),
 });
 set.add({
 	name: 'string-constant',
-	pattern: /^"([^"\\]|\\[\x21-\x7e])*"/,
+	pattern: /^"([^\n"\\]|\\[\x21-\x7e])*"/,
 	headCharset: new Charset('"'),
 });
 
