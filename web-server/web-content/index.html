@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>QuatiView</title>
+		<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+		<script type="text/javascript" src="js/fa.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script type="module" src="js/main.js"></script>
+	</head>
+	<body>
+		<div id="control-panel">
+			<div class="panel-button" title="Upload"><i class="fas fa-file-upload"></i></div>
+			<div class="panel-button" title="Parar"><i class="fas fa-stop-circle"></i></div>
+			<div class="panel-button" title="Iniciar"><i class="fas fa-play-circle"></i></div>
+			<div class="panel-button" title="Pause"><i class="fas fa-pause-circle"></i></div>
+			<div class="panel-button" title="Avançar"><i class="fas fa-chevron-circle-right"></i></div>
+			<div class="panel-button" title="Finalizar"><i class="fas fa-arrow-alt-circle-right"></i></div>
+		</div>
+		<form spellcheck="false">
+			<div id="editor-section">
+				<textarea></textarea>
+			</div>
+		</form>
+		<form spellcheck="false">
+			<div id="terminal-section">
+				<textarea disabled="true"></textarea>
+				<input type="text" id="terminal-input">
+			</div>
+		</form>
+		<div id="mem-view-section">
+			<canvas></canvas>
+		</div>
+	</body>
+</html>
