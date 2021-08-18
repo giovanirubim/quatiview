@@ -1,4 +1,4 @@
-const Token = require('./Token');
+const Token = require('../SyntaticElement/Token');
 
 class TokenSet {
 

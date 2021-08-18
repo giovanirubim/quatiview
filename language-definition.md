@@ -46,5 +46,5 @@ A lista abaixo organiza os operadores da linguagem por precedência:
 - Precedência 8
 	- Ou lógico
 
-- Precedência 8
+- Precedência 9
 	- Atribuição

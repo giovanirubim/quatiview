@@ -1,38 +1,25 @@
-int ::= /\d+/
-char ::= /'([^\s\\]|\x20|\\[^\s])'/
-id ::= /[\d_a-z]\w*/i
-string ::= /"([^"\n\\]|\\(.|\n))*"/
-nil ::= 'NULL'
-constant::= nil | int | char | string | sizeof
-int_type ::= ['unsigned'] signed_type
-signed_type ::= 'int' | 'char'
-ord_cmp ::= '>=' | '<=' | '>' | '<'
-sizeof ::= 'sizeof' '(' (raw_type ('*')* | expr) ')'
-expr ::= expr_a ('||' expr_a)*
-expr_a ::= expr_b ('&&' expr_b)*
-expr_b ::= expr_c (('==' | '!=') expr_c)*
-expr_c ::= expr_d (ord_cmp expr_d)*
-expr_d ::= expr_e (('+' | '-') expr_e)*
-expr_e ::= expr_f (('*' | '/' | '%') expr_f)*
-expr_f ::= fn_call | constant | '(' expr ')' | ['&'] l_val
-fn_call ::= id '(' [expr (',' expr)*] ')'
-l_val ::= (id | ptr_access) (index_access | attr_access)*
-ptr_access ::= '*' (ptr_access | id | '(' expr ')')
-index_access ::= '[' expr ']'
-attr_access ::= ('->' | '.') id
-var_def ::= var_list ';'
-var_list ::= raw_type var_item (',' var_item)*
-struct_def ::= 'struct' id '{' var_def+ '}' ';'
-fn_def ::= raw_type ('*')* id '(' arg_list ')' scope
-arg_item ::= raw_type var_item
-arg_list ::= [arg_item (',' arg_item)*]
-assign ::= l_val '=' expr ';'
-exec_line ::= var_def | expr ';' | while | if | assign
-if ::= 'if' '(' expr ')' scope ['else' scope]
-ord_cmp ::= '>=' | '<=' | '>' | '<'
-scope ::= '{' exec_line* '}'
-raw_type ::= int_type | id
-var_item ::= '*'* id array_size*
-array_size ::= ('[' [expr] ']')
-while ::= 'while' '(' expr ')' scope
-program ::= struct_def | var_def | fn_def
+id ::= /^[a-zA-Z_]\w*/
+float_const::= /^([1-9]\d*|0)\.\d+\b/
+int_const::= /^([1-9]\d*|0)\b/
+char_const ::= /^'([^\n'\\]|\\[\x21-\x7e])'/
+str_const ::= /^"([^\n"\\]|\\[\x21-\x7e])*"/
+const ::= float_const | int_const
+bracked_expr ::= '(' expr ')'
+expr ::= op9
+op9 ::= op8 (('=' | '+=' | '-=' | '*=' | '/=' | '%=') op8)*
+op8 ::= op7 ('||' op7)*
+op7 ::= op6 ('&&' op6)*
+op6 ::= op5 (('==' | '!=') op5)*
+op5 ::= op4 (('>=' | '<=' | '>' | '<') op4)*
+op4 ::= op3 (('+' | '-') op3)*
+op3 ::= op2 (('*' | '/' | '%') op2)*
+op2 ::= ('-' | '*' | '&') op1 | 'sizeof' '(' op1 ')'
+op1 ::= op0 (arg_call | idx_acc | mbr_acc)*
+op0 ::= bracked_expr | id | const
+arg_call ::= '(' [expr (',' expr)*] ')'
+idx_acc ::= '[' expr ']'
+mbr_acc ::= '.' id
+int_type ::= 'char' | 'int'
+struct_type ::= 'struct' id
+void ::= 'void'
+type_name ::= int_type | struct_type | void

@@ -12,9 +12,10 @@ class LexycalError extends CompilationError {
 }
 
 class SyntaticError extends CompilationError {
-	constructor(index) {
+	constructor(index, expected = null) {
 		super('Syntax error at position' + index);
 		this.index = index;
+		this.expected = expected;
 	}
 }
 

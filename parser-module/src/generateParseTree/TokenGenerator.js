@@ -29,7 +29,11 @@ class TokenGenerator {
 			const match = this.loadedNext;
 			this.loadedNext = null;
 			if (!typeNames.includes(match.typeName)) {
-				throw new SyntaticError(match.startsAt);
+				let expected;
+				if (typeNames.length === 1) {
+					expected = typeNames[0];
+				}
+				throw new SyntaticError(match.startsAt, expected);
 			}
 			return match;
 		}
