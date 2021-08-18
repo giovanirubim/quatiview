@@ -1,0 +1,65 @@
+body {
+	-webkit-print-color-adjust: exact;
+	background-color: #383b3e;
+	margin: 0px;
+}
+#main {
+	padding: 50px;
+	background-color: #383b3e;
+}
+div, input[type="text"] {
+	font-family: 'Roboto Mono', monospace;
+	font-size: 14px;
+}
+input[type="text"] {
+	border: none;
+	outline: none;
+	padding: 0px;
+	background-color: #333;
+	width: 100%;
+	color: #fff;
+	margin: 0px;
+}
+div {
+	cursor: default;
+}
+div.error {
+	background-color: #435;
+}
+span.highlight {
+	background-color: #175;
+	border-radius: 5px;
+	color: #fff;
+}
+.undefined {
+	background-color: #711;
+	border-radius: 5px;
+	color: #fbb;
+}
+.id {
+	color: #ccc;
+}
+.string {
+	color: #fe8;
+}
+.desc {
+	color: #69c;
+	font-weight: bold;
+}
+.or {
+	color: #a6b;
+	font-weight: bold;
+}
+.bracket {
+	color: #666;
+	font-weight: bold;
+}
+.optional {
+	color: #0f7;
+}
+.asterisk {
+	color: #f70;
+}
+.regex {
+	color: #7db;
+}
