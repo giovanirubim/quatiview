@@ -17,12 +17,12 @@ class TokenGenerator {
 		}
 		return this.cache = this.pop();
 	}
-	nextIs(typeName) {
+	nextIs(...typeNames) {
 		const next = this.next();
 		if (next === null) {
 			return false;
 		}
-		return next.typeName === typeName;
+		return typeNames.include(next.typeName);
 	}
 	pop(...typeNames) {
 		if (this.cache !== null) {
