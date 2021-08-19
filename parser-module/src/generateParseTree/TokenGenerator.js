@@ -56,6 +56,7 @@ class TokenGenerator {
 		throw new LexycalError(sourceConsumer.getIndex());
 	}
 	throwSyntaticError() {
+		const { sourceConsumer } = this;
 		throw new SyntaticError(sourceConsumer.getIndex());
 	}
 	popIfIs(...typeNames) {
