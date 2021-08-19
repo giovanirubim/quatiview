@@ -1,6 +1,8 @@
+const Token = require('../SyntaticElements/Token');
+
 class ParseTreeNode {
-	constructor({ type, startsAt, endsAt, children, content }) {
-		this.type = type;
+	constructor({ typeName, startsAt, endsAt, children, content }) {
+		this.typeName = typeName;
 		if (children != null) {
 			let startsAt = 0;
 			let endsAt = 0;
@@ -18,6 +20,10 @@ class ParseTreeNode {
 		}
 		this.content = content ?? null;
 		this.length = this.endsAt - this.startsAt;
+	}
+	isToken() {
+		const { content, children } = this;
+		return (typeof content) === 'string' && children === null;
 	}
 }
 
