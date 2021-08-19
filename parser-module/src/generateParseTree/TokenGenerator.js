@@ -5,17 +5,17 @@ const ParseTreeNode = require('../ParseTreeNode');
 class TokenGenerator {
 	constructor({ sourceConsumer }) {
 		this.sourceConsumer = sourceConsumer;
-		this.loadedNext = null;
+		this.cache = null;
 	}
 	next() {
-		if (this.loadedNext !== null) {
-			return this.loadedNext;
+		if (this.cache !== null) {
+			return this.cache;
 		}
 		const { sourceConsumer } = this;
 		if (sourceConsumer.end()) {
 			return null;
 		}
-		return this.loadedNext = this.pop();
+		return this.cache = this.pop();
 	}
 	nextIs(typeName) {
 		const next = this.next();
@@ -25,9 +25,9 @@ class TokenGenerator {
 		return next.typeName === typeName;
 	}
 	pop(...typeNames) {
-		if (this.loadedNext !== null) {
-			const match = this.loadedNext;
-			this.loadedNext = null;
+		if (this.cache !== null) {
+			const match = this.cache;
+			this.cache = null;
 			if (!typeNames.includes(match.typeName)) {
 				let expected;
 				if (typeNames.length === 1) {
