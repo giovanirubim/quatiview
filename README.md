@@ -10,10 +10,10 @@ A ausência de alguns recursos como casting se vê necessária no escopo do dese
 
 A ferramenta é dividida em cinco principais módulos:
 1. Interpretador - Módulo responsável por fazer as análises léxica, sinática e semântica do código. O resultado destas análises é um objeto que permite e controla a execução do programa;
-2. Simulador de memória dinãmica - Implementa os métodos de alocação e liberação de memória, leitura e escrita de bytes de informação e produz as exceções de acesso indevido de memória;
-3. Visualizador de memória;
-4. Painel de controle;
-5. Terminal.
+2. Simulador de memória dinâmica - Implementa os métodos de alocação e liberação de memória, leitura e escrita de bytes de informação e produz as exceções de acesso indevido de memória;
+3. Visualizador de memória - Responsável por gerar uma visualização gráfica para cada bloco de memória alocado para as estruturas pré-definidas;
+4. Painel de controle - Faz a conexão entre os demais módulos e os botões de controle exibidos no painel de controle gráfico;
+5. Terminal - Usado para exibir o resultado das análises realizadas sobre o código fonte e como interface textual de entrada e saída do programa.
 
 ### Interpretador
 
