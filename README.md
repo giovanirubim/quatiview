@@ -26,3 +26,4 @@ A ferramenta é dividida em cinco principais módulos:
 ### Terminal
 
 O é composto por dois elementos HTML principais: Um elemento _textarea_ e um elemento _input_ do tipo _text_. Elementos _textarea_ são caixas de texto que costumam ser utilizados como entrada de texto livre, porém aqui, utilizando a propriedade _disabled_ a edição do conteúdo de texto deste elemento fica desabilitada.
+O elemento _input_ é utilizado
