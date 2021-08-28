@@ -19,6 +19,35 @@ A ferramenta é dividida em cinco principais módulos:
 
 ### Simulador de memória dinâmica
 
+O módulo responsável por simular a memória dinâmica é representado por uma classe chamada _Memory_ e também especifica a classe _Chunk_ e a constante _UNINITIALIZED_BYTE_.
+
+#### Classe _Memory_
+
+Esta classe responsável por realizar alocações, fazer escrita e leitura de _bytes_ e liberar endereços alocados. A classe e possui os seguintes attributos:
+- _firstAddress_: Um valor inteiro que determina o endereço do primeiro byte da memória;
+- _lastAddress_: Um valor inteiro que determina o endereço do último byte da memória;
+- _bytes_: Um objeto utilizado como dicionário de pares de chave e valor, onde a chave é o endereço de memória do byte e o valor é o conteúdo atual daquele byte. Cada byte pode conter um valor inteiro de 0 a 255 ou o valor definido pela constante UNINITIALIZED_BYTE. O valor desta constante é atribuído a todos os bytes de um bloco de memória no instante de sua alocação, criando uma distinção de bytes cujos valores foram escritos pelo programa e bytes cujos valores ainda não foram inicializados;
+- _chunks_: Uma lista dupla encadeada onde cada nó representa um conjunto de bytes consecutivos, ou um _chunk_.
+
+A classe _Memory_ também possui os seguintes métodos:
+- _allocate_: Aloca uma determinada quantidade de bytes e retorna o endereço do bloco alocado;
+- _read_: Retorna o valor de um byte de determinado endereço;
+- _write_: Atribui um valor a um byte em determinado endereço;
+- _free_: Libera o bloco de memória alocado no endereço determinado.
+
+#### Classe _Chunk_
+
+Cada _chunk_ possui os seguintes atributos:
+  - _next_: Próximo nó na lista;
+  - _prev_: Nó anterior na lista;
+  - _allocated_: Atributo booleano que indica se este _chunk_ representa um bloco de alocação ou uma região livre de memória;
+  - _address_: Endereço do primeiro byte deste _chunk_;
+  - _size_: Quantidade de bytes contida no _chunk_.
+
+#### Alocação de memória
+
+A alocação de memória 
+
 ### Visualizador de memória
 
 ### Painel de controle
