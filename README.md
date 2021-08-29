@@ -32,7 +32,6 @@ A classe _Chunk_ contém os seguintes atributos:
 - _size_: Quantidade de _bytes_ contida no _chunk_.
 
 E os seguintes métodos:
-
 - _allocate_: Este método recebe como parâmetro o endereço sendo alocado e a quantidade de _bytes_ que devem ser alocados. Se o endereço sendo alocado é o endereço do _chunk_ e a quantidade de _bytes_ sendo alocados é o tamanho do _chunk_ então a única mudança será a alteração do valor do campo _allocated_ para true. Caso o endereço seja maior que o endereço do _chunk_, sobrará um espaço alocado à esquerda. Neste caso será criado um novo _chunk_ à direita representando o bloco alocado, e no _chunk_ em questão restarão os _bytes_ livres à esquerda da alocação. Caso sobrem _bytes_ à direita, um novo nó a direita do _chunk_ que contém o bloco alocado será criado, este terá como tamanho os _bytes_ não alocados à direita.
 - _free_: Este método altera o valor do campo _allocated_ para falso. Caso haja um nó seguinte na lista representando _bytes_ também não alocados, o tamanho deste nó seguinte será incrementado ao tamanho do nó atual, e o nó seguinte será removido da fila. Caso haja um nó anterior também reprensetnando _bytes_ não alocados, seu tamanho incrementará o tamanho do nó atual e o nó atual será removido da fila.
 - _split_: Este método é apenas auxiliar para o processo de alocação, divide o nó atual em dois, criando um novo nó a direita na lista transferindo para este novo nó uma quantidade determinada de últimos _bytes_ do nó atual.
@@ -44,7 +43,8 @@ Esta classe responsável por realizar alocações, fazer escrita e leitura de _b
 - _firstAddress_: Um valor inteiro que determina o endereço do primeiro byte da memória;
 - _lastAddress_: Um valor inteiro que determina o endereço do último byte da memória;
 - _bytes_: Um objeto utilizado como dicionário de pares de chave e valor, onde a chave é o endereço de memória do byte e o valor é o conteúdo atual daquele byte. Cada byte pode conter um valor inteiro de 0 a 255 ou o valor definido pela constante UNINITIALIZED_BYTE. O valor desta constante é atribuído a todos os _bytes_ de um bloco de memória no instante de sua alocação, criando uma distinção de _bytes_ cujos valores foram escritos pelo programa e _bytes_ cujos valores ainda não foram inicializados;
-- _chunks_: Uma lista dupla encadeada onde cada nó representa um conjunto de _bytes_ consecutivos, ou um _chunk_.
+- _chunks_: Uma lista dupla encadeada onde cada nó representa um conjunto de _bytes_ consecutivos, ou um _chunk_;
+- _validateAddress_: Este método é um método auxiliar que garante a validade de um determinado endereço. Caso o endereço passado por parâmetro esteja fora do intervalo de possíveis endereços uma exceção do tipo _InvalidAddress_ é lançada.
 
 A classe _Memory_ também possui os seguintes métodos:
 - _allocate_: Aloca uma determinada quantidade de _bytes_ e retorna o endereço do bloco alocado;
