@@ -59,15 +59,6 @@ class Chunk {
 		}
 		return this;
 	}
-	toArray() {
-		const array = [{
-			allocated: this.allocated,
-			address: this.address,
-			size: this.size,
-		}];
-		if (this.next) {
-			array.push(...this.next.toArray());
-		}
-		return array;
-	}
 }
+
+module.exports = Chunk;
