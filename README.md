@@ -35,7 +35,8 @@ E os seguintes métodos:
 - _allocate_: Este método recebe como parâmetro o endereço sendo alocado e a quantidade de _bytes_ que devem ser alocados. Se o endereço sendo alocado é o endereço do _chunk_ e a quantidade de _bytes_ sendo alocados é o tamanho do _chunk_ então a única mudança será a alteração do valor do campo _allocated_ para true. Caso o endereço seja maior que o endereço do _chunk_, sobrará um espaço alocado à esquerda. Neste caso será criado um novo _chunk_ à direita representando o bloco alocado, e no _chunk_ em questão restarão os _bytes_ livres à esquerda da alocação. Caso sobrem _bytes_ à direita, um novo nó a direita do _chunk_ que contém o bloco alocado será criado, este terá como tamanho os _bytes_ não alocados à direita.
 - _free_: Este método altera o valor do campo _allocated_ para falso. Caso haja um nó seguinte na lista representando _bytes_ também não alocados, o tamanho deste nó seguinte será incrementado ao tamanho do nó atual, e o nó seguinte será removido da fila. Caso haja um nó anterior também reprensetnando _bytes_ não alocados, seu tamanho incrementará o tamanho do nó atual e o nó atual será removido da fila.
 - _split_: Este método é apenas auxiliar para o processo de alocação, divide o nó atual em dois, criando um novo nó a direita na lista transferindo para este novo nó uma quantidade determinada de últimos _bytes_ do nó atual.
-- merge: Este método é apenas auxiliar para o processo de liberação, une o nó atual e o nó seguinte da fila num único nó.
+- _merge_: Este método é apenas auxiliar para o processo de liberação, une o nó atual e o nó seguinte da fila num único nó;
+- _contains_: Este método verifica se o endereço de um determinado byte está contido neste _chunk_.
 
 #### Classe _Memory_
 
