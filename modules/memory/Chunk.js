@@ -59,6 +59,11 @@ class Chunk {
 		}
 		return this;
 	}
+	contains(address) {
+		const start = this.address;
+		const end = start + this.size;
+		return address >= start && address < end;
+	}
 }
 
 module.exports = Chunk;
