@@ -17,6 +17,12 @@ A ferramenta é dividida em cinco principais módulos:
 
 ### Interpretador
 
+#### Análise sintática
+
+#### Classe _Token_
+
+#### Classe _SourceConsumer_
+
 ### Simulador de memória dinâmica
 
 O módulo responsável por simular a memória dinâmica é representado por uma classe chamada _Memory_ e também especifica a classe _Chunk_ e a constante _UNINITIALIZED_BYTE_.
@@ -28,7 +34,8 @@ A classe _Chunk_ contém os seguintes atributos:
 - _next_: Próximo nó na lista;
 - _prev_: Nó anterior na lista;
 - _allocated_: Atributo booleano que indica se este _chunk_ representa um bloco de alocação ou uma região livre de memória;
-- _address_: Endereço do primeiro byte deste _chunk_;
+- _address_: Endereço do primeiro
+ deste _chunk_;
 - _size_: Quantidade de _bytes_ contida no _chunk_.
 
 E os seguintes métodos:
@@ -36,21 +43,21 @@ E os seguintes métodos:
 - _free_: Este método altera o valor do campo _allocated_ para falso. Caso haja um nó seguinte na lista representando _bytes_ também não alocados, o tamanho deste nó seguinte será incrementado ao tamanho do nó atual, e o nó seguinte será removido da fila. Caso haja um nó anterior também reprensetnando _bytes_ não alocados, seu tamanho incrementará o tamanho do nó atual e o nó atual será removido da fila.
 - _split_: Este método é apenas auxiliar para o processo de alocação, divide o nó atual em dois, criando um novo nó a direita na lista transferindo para este novo nó uma quantidade determinada de últimos _bytes_ do nó atual.
 - _merge_: Este método é apenas auxiliar para o processo de liberação, une o nó atual e o nó seguinte da fila num único nó;
-- _contains_: Este método verifica se o endereço de um determinado byte está contido neste _chunk_.
+- _contains_: Este método verifica se o endereço de um determinado _byte_ está contido neste _chunk_.
 
 #### Classe _Memory_
 
 Esta classe responsável por realizar alocações, fazer escrita e leitura de _bytes_ e liberar endereços alocados. A classe e possui os seguintes attributos:
-- _firstAddress_: Um valor inteiro que determina o endereço do primeiro byte da memória;
-- _lastAddress_: Um valor inteiro que determina o endereço do último byte da memória;
-- _bytes_: Um objeto utilizado como dicionário de pares de chave e valor, onde a chave é o endereço de memória do byte e o valor é o conteúdo atual daquele byte. Cada byte pode conter um valor inteiro de 0 a 255 ou o valor definido pela constante UNINITIALIZED_BYTE. O valor desta constante é atribuído a todos os _bytes_ de um bloco de memória no instante de sua alocação, criando uma distinção de _bytes_ cujos valores foram escritos pelo programa e _bytes_ cujos valores ainda não foram inicializados;
+- _firstAddress_: Um valor inteiro que determina o endereço do primeiro _byte_ da memória;
+- _lastAddress_: Um valor inteiro que determina o endereço do último _byte_ da memória;
+- _bytes_: Um objeto utilizado como dicionário de pares de chave e valor, onde a chave é o endereço de memória do _byte_ e o valor é o conteúdo atual daquele _byte_. Cada _byte_ pode conter um valor inteiro de 0 a 255 ou o valor definido pela constante UNINITIALIZED_BYTE. O valor desta constante é atribuído a todos os _bytes_ de um bloco de memória no instante de sua alocação, criando uma distinção de _bytes_ cujos valores foram escritos pelo programa e _bytes_ cujos valores ainda não foram inicializados;
 - _chunks_: Uma lista dupla encadeada onde cada nó representa um conjunto de _bytes_ consecutivos, ou um _chunk_;
 - _validateAddress_: Este método é um método auxiliar que garante a validade de um determinado endereço. Caso o endereço passado por parâmetro esteja fora do intervalo de possíveis endereços uma exceção do tipo _InvalidAddress_ é lançada.
 
 A classe _Memory_ também possui os seguintes métodos:
 - _allocate_: Aloca uma determinada quantidade de _bytes_ e retorna o endereço do bloco alocado;
-- _read_: Retorna o valor de um byte de determinado endereço;
-- _write_: Atribui um valor a um byte em determinado endereço;
+- _read_: Retorna o valor de um _byte_ de determinado endereço;
+- _write_: Atribui um valor a um _byte_ em determinado endereço;
 - _free_: Libera o bloco de memória alocado no endereço determinado.
 
 ### Visualizador de memória
@@ -58,6 +65,13 @@ A classe _Memory_ também possui os seguintes métodos:
 ### Painel de controle
 
 ### Terminal
+
+O módulo de terminal implementa uma classe _Terminal_ que faz a conexão entre os elementos HTML da página que compõem o terminal gráfico e os comandos de entrada e saída do programa.
+A classe mantém uma fila de _bytes_ que funciona como um _buffer_ do problema produtor-consumidor onde o produtor é o usuário e o consumidor é o programa. _Bytes_ enviados do programa para o terminal não são enfileirados pois são dispostos instantaneamente.
+A classe _Terminal_ possui os seguintes atributos:
+- _buffer_: Um vetor de _bytes_ utilizado como uma fila, os _bytes_ de entrada inseridos pelo usuário são enfileirados neste vetor, o comandos de leitura de dados consomem _bytes_ desta fila;
+- _textarea_: Referencia o elemento HTML utilizado como saída do terminal;
+- _input_: Referencia o elemento HTML utilizado como entrada do terminal;
 
 O terminal é composto por dois elementos HTML principais: Um elemento _textarea_ e um elemento _input_ do tipo _text_. Elementos _textarea_ são caixas de texto que costumam ser utilizados como entrada de texto livre, porém aqui, utilizando a propriedade _disabled_ a edição do conteúdo de texto deste elemento fica desabilitada.
 O elemento _input_ é utilizado
