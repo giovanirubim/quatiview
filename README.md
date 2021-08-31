@@ -68,10 +68,19 @@ A classe _Memory_ também possui os seguintes métodos:
 
 O módulo de terminal implementa uma classe _Terminal_ que faz a conexão entre os elementos HTML da página que compõem o terminal gráfico e os comandos de entrada e saída do programa.
 A classe mantém uma fila de _bytes_ que funciona como um _buffer_ do problema produtor-consumidor onde o produtor é o usuário e o consumidor é o programa. _Bytes_ enviados do programa para o terminal não são enfileirados pois são dispostos instantaneamente.
+Inicialmente o terminal possui sua entrada de dados bloqueada, esta fica livre quando o programa faz requisição de dados para o usuário como por meio do método _getchar()_. Com a entrada de dados liberada o usuário do programa pode então inserir algum texto na caixa de texto destinada à entrada e pressionar enter, que enviará para o _buffer_ os novos caracteres inseridos pelo usuário e bloqueará novamente a entrada, até que uma nova requisição de entrada aconteça. 
+
 A classe _Terminal_ possui os seguintes atributos:
 - _buffer_: Um vetor de _bytes_ utilizado como uma fila, os _bytes_ de entrada inseridos pelo usuário são enfileirados neste vetor, o comandos de leitura de dados consomem _bytes_ desta fila;
 - _textarea_: Referencia o elemento HTML utilizado como saída do terminal;
 - _input_: Referencia o elemento HTML utilizado como entrada do terminal;
+
+E os seguintes métodos:
+- _enable_: Habilita a entrada de dados no terminal, ocorre quando o programa requisita entrada de dados e o _buffer_ está vazio;
+- _disable_: Desabilita a entrada de dados no terminal, ocorre sempre que o usuário envia dados de entrada para o terminal;
+- _putchar_: Adiciona um caractere no texto de saída do terminal;
+- _getchar_: Permite a entrada de dados que serão enviados para o _buffer_ de _bytes_;
+- _writeln_: Adiciona uma _string_ e em seguida uma quebra de linha no texto de saída do terminal;
 
 O terminal é composto por dois elementos HTML principais: Um elemento _textarea_ e um elemento _input_ do tipo _text_. Elementos _textarea_ são caixas de texto que costumam ser utilizados como entrada de texto livre, porém aqui, utilizando a propriedade _disabled_ a edição do conteúdo de texto deste elemento fica desabilitada.
 O elemento _input_ é utilizado
