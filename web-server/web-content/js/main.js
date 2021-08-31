@@ -1,8 +1,8 @@
 import * as editor from './editor.js';
 import * as render from './render.js';
 import * as panel from './panel.js';
-import * as terminal from './terminal.js';
 import * as memory from './memory.js';
+import Terminal from './Terminal.js';
 
 const loadMemView = () => {
 	const memView = $('#mem-view-section');
@@ -22,9 +22,12 @@ $(document).ready(() => {
 	editor.focus();
 	loadMemView();
 	render.start();
-	terminal.load();
-	terminal.write('((-,2,-),5,(-,9,-))\n');
-	terminal.write('Program exited with code 0');
+	const terminal = new Terminal({
+		textarea: $('#terminal-section textarea'),
+		input: $('#terminal-input'),
+	});
 	panel.load();
 	panel.onupload((source) => editor.setText(source));
+	window.terminal = terminal;
+	$('form').on('submit', (e) => e.preventDefault());
 });
