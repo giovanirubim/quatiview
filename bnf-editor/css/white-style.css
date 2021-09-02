@@ -1,0 +1,28 @@
+body {
+	-webkit-print-color-adjust: exact;
+	background-color: #fff;
+	margin: 0px;
+}
+#main {
+	padding: 50px;
+	background-color: #fff;
+}
+div, input[type="text"] {
+	font-family: 'Roboto Mono', monospace;
+	font-size: 14px;
+}
+input[type="text"] {
+	border: none;
+	outline: none;
+	padding: 0px;
+	background-color: #333;
+	width: 100%;
+	color: #fff;
+	margin: 0px;
+}
+div {
+	cursor: default;
+}
+.string {
+	font-weight: bold;
+}
