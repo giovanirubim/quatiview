@@ -1,12 +1,9 @@
 id ::= /^[a-zA-Z_]\w*/
-float_const::= /^([1-9]\d*|0)\.\d+\b/
 int_const::= /^([1-9]\d*|0)\b/
 char_const ::= /^'([^\n'\\]|\\[\x21-\x7e])'/
-str_const ::= /^"([^\n"\\]|\\[\x21-\x7e])*"/
-const ::= float_const | int_const
-bracked_expr ::= '(' expr ')'
-expr ::= op9
-op9 ::= op8 (('=' | '+=' | '-=' | '*=' | '/=' | '%=') op8)*
+str_const ::= /^"([^\n"\\]|\\[\\n"])*"/
+const ::= int_const | str_const
+expr ::= op8 (('=') op8)*
 op8 ::= op7 ('||' op7)*
 op7 ::= op6 ('&&' op6)*
 op6 ::= op5 (('==' | '!=') op5)*
@@ -14,12 +11,25 @@ op5 ::= op4 (('>=' | '<=' | '>' | '<') op4)*
 op4 ::= op3 (('+' | '-') op3)*
 op3 ::= op2 (('*' | '/' | '%') op2)*
 op2 ::= ('-' | '*' | '&') op1 | 'sizeof' '(' op1 ')'
-op1 ::= op0 (arg_call | idx_acc | mbr_acc)*
-op0 ::= bracked_expr | id | const
+op1 ::= op0 (arg_call | index_acc | member_acc)*
+op0 ::= '(' expr ')' | id | const
 arg_call ::= '(' [expr (',' expr)*] ')'
-idx_acc ::= '[' expr ']'
-mbr_acc ::= '.' id
 int_type ::= 'char' | 'int'
 struct_type ::= 'struct' id
-void ::= 'void'
-type_name ::= int_type | struct_type | void
+void_type ::= 'void'
+index_acc ::= '[' expr ']'
+member_acc ::= '.' id
+type ::= int_type | struct_type | void_type
+var_dec ::= type (var_item (',' var_item)*)+ ';'
+var_item ::= '*'* id ['[' int_const ']']
+struct_dec ::= struct_type '{' (var_dec ';')+ '}' ';'
+fun_dec ::= type '*'* id '(' [arg_list] ')' scope
+arg_list ::= arg_item (',' arg_item)*
+arg_item ::= type '*'* id ['[' ']']
+scope ::= '{' local_line* '}'
+local_line ::= expr + ';' | var_dec | while | for | if
+global_line ::= fun_dec | var_dec | struct_dec
+if ::= 'if' '(' expr ')' scope ['else' scope]
+while ::= 'while' '(' expr ')' scope
+for ::= 'for' '(' [expr] ';' [expr] ';' [expr] ')' scope
+program ::= global_line*
