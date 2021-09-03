@@ -27,6 +27,7 @@ $(document).ready(() => {
 	});
 	Panel.load();
 	Panel.onupload((source) => Editor.setText(source));
-	window.terminal = terminal;
 	$('form').on('submit', (e) => e.preventDefault());
+	terminal.writeln('((-,2,-),5,((-,9,-),10,(-,12,-)))');
+	terminal.writeln('Program exited with code 0');
 });

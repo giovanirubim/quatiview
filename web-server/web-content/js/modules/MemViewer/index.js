@@ -6,7 +6,10 @@ let cellSize = 20;
 let fontSize = 12;
 let instances = [];
 let backgroundColor = '#444';
+let backgroundBlockColor = '#000';
 let addressMap = {};
+let margin = 2;
+let spacing = 1;
 
 class Address {
 	constructor(value) {
@@ -29,9 +32,14 @@ const drawArrow = (ax, ay, bx, by) => {
 };
 
 class Grid {
-	static fillArea({ x, y, width, height, color }) {
+	static fillAttribute({ x, y, width, height, color }) {
 		ctx.fillStyle = color;
-		ctx.fillRect(x, y, width, height);
+		ctx.fillRect(x, y, width - spacing, height - spacing);
+		return this;
+	}
+	static fillBlock({ x, y, width, height, color }) {
+		ctx.fillStyle = color;
+		ctx.fillRect(x - margin, y - margin, width + margin*2 - spacing, height + margin*2 - spacing);
 		return this;
 	}
 	static calcPosition({ row, col }) {
@@ -54,9 +62,13 @@ class Grid {
 			height: nRows*cellSize,
 		};
 	}
-	static drawBlock({ row, col, nRows, nCols, color, content }) {
+	static drawBlock({ row, col, nRows, nCols }) {
 		const area = this.calcArea({ row, col, nRows, nCols });
-		this.fillArea({ ...area, color });
+		this.fillBlock({ ...area, color: backgroundBlockColor });
+	}
+	static drawAttribute({ row, col, nRows, nCols, color, content }) {
+		const area = this.calcArea({ row, col, nRows, nCols });
+		this.fillAttribute({ ...area, color });
 		if (content != null) {
 			const x = area.x + area.width/2;
 			const y = area.y + area.height/2;
@@ -81,7 +93,7 @@ class Grid {
 	}
 	static writeAboveLeft({ row, col, text }) {
 		const { x, y } = this.calcPosition({ row, col });
-		ctx.fillStyle = '#ccc';
+		ctx.fillStyle = '#fff';
 		ctx.textAlign = 'left';
 		ctx.textBaseline = 'bottom';
 		ctx.font = fontSize + 'px monospace';
@@ -120,10 +132,16 @@ class StructureTemplate {
 	}
 	render({ row, col, valueGetter }) {
 		const { attributes } = this;
+		Grid.drawBlock({
+			row,
+			col,
+			nRows: this.nRows,
+			nCols: this.nCols,
+		});
 		const { length } = attributes;
 		for (let i=0; i<length; ++i) {
 			const attribute = attributes[i];
-			Grid.drawBlock({
+			Grid.drawAttribute({
 				row: attribute.row + row,
 				col: attribute.col + col,
 				nRows: attribute.nRows,
@@ -181,19 +199,19 @@ const treeNodeTemplate = new StructureTemplate()
 		row: 0,
 		col: 0,
 		size: 4,
-		color: '#a43',
+		color: '#833',
 	})
 	.add({
 		row: 1,
 		col: 0,
 		size: 2,
-		color: '#0bf',
+		color: '#159',
 	})
 	.add({
 		row: 1,
 		col: 2,
 		size: 2,
-		color: '#07f',
+		color: '#159',
 	});
 
 const listNodeTemplate = new StructureTemplate()
@@ -213,6 +231,8 @@ const listNodeTemplate = new StructureTemplate()
 const addTreeNode = ({
 	row, col, value, left, right, address 
 }) => {
+	row += 3;
+	col += 5;
 	const values = [value, left, right];
 	const instance = new StructureInstance({
 		row, col,
@@ -257,7 +277,7 @@ addTreeNode({
 addTreeNode({
 	row: 4,
 	col: 9,
-	value: 9,
+	value: 10,
 	left: new Address(1220),
 	right: new Address(1542),
 	address: 1402,
@@ -275,7 +295,7 @@ addTreeNode({
 addTreeNode({
 	row: 8,
 	col: 6,
-	value: 10,
+	value: 9,
 	left: new Address(0),
 	right: new Address(0),
 	address: 1220,
