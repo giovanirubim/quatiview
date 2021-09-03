@@ -1,5 +1,3 @@
-const Token = require('../SyntaticElements/Token');
-
 class ParseTreeNode {
 	constructor({ typeName, startsAt, endsAt, children, content }) {
 		this.typeName = typeName;
