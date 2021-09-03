@@ -5,6 +5,7 @@ class TokenGenerator {
 	constructor({ sourceConsumer, tokenSet }) {
 		this.sourceConsumer = sourceConsumer;
 		this.cache = null;
+		this.tokenSet = tokenSet;
 	}
 	next() {
 		if (this.cache !== null) {
@@ -39,7 +40,7 @@ class TokenGenerator {
 		const { sourceConsumer } = this;
 		const startsAt = sourceConsumer.getIndex();
 		const nextChar = sourceConsumer.nextChar();
-		const tokens = tokenSet.getByHeadChar(nextChar);
+		const tokens = this.tokenSet.getByHeadChar(nextChar);
 		for (let token of tokens) {
 			const match = sourceConsumer.next(token.pattern);
 			if (match !== null) {
