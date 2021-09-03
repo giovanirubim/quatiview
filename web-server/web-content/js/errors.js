@@ -1,36 +1,45 @@
-export class RuntimeError extends Error {}
+class RuntimeError extends Error {}
 
-export class InvalidAddressAccess extends RuntimeError {
-	constructor(address) {
-		super(`Address ${address} is invalid`);
+class MemoryError extends RuntimeError {
+	constructor(address, message) {
+		super(message);
 		this.address = address;
 	}
 }
 
-export class UnallocatedMemoryAccess extends RuntimeError {
+class InvalidAddress extends MemoryError {
 	constructor(address) {
-		super(`Address ${address} was not allocated`);
-		this.address = address;
+		super(address, `Invalid address ${address}`);
 	}
 }
 
-export class UninitializedMemoryAccess extends RuntimeError {
+class UnallocatedMemoryAccess extends MemoryError {
 	constructor(address) {
-		super(`Address ${address} was not initialized`);
-		this.address = address;
+		super(address, `Unallocated memory access *(${address})`);
 	}
 }
 
-export class FreeingInvalidAddress extends RuntimeError {
+class UninitializedMemoryAccess extends MemoryError {
 	constructor(address) {
-		super(`Address ${address} was not allocated`);
-		this.address = address;
+		super(address, `Uninitialized memory access *(${address})`);
 	}
 }
 
-export class FreeingUnallocatedMemory extends RuntimeError {
+class FreeingUnallocatedMemory extends MemoryError {
 	constructor(address) {
-		super(`Address ${address} was not allocated`);
-		this.address = address;
+		super(address, `The address ${address} was not allocated`);
 	}
 }
+
+class FreeingANonAllocationAddress extends MemoryError {
+	constructor(address) {
+		super(address, `The address ${address} is not an address of an allocation block`);
+	}
+}
+
+module.exports.RuntimeError = RuntimeError;
+module.exports.MemoryError = MemoryError;
+module.exports.InvalidAddress = InvalidAddress;
+module.exports.UninitializedMemoryAccess = UninitializedMemoryAccess;
+module.exports.FreeingUnallocatedMemory = FreeingUnallocatedMemory;
+module.exports.FreeingANonAllocationAddress = FreeingANonAllocationAddress;

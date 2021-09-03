@@ -1,33 +1,32 @@
-import * as editor from './editor.js';
-import * as render from './render.js';
-import * as panel from './panel.js';
-import * as memory from './memory.js';
-import Terminal from './Terminal.js';
+import * as Editor from './modules/Editor';
+import * as MemViewer from './modules/MemViewer';
+import * as Panel from './modules/Panel';
+import Terminal from './modules/Terminal';
 
 const loadMemView = () => {
-	const memView = $('#mem-view-section');
+	const wrappingElement = $('#mem-view-section');
 	const updateSize = () => {
-		render.resize({
-			width: parseInt(memView.css('width')),
-			height: parseInt(memView.css('height')),
+		MemViewer.resize({
+			width: parseInt(wrappingElement.css('width')),
+			height: parseInt(wrappingElement.css('height')),
 		});
 	};
-	render.setCanvas($('canvas')[0]);
+	MemViewer.setCanvas($('canvas')[0]);
 	$(window).bind('resize', updateSize);
 	updateSize();
 };
 
 $(document).ready(() => {
-	editor.load();
-	editor.focus();
+	Editor.load();
+	Editor.focus();
 	loadMemView();
-	render.start();
+	MemViewer.start();
 	const terminal = new Terminal({
 		textarea: $('#terminal-section textarea'),
 		input: $('#terminal-input'),
 	});
-	panel.load();
-	panel.onupload((source) => editor.setText(source));
+	Panel.load();
+	Panel.onupload((source) => Editor.setText(source));
 	window.terminal = terminal;
 	$('form').on('submit', (e) => e.preventDefault());
 });

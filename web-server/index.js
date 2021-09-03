@@ -10,10 +10,29 @@ const mimeMap = {
 const getMime = (path) => mimeMap[path.replace(/.*\.(\w+)/, '$1')];
 http.createServer((req, res) => {
 	let urlpath = req.url
-		.replace(/[?#].*$/, '')
-		.replace(/\/$/, '/index.html');
+		.replace(/[?#].*$/, '');
 	try {
+		if (urlpath.endsWith('/')) {
+			const jspathname = path.join(__dirname, 'web-content', urlpath, 'index.js');
+			if (fs.existsSync(jspathname)) {
+				urlpath += 'index.js';
+			} else {
+				urlpath += 'index.html';
+			}
+		}
 		const pathname = path.join(__dirname, 'web-content', urlpath);
+		if (!fs.existsSync(pathname)) {
+			res.writeHead(404);
+			res.end();
+			return;
+		}
+		if (fs.lstatSync(pathname).isDirectory()) {
+			res.writeHead(301, {
+				'location': urlpath + '/',
+			});
+			res.end();
+			return;
+		}
 		const buffer = fs.readFileSync(pathname);
 		res.writeHead(200, {
 			'content-type': getMime(urlpath) ?? 'application/octet-stream',
@@ -22,7 +41,7 @@ http.createServer((req, res) => {
 		res.write(buffer);
 		res.end();
 	} catch(err) {
-		res.writeHead(404);
+		res.writeHead(500);
 		res.end();
 	}
 }).listen(80, '0.0.0.0', () => {
