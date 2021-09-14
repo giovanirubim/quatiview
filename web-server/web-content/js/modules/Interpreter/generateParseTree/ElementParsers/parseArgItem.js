@@ -3,9 +3,7 @@ import zeroToMany from './zeroToMany.js';
 
 import parseType from './parseType.js';
 
-const parseAsterisk = (tokenGenerator) => {
-    return tokenGenerator.pop('asterisk');
-};
+const parseAsterisk = (tokenGenerator) => tokenGenerator.pop('asterisk');
 
 export default (tokenGenerator) => {
     const type = parseType(tokenGenerator);
