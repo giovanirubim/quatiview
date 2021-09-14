@@ -38,6 +38,9 @@ export default class TokenGenerator {
 	}
 	pop(...typeNames) {
 		const expected = typeNames.length === 1 ? typeNames[0] : null;
+		if (this.sourceConsumer.end()) {
+			this.throwSyntaticError(expected);
+		}
 		const node = this.popAny();
 		if (!typeNames.includes(node.typeName)) {
 			throw new SyntaticError(node.startsAt, expected);

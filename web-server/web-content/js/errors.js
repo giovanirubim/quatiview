@@ -6,9 +6,10 @@ export class LexycalError extends CompilationError {
 	}
 }
 export class SyntaticError extends CompilationError {
-	constructor(index) {
+	constructor(index, expected) {
 		super('Syntatic error at ' + index);
 		this.index = index;
+		this.expected = expected;
 	}
 }
 
