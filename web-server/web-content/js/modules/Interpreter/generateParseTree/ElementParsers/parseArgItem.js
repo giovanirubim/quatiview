@@ -18,7 +18,7 @@ export default (tokenGenerator) => {
         );
     }
 	return new ParseTreeNode({
-		typeName: 'arg_item',
+		typeName: 'arg-item',
         children,
         content: {
             name: id.content,
