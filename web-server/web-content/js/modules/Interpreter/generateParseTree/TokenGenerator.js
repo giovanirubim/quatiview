@@ -67,6 +67,19 @@ export default class TokenGenerator {
 		}
 		return null;
 	}
+	getState() {
+		const consumerState = this.sourceConsumer.getState();
+		const { cache } = this;
+		return {
+			consumerState,
+			cache,
+		};
+	}
+	setState({ consumerState, cache }) {
+		this.sourceConsumer.setState(consumerState);
+		this.cache = cache;
+		return this;
+	}
 	all() {
 		const res = [];
 		while (this.next() !== null) {

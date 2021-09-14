@@ -19,7 +19,10 @@ export default class SourceConsumer {
 	getIndex() {
 		return this.sourceCode.length - this.remainig.length;
 	}
-	setIndex(index) {
+	getState() {
+		return this.getIndex();
+	}
+	setState(index) {
 		this.remainig = this.sourceCode.substr(index);
 		return this;
 	}
