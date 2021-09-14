@@ -1,13 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void puts(char* s) {
+void printStrLn(char* s) {
 	if (*s == '\0') {
 		putchar('\n');
 	} else {
 		putchar(*s);
-		puts(s + 1);
+		printStrLn(s + 1);
 	}
+}
+
+void printInt(int x) {
+	if (x >= 10) {
+		printInt(x/10);
+	}
+	putchar(x%10 + '0');
 }
 
 struct Node {
@@ -55,23 +62,30 @@ int contains(struct Node* node, int info) {
 
 void printTree(struct Node* node) {
 	if (!node) {
-		printf("-");
+		putchar('-');
 		return;
 	}
-	printf("(");
+	putchar('(');
 	printTree((*node).l);
-	printf(",");
-	printf("%d", (*node).info);
-	printf(",");
+	putchar(',');
+	printInt((*node).info);
+	putchar(',');
 	printTree((*node).r);
-	printf(")");
+	putchar(')');
+}
+
+void printTreeLn(struct Node* node) {
+	printTree(node);
+	putchar('\n');
 }
 
 int main() {
 	struct Node* tree = NULL;
 	tree = add(tree, 5);
 	tree = add(tree, 2);
+	tree = add(tree, 10);
 	tree = add(tree, 9);
-	puts("Imprimindo arvore:");
-	printTree(tree);
+	tree = add(tree, 12);
+	printStrLn("Imprimindo arvore:");
+	printTreeLn(tree);
 }
