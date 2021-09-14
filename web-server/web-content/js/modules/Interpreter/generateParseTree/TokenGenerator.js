@@ -38,7 +38,7 @@ export default class TokenGenerator {
 	}
 	pop(...typeNames) {
 		const expected = typeNames.length === 1 ? typeNames[0] : null;
-		if (this.sourceConsumer.end()) {
+		if (!this.cache && this.sourceConsumer.end()) {
 			this.throwSyntaticError(expected);
 		}
 		const node = this.popAny();
