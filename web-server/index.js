@@ -7,6 +7,7 @@ const mimeMap = {
 	'html': 'text/html',
 	'jpeg': 'image/jpeg', 'jpg': 'image/jpeg', 'png': 'image/png',
 };
+const port = process.env.PORT || 80;
 const getMime = (path) => mimeMap[path.replace(/.*\.(\w+)/, '$1')];
 http.createServer((req, res) => {
 	let urlpath = req.url
@@ -44,6 +45,6 @@ http.createServer((req, res) => {
 		res.writeHead(500);
 		res.end();
 	}
-}).listen(80, '0.0.0.0', () => {
-	console.log('Server started');
+}).listen(port, '0.0.0.0', () => {
+	console.log(`Server started: http://localhost:${port}`);
 });
