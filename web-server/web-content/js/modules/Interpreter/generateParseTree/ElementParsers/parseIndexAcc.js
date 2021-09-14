@@ -1,5 +1,5 @@
 import ParseTreeNode from '../ParseTreeNode.js';
-import parseExpr from '../parseExpr.js';
+import parseExpr from './parseExpr.js';
 
 export default (tokenGenerator) => {
 	const children = [
@@ -10,6 +10,6 @@ export default (tokenGenerator) => {
 	return new ParseTreeNode({
 		typeName: 'index-acc',
         content: children[1],
-		children: [],
+		children,
 	});
 };
