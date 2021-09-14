@@ -1,9 +1,3 @@
-const SyntaticMatch = require('../ParseTreeNode');
-const { CONSTANT } = require('../../PatternDefinitions/NonTerminals');
+import ParseTreeNode from '../ParseTreeNode.js';
 
-module.exports = (tokenGenerator) => new ParseTreeNode({
-	type: CONSTANT,
-	children: [
-		tokenGenerator.pop('NULL', 'integer-constant'),
-	],
-});
+const 

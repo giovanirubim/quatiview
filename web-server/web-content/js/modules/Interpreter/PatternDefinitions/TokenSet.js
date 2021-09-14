@@ -53,23 +53,23 @@ const reservedWords = [
 reservedWords.forEach((word) => set.add(word));
 
 // Constants
+// set.add({
+// 	name: 'decimal-const',
+// 	pattern: /^([1-9]\d*|0)\.\d+\b/,
+// 	headCharset: new Charset('0-9'),
+// });
 set.add({
-	name: 'decimal-constant',
-	pattern: /^([1-9]\d*|0)\.\d+\b/,
-	headCharset: new Charset('0-9'),
-});
-set.add({
-	name: 'integer-constant',
+	name: 'int-const',
 	pattern: /^([1-9]\d*|0)\b/,
 	headCharset: new Charset('0-9'),
 });
 set.add({
-	name: 'char-constant',
+	name: 'char-const',
 	pattern: /^'([^\n'\\]|\\[\x21-\x7e])'/,
 	headCharset: new Charset("'"),
 });
 set.add({
-	name: 'string-constant',
+	name: 'str-const',
 	pattern: /^"([^\n"\\]|\\[\x21-\x7e])*"/,
 	headCharset: new Charset('"'),
 });
