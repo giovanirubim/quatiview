@@ -47,6 +47,13 @@ export default class TokenGenerator {
 		}
 		return node;
 	}
+	popMany(typeName) {
+		const result = [];
+		while (this.next()?.typeName === typeName) {
+			result.push(this.popAny());
+		}
+		return result;
+	}
 	next() {
 		const { cache, sourceConsumer } = this;
 		if (cache !== null) {
