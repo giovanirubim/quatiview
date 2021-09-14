@@ -1,3 +1,8 @@
 import ParseTreeNode from '../ParseTreeNode.js';
 
-const 
+export default (tokenGenerator) => new ParseTreeNode({
+	typeName: 'const',
+	children: [
+		tokenGenerator.pop('int-const', 'char-const', 'str-const'),
+	],
+});

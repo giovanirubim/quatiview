@@ -1,5 +1,5 @@
-const Token = require('../SyntaticElement/Token');
-const Charset = require('../Charset');
+import Token from '../SyntaticElements/Token.js';
+import Charset from '../Support/Charset.js';
 
 class TokenSet {
 
@@ -23,7 +23,7 @@ class TokenSet {
 	
 	// Returns the group of tokens that can start with the given char
 	getByHeadChar(char) {
-		return byHeadMap[char];
+		return this.byHeadMap[char] ?? [];
 	}
 }
 
@@ -110,4 +110,4 @@ set.add({
 	headCharset: new Charset('a-z;A-Z;_'),
 });
 
-module.exports = set;
+export default set;

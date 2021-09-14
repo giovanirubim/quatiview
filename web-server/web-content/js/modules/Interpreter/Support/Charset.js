@@ -1,4 +1,4 @@
-class Charset {
+export default class Charset {
 	constructor(pattern) {
 		this.map = new Array(256).fill(false);
 		if (pattern) {
@@ -34,5 +34,3 @@ class Charset {
 			.map((byte) => String.fromCharCode(byte));
 	}
 }
-
-module.exports = Charset;

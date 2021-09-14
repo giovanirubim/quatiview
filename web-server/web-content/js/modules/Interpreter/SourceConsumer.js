@@ -1,6 +1,6 @@
 const skipableCode = /^(\s+|\/\/[^\n]*|\/\*([^*]|\*[^\/])*\*\/|\/\*\*\*\/)+/;
 
-class SourceConsumer {
+export default class SourceConsumer {
 	constructor(sourceCode) {
 		this.sourceCode = sourceCode;
 		this.remainig = sourceCode;
@@ -40,5 +40,3 @@ class SourceConsumer {
 		return this.remainig === '';
 	}
 }
-
-module.exports = SourceConsumer;

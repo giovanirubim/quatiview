@@ -1,9 +1,9 @@
-class ParseTreeNode {
+export default class ParseTreeNode {
 	constructor({ typeName, startsAt, endsAt, children, content }) {
 		this.typeName = typeName;
 		if (children != null) {
-			let startsAt = 0;
-			let endsAt = 0;
+			let startsAt = Infinity;
+			let endsAt = -Infinity;
 			for (let child of children) {
 				startsAt = Math.min(startsAt, child.startsAt);
 				endsAt = Math.max(endsAt, child.endsAt);
@@ -24,5 +24,3 @@ class ParseTreeNode {
 		return (typeof content) === 'string' && children === null;
 	}
 }
-
-module.exports = ParseTreeNode;

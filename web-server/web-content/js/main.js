@@ -2,6 +2,9 @@ import * as Editor from './modules/Editor';
 import * as MemViewer from './modules/MemViewer';
 import * as Panel from './modules/Panel';
 import Terminal from './modules/Terminal';
+import Interpreter from './modules/Interpreter';
+
+window.Interpreter = Interpreter;
 
 const loadMemView = () => {
 	const wrappingElement = $('#mem-view-section');

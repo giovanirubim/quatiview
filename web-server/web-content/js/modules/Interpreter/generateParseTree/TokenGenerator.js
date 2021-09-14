@@ -1,80 +1,77 @@
-const { LexycalError, SyntaticError } = require('../Errors');
-const ParseTreeNode = require('../ParseTreeNode');
+import { LexycalError, SyntaticError } from '../../../errors.js';
+import ParseTreeNode from './ParseTreeNode.js';
 
-class TokenGenerator {
+export default class TokenGenerator {
 	constructor({ sourceConsumer, tokenSet }) {
 		this.sourceConsumer = sourceConsumer;
 		this.cache = null;
+		this.tokenSet = tokenSet;
+	}
+	throwSyntaticError(expected = null) {
+		throw new SyntaticError(this.sourceConsumer.getIndex(), expected);
+	}
+	popAny() {
+		const { cache, sourceConsumer, tokenSet } = this;
+		if (cache !== null) {
+			this.cache = null;
+			return cache;
+		}
+		if (sourceConsumer.end()) {
+			this.throwSyntaticError();
+		}
+		const startsAt = sourceConsumer.getIndex();
+		const nextChar = sourceConsumer.nextChar();
+		const tokens = tokenSet.getByHeadChar(nextChar);
+		for (let token of tokens) {
+			const match = sourceConsumer.next(token.pattern);
+			if (match === null) {
+				continue;
+			}
+			return new ParseTreeNode({
+				typeName: token.name,
+				startsAt: startsAt,
+				endsAt: startsAt + match.length,
+				content: match,
+			});
+		}
+		throw new LexycalError(startsAt);
+	}
+	pop(...typeNames) {
+		const expected = typeNames.length === 1 ? typeNames[0] : null;
+		const node = this.popAny();
+		if (!typeNames.includes(node.typeName)) {
+			throw new SyntaticError(node.startsAt, expected);
+		}
+		return node;
 	}
 	next() {
-		if (this.cache !== null) {
-			return this.cache;
+		const { cache, sourceConsumer } = this;
+		if (cache !== null) {
+			return cache;
 		}
-		const { sourceConsumer } = this;
 		if (sourceConsumer.end()) {
 			return null;
 		}
-		return this.cache = this.pop();
+		return this.cache = this.popAny();
 	}
 	nextIs(...typeNames) {
 		const next = this.next();
 		if (next === null) {
 			return false;
 		}
-		return typeNames.include(next.typeName);
-	}
-	pop(...typeNames) {
-		if (this.cache !== null) {
-			const match = this.cache;
-			this.cache = null;
-			if (!typeNames.includes(match.typeName)) {
-				let expected;
-				if (typeNames.length === 1) {
-					expected = typeNames[0];
-				}
-				throw new SyntaticError(match.startsAt, expected);
-			}
-			return match;
-		}
-		const { sourceConsumer } = this;
-		const startsAt = sourceConsumer.getIndex();
-		const nextChar = sourceConsumer.nextChar();
-		const tokens = tokenSet.getByHeadChar(nextChar);
-		for (let token of tokens) {
-			const match = sourceConsumer.next(token.pattern);
-			if (match !== null) {
-				return new ParseTreeNode({
-					typeName: token.name,
-					startsAt: startsAt,
-					endsAt: startsAt + match.length,
-					content: match,
-				});
-				break;
-			}
-		}
-		throw new LexycalError(sourceConsumer.getIndex());
-	}
-	throwSyntaticError() {
-		const { sourceConsumer } = this;
-		throw new SyntaticError(sourceConsumer.getIndex());
+		return typeNames.includes(next.typeName);
 	}
 	popIfIs(...typeNames) {
-		const next = this.next();
-		if (next === null) {
-			return null;
+		if (this.nextIs(...typeNames)) {
+			return this.popAny();
 		}
-		if (!typeNames.includes(next.typeName)) {
-			return null;
-		}
-		return this.pop();
+		return null;
 	}
 	all() {
 		const res = [];
 		while (this.next() !== null) {
-			res.push(this.pop());
+			res.push(this.popAny());
 		}
 		return res;
 	}
 }
-
-module.exports = TokenGenerator;

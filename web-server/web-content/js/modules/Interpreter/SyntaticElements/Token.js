@@ -1,5 +1,5 @@
-const SyntaticElement = require('./SyntaticElement');
-const Charset = require('./Charset');
+import SyntaticElement from './SyntaticElement.js';
+import Charset from '../Support/Charset.js';
 
 const stringToRegex = (pattern) => {
 	let strRegex = '^';
@@ -10,7 +10,7 @@ const stringToRegex = (pattern) => {
 	return new RegExp(strRegex);
 };
 
-class Token extends SyntaticElement {
+export default class Token extends SyntaticElement {
 	constructor(args) {
 		if (typeof args === 'string') {
 			super(args);
@@ -29,5 +29,3 @@ class Token extends SyntaticElement {
 		}
 	}
 }
-
-module.exports = Token;
