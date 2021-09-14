@@ -1,0 +1,31 @@
+import ParseTreeNode from '../ParseTreeNode.js';
+import zeroToMany from './zeroToMany.js';
+
+import parseType from './parseType.js';
+
+const parseAsterisk = (tokenGenerator) => {
+    return tokenGenerator.pop('asterisk');
+};
+
+export default (tokenGenerator) => {
+    const type = parseType(tokenGenerator);
+    const asterisks = zeroToMany(tokenGenerator, parseAsterisk);
+    const id = tokenGenerator.pop('id');
+    const children = [ type, ...asterisks, id ];
+    let isArray = tokenGenerator.nextIs('left-square-brackets');
+    if (isArray) {
+        children.push(
+            tokenGenerator.pop('left-square-brackets'),
+            tokenGenerator.pop('right-square-brackets'),
+        );
+    }
+	return new ParseTreeNode({
+		typeName: 'arg_item',
+        children,
+        content: {
+            name: id.content,
+            pointerCount: asterisks.length,
+            isArray,
+        },
+	});
+};
