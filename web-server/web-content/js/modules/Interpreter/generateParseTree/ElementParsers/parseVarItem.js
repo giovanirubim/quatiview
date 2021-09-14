@@ -20,7 +20,7 @@ export default (tokenGenerator) => {
         children.push(tokenGenerator.pop('right-square-brackets'));
     }
 	return new ParseTreeNode({
-		typeName: '',
+		typeName: 'var-item',
         content: {
             name: id.content,
             pointerCount: asterisks.length,
