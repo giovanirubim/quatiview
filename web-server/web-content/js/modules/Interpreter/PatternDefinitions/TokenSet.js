@@ -11,19 +11,25 @@ class TokenSet {
 			return [char, []];
 		});
 		this.byHeadMap = Object.fromEntries(entries);
+		this.byTypeNameMap = {};
 	}
 
 	add(...args) {
 		const token = new Token(...args);
-		const { byHeadMap } = this;
+		const { byHeadMap, byTypeNameMap } = this;
 		token.headCharset.all().forEach((char) => {
 			byHeadMap[char].push(token);
 		});
+		byTypeNameMap[token.typeName] = token;
 	}
 	
 	// Returns the group of tokens that can start with the given char
 	getByHeadChar(char) {
 		return this.byHeadMap[char] ?? [];
+	}
+	
+	getByTypeName(typeName) {
+		return this.byTypeNameMap[typeName] ?? null;
 	}
 }
 
