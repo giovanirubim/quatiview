@@ -11,4 +11,8 @@ export default class Scope {
         items[itemName] = item;
         return this;
     }
+    stack() {
+        const scope = new Scope(this);
+        return scope;
+    }
 }

@@ -3,6 +3,6 @@ import { CompilationError } from '../../../../errors.js';
 
 new TreeCompiler({
 	nonTerminal: 'name',
-	compile: ({ content }, { global, local }) => {
+	compile: ({ content }, { global, local, returnType }) => {
 	},
 });

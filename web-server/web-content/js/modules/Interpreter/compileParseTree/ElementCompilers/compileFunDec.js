@@ -1,23 +1,13 @@
 import { CompilationError } from '../../../../errors.js';
 import TreeCompiler from '../TreeCompiler.js';
-
-const typeToText = ({ typeName, content }, pointerCount) => {
-	const pointer = '*'.repeat(pointerCount);
-	if (typeName === 'struct-type') {
-		return `struct ${content.structName}${pointer}`;
-	}
-	if (typeName === 'int-type') {
-		return content.typeName + pointer;
-	}
-	throw 'Not know what to do here: ' + typeName;
-};
+import typeToText from './Support/typeToText.js';
 
 new TreeCompiler({
 	nonTerminal: 'fun-dec',
 	compile: ({ content }, context) => {
 		const { global, local } = context;
 		const argSign = [];
-		const { type: returnType, name, argList, scope, pointerCount } = content;
+		const { type, name, argList, scope, pointerCount } = content;
 		for (let item of argList.content) {
 			const { type, pointerCount, isArray, name } = item.content;
 			const totalPointerCount = pointerCount + isArray;
@@ -26,20 +16,21 @@ new TreeCompiler({
 			}
 			const arg = {
 				name,
-				textType: typeToText(type.content, totalPointerCount),
+				type: typeToText(type.content, totalPointerCount),
 				pointerCount: totalPointerCount,
 			};
 			argSign.push(arg);
 			local.set(name, arg);
 		}
+		const returnType = typeToText(type.content, pointerCount);
 		global.set(name, {
 			name,
-			type: 'function',
-			returnType,
+			decType: 'function',
+			valueType: returnType,
 			argSign,
 		});
-		context.returnType = typeToText(returnType.content, pointerCount);
-		TreeCompiler.compile(scope);
+		context.returnType = returnType;
+		TreeCompiler.compile(scope, context);
 		context.returnType = null;
 	},
 });

@@ -4,10 +4,10 @@ import Scope from '../Scope.js';
 new TreeCompiler({
 	nonTerminal: 'program',
 	compile: ({ content: lines }) => {
-		const globalScope = new Scope();
+		const global = new Scope();
 		const context = {
-			global: globalScope,
-			local: new Scope(globalScope),
+			global,
+			local: global,
 			returnType: null,
 		};
 		for (let line of lines) {
