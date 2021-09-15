@@ -61,7 +61,7 @@ int contains(struct Node* node, int info) {
 }
 
 void printTree(struct Node* node) {
-	if (!node) {
+	if (node == NULL) {
 		putchar('-');
 		return;
 	}
