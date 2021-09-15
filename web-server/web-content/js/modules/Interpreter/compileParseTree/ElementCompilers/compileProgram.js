@@ -9,6 +9,8 @@ new TreeCompiler({
 			global,
 			local: global,
 			returnType: null,
+			structs: {},
+			structSign: null,
 		};
 		for (let line of lines) {
 			TreeCompiler.compile(line, context);
