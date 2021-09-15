@@ -5,6 +5,7 @@ import parseWhile from './parseWhile.js';
 import parseIf from './parseIf.js';
 import parseFor from './parseFor.js';
 import parseExpr from './parseExpr.js';
+import parseReturn from './parseReturn.js';
 
 import attempt from './attempt.js';
 import oneOf from './oneOf.js';
@@ -24,6 +25,7 @@ export default (tokenGenerator) => {
             parseWhile,
             parseFor,
             parseIf,
+            parseReturn,
         );
         children.push(content);
     }
