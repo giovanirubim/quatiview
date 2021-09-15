@@ -15,6 +15,7 @@ import './ElementCompilers/compileOp7.js';
 import './ElementCompilers/compileOp8.js';
 import './ElementCompilers/compileProgram.js';
 import './ElementCompilers/compileScope.js';
+import './ElementCompilers/compileSizeof.js';
 import './ElementCompilers/compileStructDec.js';
 import './ElementCompilers/compileVarDec.js';
 
