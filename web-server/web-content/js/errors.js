@@ -1,14 +1,17 @@
-export class CompilationError extends Error {}
+export class CompilationError extends Error {
+	constructor(message, index) {
+		super(message);
+		this.index = index;
+	}
+}
 export class LexycalError extends CompilationError {
 	constructor(index) {
-		super('Lexycal error at ' + index);
-		this.index = index;
+		super('Lexycal error at ' + index, index);
 	}
 }
 export class SyntaticError extends CompilationError {
 	constructor(index, expected) {
-		super('Syntatic error at ' + index);
-		this.index = index;
+		super('Syntatic error at ' + index, index);
 		this.expected = expected;
 	}
 }
