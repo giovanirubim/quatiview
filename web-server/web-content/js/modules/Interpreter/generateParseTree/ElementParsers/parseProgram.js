@@ -3,7 +3,10 @@ import parseGlobalLine from './parseGlobalLine.js';
 import zeroToMany from './zeroToMany.js';
 
 export default (tokenGenerator) => {
-    const lines = zeroToMany(tokenGenerator, parseGlobalLine);
+    const lines = [];
+    while (tokenGenerator.next()) {
+    	lines.push(parseGlobalLine(tokenGenerator));
+    }
 	return new ParseTreeNode({
 		typeName: 'program',
         content: lines,
