@@ -24,6 +24,7 @@ export default (tokenGenerator) => {
             name: id.content,
             argList,
             scope,
+            pointerCount: asterisks.length,
         },
 		children: children.filter((item) => item !== null),
 	});

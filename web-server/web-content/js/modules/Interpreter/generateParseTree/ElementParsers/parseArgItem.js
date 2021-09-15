@@ -21,6 +21,7 @@ export default (tokenGenerator) => {
 		typeName: 'arg-item',
         children,
         content: {
+            type,
             name: id.content,
             pointerCount: asterisks.length,
             isArray,
