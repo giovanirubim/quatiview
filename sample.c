@@ -25,7 +25,7 @@ struct Node {
 
 struct Node* newNode(int info) {
 	struct Node* node;
-	node = (struct Node*) malloc(sizeof(struct Node));
+	node = malloc(sizeof(struct Node));
 	(*node).l = NULL;
 	(*node).r = NULL;
 	(*node).info = info;
