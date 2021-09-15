@@ -1,8 +1,8 @@
 import TreeCompiler from '../TreeCompiler.js';
 
 new TreeCompiler({
-	nonTerminal: 'name',
+	nonTerminal: 'op0',
 	compile: ({ content }, context) => {
-
+        return TreeCompiler.compile(content, context);
 	},
 });

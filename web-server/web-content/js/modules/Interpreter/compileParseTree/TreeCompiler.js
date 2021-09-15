@@ -11,6 +11,6 @@ export default class TreeCompiler {
         if (!treeCompiler) {
             throw `Tree compiler of ${tree.typeName} not found`;
         }
-        treeCompiler.compile(tree, context);
+        return treeCompiler.compile(tree, context);
     }
 }

@@ -11,8 +11,10 @@ new TreeCompiler({
 			const totalPointerCount = pointerCount + (arraySize !== null)
 			local.set(name, {
 				name,
+				scopeId: local.id,
 				decType: 'variable',
 				valueType: typeToText(type, totalPointerCount),
+				lValue: true,
 			});
 		}
 	},
