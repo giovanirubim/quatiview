@@ -85,7 +85,7 @@ set.add({ name: 'logical-or', pattern: '||' });
 
 // Single character symbols
 set.add({ name: 'ampersand', pattern: '&' });
-set.add({ name: 'assing', pattern: '=' });
+set.add({ name: 'assign', pattern: '=' });
 set.add({ name: 'asterisk', pattern: '*' });
 set.add({ name: 'comma', pattern: ',' });
 set.add({ name: 'dot', pattern: '.' });
