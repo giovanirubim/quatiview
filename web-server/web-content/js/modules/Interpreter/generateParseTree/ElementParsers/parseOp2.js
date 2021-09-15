@@ -1,6 +1,6 @@
 import ParseTreeNode from '../ParseTreeNode.js';
-import parseType from './parseType.js';
 import parseOp1 from './parseOp1.js';
+import parseSizeOf from './parseSizeOf.js';
 
 const parseOp2 = (tokenGenerator) => {
     const operator = tokenGenerator.popIfIs(
@@ -17,22 +17,7 @@ const parseOp2 = (tokenGenerator) => {
         });
     }
     if (tokenGenerator.nextIs('sizeof')) {
-        let asterisks, type;
-        const children = [
-            tokenGenerator.pop('sizeof'),
-            tokenGenerator.pop('left-parentheses'),
-            ... (asterisks = tokenGenerator.popMany('asterisk')),
-            type = parseType(tokenGenerator),
-            tokenGenerator.pop('right-parentheses'),
-        ];
-        return new ParseTreeNode({
-            typeName: 'op2',
-            content: {
-                pointerCount: asterisks.length,
-                type,
-            },
-            children,
-        });
+        return parseSizeOf(tokenGenerator);
     }
     return parseOp1(tokenGenerator);
 };
