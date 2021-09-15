@@ -1,6 +1,6 @@
 import ParseTreeNode from '../ParseTreeNode.js';
 
-import attempt from './attempt.js';
+import attempt from './Support/attempt.js';
 
 import parseArgList from './parseArgList.js';
 import parseType from './parseType.js';

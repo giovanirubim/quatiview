@@ -1,5 +1,5 @@
 import ParseTreeNode from '../ParseTreeNode.js';
-import oneOf from './oneOf.js';
+import oneOf from './Support/oneOf.js';
 
 import parseIntType from './parseIntType.js';
 import parseStructType from './parseStructType.js';

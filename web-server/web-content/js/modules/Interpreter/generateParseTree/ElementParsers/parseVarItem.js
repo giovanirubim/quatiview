@@ -1,6 +1,5 @@
 import ParseTreeNode from '../ParseTreeNode.js';
-import zeroToMany from './zeroToMany.js';
-import oneOf from './oneOf.js';
+import zeroToMany from './Support/zeroToMany.js';
 
 const parseAsterisk = (tokenGenerator) => tokenGenerator.pop('asterisk');
 

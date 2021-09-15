@@ -1,6 +1,5 @@
 import ParseTreeNode from '../ParseTreeNode.js';
 import parseLocalLine from './parseLocalLine.js';
-import zeroToMany from './zeroToMany.js';
 
 export default (tokenGenerator) => {
     const children = [];

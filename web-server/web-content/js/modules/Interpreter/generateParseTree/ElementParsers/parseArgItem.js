@@ -1,5 +1,5 @@
 import ParseTreeNode from '../ParseTreeNode.js';
-import zeroToMany from './zeroToMany.js';
+import zeroToMany from './Support/zeroToMany.js';
 
 import parseType from './parseType.js';
 

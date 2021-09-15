@@ -1,4 +1,4 @@
-import { SyntaticError } from "../../../../errors.js";
+import { SyntaticError } from "../../../../../errors.js";
 
 export default (context, parser) => {
     const array = [];

@@ -1,6 +1,5 @@
 import ParseTreeNode from '../ParseTreeNode.js';
 import parseExpr from './parseExpr.js';
-import oneOf from './oneOf.js';
 import parseConst from './parseConst.js';
 
 export default (tokenGenerator) => {

@@ -1,5 +1,5 @@
 import ParseTreeNode from '../ParseTreeNode.js';
-import oneToMany from './oneToMany.js';
+import oneToMany from './Support/oneToMany.js';
 
 import parseStructType from './parseStructType.js';
 import parseVarDec from './parseVarDec.js';

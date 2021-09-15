@@ -7,8 +7,8 @@ import parseFor from './parseFor.js';
 import parseExpr from './parseExpr.js';
 import parseReturn from './parseReturn.js';
 
-import attempt from './attempt.js';
-import oneOf from './oneOf.js';
+import attempt from './Support/attempt.js';
+import oneOf from './Support/oneOf.js';
 
 export default (tokenGenerator) => {
     const children = [];

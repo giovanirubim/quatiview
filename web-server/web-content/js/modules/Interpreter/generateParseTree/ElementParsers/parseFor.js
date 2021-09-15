@@ -1,6 +1,6 @@
 import ParseTreeNode from '../ParseTreeNode.js';
 import parseExpr from './parseExpr.js';
-import attempt from './attempt.js';
+import attempt from './Support/attempt.js';
 import parseScope from './parseScope.js';
 
 export default (tokenGenerator) => {

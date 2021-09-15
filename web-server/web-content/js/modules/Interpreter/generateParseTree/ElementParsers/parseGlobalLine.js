@@ -1,4 +1,4 @@
-import oneOf from './oneOf.js';
+import oneOf from './Support/oneOf.js';
 
 import parseFunDec from './parseFunDec.js';
 import parseStructDec from './parseStructDec.js';

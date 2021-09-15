@@ -1,7 +1,7 @@
 import ParseTreeNode from '../ParseTreeNode.js';
 
-import zeroToMany from './zeroToMany.js';
-import oneOf from './oneOf.js';
+import zeroToMany from './Support/zeroToMany.js';
+import oneOf from './Support/oneOf.js';
 
 import parseArgCall from './parseArgCall.js'
 import parseIndexAcc from './parseIndexAcc.js'
