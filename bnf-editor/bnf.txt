@@ -10,9 +10,10 @@ op6 ::= op5 (('==' | '!=') op5)*
 op5 ::= op4 (('>=' | '<=' | '>' | '<') op4)*
 op4 ::= op3 (('+' | '-') op3)*
 op3 ::= op2 (('*' | '/' | '%') op2)*
-op2 ::= ('-' | '*' | '&') op2 | 'sizeof' '(' '*'* type ')' | op1
+op2 ::= ('-' | '*' | '&') op2 | sizeof | op1
 op1 ::= op0 (arg_call | index_acc | member_acc)*
 op0 ::= '(' expr ')' | id | const
+sizeof ::= 'sizeof' '(' '*'* type ')'
 arg_call ::= '(' [expr (',' expr)*] ')'
 int_type ::= 'char' | 'int'
 struct_type ::= 'struct' id
