@@ -21,6 +21,9 @@ export default (tokenGenerator) => {
         item = parseOp0(tokenGenerator),
         ... (opertaions = zeroToMany(tokenGenerator, parseOperation)),
     ];
+    if (opertaions.length === 0) {
+        return item;
+    }
 	return new ParseTreeNode({
 		typeName: 'op1',
         content: { item, opertaions },

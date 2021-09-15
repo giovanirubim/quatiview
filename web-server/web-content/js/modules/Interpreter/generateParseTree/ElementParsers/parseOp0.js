@@ -16,9 +16,7 @@ export default (tokenGenerator) => {
             content = tokenGenerator.pop('id'),
         ];
     } else {
-        children = [
-            content = parseConst(tokenGenerator),
-        ];
+        return parseConst(tokenGenerator);
     }
 	return new ParseTreeNode({
 		typeName: 'op0',

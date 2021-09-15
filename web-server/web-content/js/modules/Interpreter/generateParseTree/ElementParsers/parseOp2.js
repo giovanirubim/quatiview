@@ -34,12 +34,7 @@ const parseOp2 = (tokenGenerator) => {
             children,
         });
     }
-    let item = parseOp1(tokenGenerator);
-    return new ParseTreeNode({
-        typeName: 'op2',
-        content: { item },
-        children: [ item ],
-    });
+    return parseOp1(tokenGenerator);
 };
 
 export default parseOp2;
