@@ -80,7 +80,8 @@ void printTreeLn(struct Node* node) {
 }
 
 int main() {
-	struct Node* tree = NULL;
+	struct Node* tree;
+	tree = NULL;
 	tree = add(tree, 5);
 	tree = add(tree, 2);
 	tree = add(tree, 10);
