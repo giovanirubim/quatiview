@@ -4,8 +4,6 @@ import * as Panel from './modules/Panel';
 import Terminal from './modules/Terminal';
 import Interpreter from './modules/Interpreter';
 
-window.Interpreter = Interpreter;
-
 const loadMemView = () => {
 	const wrappingElement = $('#mem-view-section');
 	const updateSize = () => {
@@ -28,7 +26,12 @@ $(document).ready(() => {
 		textarea: $('#terminal-section textarea'),
 		input: $('#terminal-input'),
 	});
-	Panel.load();
+	Panel.init({
+		editor: Editor,
+		memViewer: MemViewer,
+		terminal,
+		interpreter: Interpreter,
+	});
 	Panel.onupload((source) => Editor.setText(source));
 	window.terminal = terminal;
 	$('form').on('submit', (e) => e.preventDefault());

@@ -11,7 +11,7 @@ export class LexycalError extends CompilationError {
 }
 export class SyntaticError extends CompilationError {
 	constructor(index, expected) {
-		super('Syntatic error at ' + index, index);
+		super('Unexpected token', index);
 		this.expected = expected;
 	}
 }

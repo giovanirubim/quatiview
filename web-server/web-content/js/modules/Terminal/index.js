@@ -59,6 +59,10 @@ class Terminal {
 		this.textarea[0].value += string + '\n';
 		return this;
 	}
+	clear() {
+		this.textarea[0].value = '';
+		return this;
+	}
 }
 
 export default Terminal;

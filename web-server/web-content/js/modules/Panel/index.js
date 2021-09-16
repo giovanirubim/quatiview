@@ -1,5 +1,12 @@
+import { CompilationError, LexycalError, SyntaticError } from "../../errors.js";
+import getLineOf from "./Support/getLineOf.js";
+
 let button = {};
 let uploadHandlers = [];
+let editor;
+let memViewer;
+let terminal;
+let interpreter;
 
 const bindInputFile = (inputFile) => {
 	inputFile.on('change', function() {
@@ -27,7 +34,44 @@ const createInputFile = () => {
 	return inputFile;
 };
 
-export const load = () => {
+const reportCompilationError = (source, error) => {
+	terminal.writeln('Compilation failed');
+	const { index } = error;
+	if (index === source.length) {
+		terminal.writeln('Unexpected end of file');
+		return;
+	}
+	if (error instanceof SyntaticError) {
+		terminal.writeln(`Syntax error: ${error.message}`);
+	} else if (error instanceof LexycalError) {
+		terminal.writeln(`Unrecognized token`);
+	} else {
+		terminal.writeln(`Error: ${error.message}`);
+	}
+	const { line, lineCount, pos } = getLineOf(source, index);
+	terminal.writeln(`${lineCount.toString().padStart(4, ' ')} | ${line}`);
+	terminal.writeln(`${' '.repeat(4)} |${' '.repeat(pos)}^`);
+};
+
+const start = () => {
+	terminal.clear();
+	const source = editor.getText();
+	try {
+		const compiled = interpreter.compile(source);
+	} catch (error) {
+		if (error instanceof CompilationError) {
+			reportCompilationError(source, error);
+		} else {
+			console.error(error);
+		}
+	}
+};
+
+export const init = (dependencies) => {
+	editor = dependencies.editor;
+	memViewer = dependencies.memViewer;
+	terminal = dependencies.terminal;
+	interpreter = dependencies.interpreter;
 	const buttons = $('#control-panel .panel-button');
 	buttons.each(function() {
 		const item = $(this);
@@ -41,6 +85,7 @@ export const load = () => {
 	button.upload.on('click', () => {
 		inputFile.trigger('click');
 	});
+	button.iniciar.on('click', start);
 };
 
 export const onupload = (handler) => {

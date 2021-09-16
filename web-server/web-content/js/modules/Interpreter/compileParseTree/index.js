@@ -22,17 +22,4 @@ import './ElementCompilers/compileSizeof.js';
 import './ElementCompilers/compileStructDec.js';
 import './ElementCompilers/compileVarDec.js';
 
-export default (tree) => TreeCompiler.compile(tree, {});
-
-setTimeout(() => {
-    let src;
-    try {
-        Interpreter.compile(src = $('#editor-section textarea').val());
-    } catch(error) {
-        const { index } = error;
-        if (index != null) {
-            console.log(src.substr(index).split('\n')[0]);
-        }
-        console.log(error);
-    }
-}, 500);
+export default (tree) => TreeCompiler.compile(tree);
