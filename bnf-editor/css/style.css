@@ -9,7 +9,7 @@ body {
 }
 div, input[type="text"] {
 	font-family: 'Roboto Mono', monospace;
-	font-size: 14px;
+	font-size: 12px;
 }
 input[type="text"] {
 	border: none;
