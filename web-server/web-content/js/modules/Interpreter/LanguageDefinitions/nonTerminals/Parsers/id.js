@@ -1,11 +1,6 @@
-import TreeParser from '../../../Model/NonTerminal.js';
+import TreeParser from '../../../Model/TreeParser.js';
 
 new TreeParser({
     name: 'id',
-    parse: (ctx) => {
-        const { tokenGenerator } = ctx;
-        return {
-
-        };
-    },
+    parse: (ctx) => ctx.tokenGenerator.pop('id'),
 });

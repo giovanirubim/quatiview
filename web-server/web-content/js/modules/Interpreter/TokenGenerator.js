@@ -1,7 +1,9 @@
 import * as Tokens from './LanguageDefinitions/Tokens';
+import { LexycalError, SyntaticError } from '../errors.js';
+import ParseTreeNode from './Model/ParseTreeNode.js';
 
 export default class TokenGenerator {
-	constructor({ sourceConsumer }) {
+	constructor(sourceConsumer) {
 		this.sourceConsumer = sourceConsumer;
 		this.cache = null;
 		this.target = null;
@@ -27,7 +29,7 @@ export default class TokenGenerator {
 				continue;
 			}
 			const node = new ParseTreeNode({
-				typeName: token.name,
+				name: token.name,
 				startsAt: startsAt,
 				endsAt: startsAt + match.length,
 				content: match,
@@ -37,20 +39,20 @@ export default class TokenGenerator {
 		}
 		throw new LexycalError(startsAt);
 	}
-	pop(...typeNames) {
-		const expected = typeNames.length === 1 ? typeNames[0] : null;
+	pop(...names) {
+		const expected = names.length === 1 ? names[0] : null;
 		if (!this.cache && this.sourceConsumer.end()) {
 			this.throwSyntaticError(expected);
 		}
 		const node = this.popAny();
-		if (!typeNames.includes(node.typeName)) {
+		if (!names.includes(node.name)) {
 			throw new SyntaticError(node.startsAt, expected);
 		}
 		return node;
 	}
-	popMany(typeName) {
+	popMany(name) {
 		const result = [];
-		while (this.next()?.typeName === typeName) {
+		while (this.next()?.name === name) {
 			result.push(this.popAny());
 		}
 		return result;
@@ -65,15 +67,15 @@ export default class TokenGenerator {
 		}
 		return this.cache = this.popAny();
 	}
-	nextIs(...typeNames) {
+	nextIs(...names) {
 		const next = this.next();
 		if (next === null) {
 			return false;
 		}
-		return typeNames.includes(next.typeName);
+		return names.includes(next.name);
 	}
-	popIfIs(...typeNames) {
-		if (this.nextIs(...typeNames)) {
+	popIfIs(...names) {
+		if (this.nextIs(...names)) {
 			return this.popAny();
 		}
 		return null;

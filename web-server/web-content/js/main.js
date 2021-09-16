@@ -1,1 +1,1 @@
-import * as Interpreter from './modules/Interpreter';
+import * as Interpreter from './Modules/Interpreter';
