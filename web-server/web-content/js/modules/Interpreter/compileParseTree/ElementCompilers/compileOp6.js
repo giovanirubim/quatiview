@@ -7,7 +7,7 @@ new TreeCompiler({
 	compile: ({ content }, context) => {
 		const { operand, operations } = content;
 		const data = TreeCompiler.compile(operand, context);
-		if (valueTypeIsStruct(data.valueType)) {
+		if (valueTypeIsStruct(data.valueType) || data.valueType === 'function') {
 			const [{ operator }] = operations;
 			throw new CompilationError(
 				`Invalid operands for ${operator.content} at ${operator.startsAt}`,
@@ -16,7 +16,7 @@ new TreeCompiler({
 		}
 		for (let { operator, operand } of operations) {
 			const data = TreeCompiler.compile(operand, context);
-			if (!valueTypeIsStruct(data.valueType)) {
+			if (!valueTypeIsStruct(data.valueType) && data.valueType !== 'function') {
 				continue;
 			}
 			throw new CompilationError(

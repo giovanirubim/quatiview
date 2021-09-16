@@ -28,7 +28,8 @@ new TreeCompiler({
 		const returnType = typeToText(type.content, pointerCount);
 		global.set(name, {
 			name,
-			valueType: returnType,
+			valueType: 'function',
+			returnType,
 			isFunction: true,
 			argSign,
 			scopeId: global.id,

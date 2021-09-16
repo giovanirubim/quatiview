@@ -16,17 +16,17 @@ const parseOperation = (tokenGenerator) => oneOf(
 );
 
 export default (tokenGenerator) => {
-    let item, opertaions;
+    let operand, operations;
     const children = [
-        item = parseOp0(tokenGenerator),
-        ... (opertaions = zeroToMany(tokenGenerator, parseOperation)),
+        operand = parseOp0(tokenGenerator),
+        ... (operations = zeroToMany(tokenGenerator, parseOperation)),
     ];
-    if (opertaions.length === 0) {
-        return item;
+    if (operations.length === 0) {
+        return operand;
     }
 	return new ParseTreeNode({
 		typeName: 'op1',
-        content: { item, opertaions },
+        content: { operand, operations },
 		children,
 	});
 };

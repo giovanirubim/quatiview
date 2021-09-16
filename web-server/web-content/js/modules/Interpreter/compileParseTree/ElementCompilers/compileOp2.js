@@ -36,6 +36,9 @@ new TreeCompiler({
             if (!data.lValue) {
                 throw new CompilationError(`lvalue required as unary '&' operand`, operand.startsAt);
             }
+            if (!data.lValue) {
+                throw new CompilationError(`lvalue required as unary '&' operand`, operand.startsAt);
+            }
             return { valueType: valueType + '*' };
         }
 	},

@@ -7,6 +7,7 @@ import './ElementCompilers/compileId.js';
 import './ElementCompilers/compileIf.js';
 import './ElementCompilers/compileLocalLine.js';
 import './ElementCompilers/compileOp0.js';
+import './ElementCompilers/compileOp1.js';
 import './ElementCompilers/compileOp2.js';
 import './ElementCompilers/compileOp3.js';
 import './ElementCompilers/compileOp4.js';
@@ -24,5 +25,13 @@ export default (tree) => TreeCompiler.compile(tree, {});
 
 setTimeout(() => {
     let src;
-    Interpreter.compile(src = $('#editor-section textarea').val());
+    try {
+        Interpreter.compile(src = $('#editor-section textarea').val());
+    } catch(error) {
+        const { index } = error;
+        if (index != null) {
+            console.log(src.substr(index).split('\n')[0]);
+        }
+        console.log(error);
+    }
 }, 500);
