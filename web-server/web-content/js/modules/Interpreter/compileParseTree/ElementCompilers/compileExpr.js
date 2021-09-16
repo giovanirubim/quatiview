@@ -30,7 +30,7 @@ new TreeCompiler({
     execute: async function* ({ content }, context) {
         const { array } = content;
         for (let item of array) {
-            console.log(item);
+            yield* TreeCompiler.execute(item.operand);
         }
     },
 });

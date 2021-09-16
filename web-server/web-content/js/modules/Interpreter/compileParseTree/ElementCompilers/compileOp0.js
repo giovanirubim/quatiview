@@ -5,4 +5,7 @@ new TreeCompiler({
 	compile: ({ content }, context) => {
         return TreeCompiler.compile(content, context);
 	},
+	execute: async function* (node, context) {
+		yield* TreeCompiler.execute(node.content, context);
+	},
 });

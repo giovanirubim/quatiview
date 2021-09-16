@@ -1,5 +1,6 @@
 import { CompilationError } from '../../../../errors.js';
 import TreeCompiler from '../TreeCompiler.js';
+import ByteSet from './Support/ByteSet.js';
 
 new TreeCompiler({
 	nonTerminal: 'id',
@@ -10,10 +11,11 @@ new TreeCompiler({
         if (!data) {
             throw new CompilationError(`'${name}' undeclarated`, startsAt);
         }
+        if (!data.isFunction && data.valueType !== 'function') {
+            node.byteSet = new ByteSet({ data });
+        }
         node.data = data;
         return data;
 	},
-    execute: async function* () {
-        
-    },
+    execute: async function* (node, context) {},
 });
