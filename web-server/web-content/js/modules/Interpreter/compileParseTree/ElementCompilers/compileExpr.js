@@ -1,5 +1,6 @@
 import { CompilationError } from '../../../../errors.js';
 import TreeCompiler from '../TreeCompiler.js';
+import getTypeSize from './Support/getTypeSize.js';
 import valueTypeIsStruct from './Support/valueTypeIsStruct.js';
 
 new TreeCompiler({
@@ -23,9 +24,13 @@ new TreeCompiler({
                 throw new CompilationError(`Invalid operands for assignment`, operand.startsAt);
             }
         }
+        content.array = array;
         return { valueType };
 	},
-    execute: async function* (node, context) {
-        console.log(node);
+    execute: async function* ({ content }, context) {
+        const { array } = content;
+        for (let item of array) {
+            console.log(item);
+        }
     },
 });

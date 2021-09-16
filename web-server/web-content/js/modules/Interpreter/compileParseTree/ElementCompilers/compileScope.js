@@ -1,4 +1,3 @@
-import project from '../../../../Project.js';
 import TreeCompiler from '../TreeCompiler.js';
 import addStackFor from './Support/addStackFor.js';
 import popStackOf from './Support/popStackOf.js';

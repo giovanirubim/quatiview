@@ -13,4 +13,7 @@ new TreeCompiler({
         node.data = data;
         return data;
 	},
+    execute: async function* () {
+        
+    },
 });

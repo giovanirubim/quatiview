@@ -7,7 +7,6 @@ new TreeCompiler({
         TreeCompiler.compile(content, context);
 	},
 	execute: async function* ({ content, startsAt, endsAt }, context) {
-		console.log({ startsAt, endsAt });
 		project.editor.highlight(startsAt, endsAt);
 		yield* TreeCompiler.execute(content);
 		yield;

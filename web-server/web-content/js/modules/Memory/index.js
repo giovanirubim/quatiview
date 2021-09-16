@@ -55,7 +55,7 @@ class Memory {
 		this.bytes[address] = value;
 	}
 
-	_allocate(size) {
+	allocate(size) {
 
 		// Round to a multiple of 4
 		size = (size + 3) & ~3;
@@ -94,7 +94,7 @@ class Memory {
 		return address;
 	}
 
-	_free(address) {
+	free(address) {
 
 		this.validateAddress(address);
 		if (this.bytes[address] === undefined) {
@@ -123,16 +123,34 @@ class Memory {
 		}
 	}
 
-	allocate(size) {
-		const addr = this._allocate(size);
-		console.log(`allocated: ${addr} (${size}B)`);
-		return addr;
+	copy(dst, src, size) {
+		for (let i=0; i<size; ++i) {
+			this.write(dst + i, this.read(src + i));
+		}
 	}
 
-	free(addr) {
-		this._free(addr);
-		console.log(`freed: ${addr}`);
+	set(dst, bytes) {
+		for (let i=0; i<bytes.length; ++i) {
+			this.write(dst + i, bytes[i]);
+		}
 	}
+
+	setWord(dst, word) {
+		this.write(dst, word & 255);
+		this.write(dst + 1, (word >> 8) & 255);
+		this.write(dst + 2, (word >> 16) & 255);
+		this.write(dst + 3, (word >> 24) & 255);
+	}
+
+	getWord(src) {
+		return (
+			this.read(src)
+			| (this.read(src + 1) << 8)
+			| (this.read(src + 2) << 16)
+			| (this.read(src + 3) << 24)
+		);
+	}
+
 }
 
 export default new Memory();

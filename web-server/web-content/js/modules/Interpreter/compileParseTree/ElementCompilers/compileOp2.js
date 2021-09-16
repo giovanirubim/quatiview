@@ -42,4 +42,7 @@ new TreeCompiler({
             return { valueType: valueType + '*' };
         }
 	},
+    execute: async function* ({ content }, context) {
+        
+    }
 });

@@ -120,6 +120,7 @@ export const init = () => {
 		inputFile.trigger('click');
 	});
 	button.iniciar.on('click', run);
+	button.avancar.on('click', step);
 };
 
 export const onupload = (handler) => {
