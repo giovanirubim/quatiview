@@ -15,11 +15,11 @@ new TreeCompiler({
         context.scopeVars = prevScopeVars;
         context.local = context.local.parent;
 	},
-    execute: ({ content }, context) => {
+    execute: async function* ({ content }, context) {
         const { vars } = content;
         addStackFor(vars);
-        for (line of content) {
-            TreeCompiler.execute(line, context);
+        for (let line of content) {
+            yield* TreeCompiler.execute(line, context);
         }
         popStackOf(vars);
     },

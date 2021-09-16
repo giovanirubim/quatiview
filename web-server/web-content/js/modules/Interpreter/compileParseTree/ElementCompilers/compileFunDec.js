@@ -1,10 +1,9 @@
 import { CompilationError } from '../../../../errors.js';
 import TreeCompiler from '../TreeCompiler.js';
-import addStackFor from './Support/addStackFor.js';
 import getTypeSize from './Support/getTypeSize.js';
-import popStackOf from './Support/popStackOf.js';
 import typeToText from './Support/typeToText.js';
-import valueTypeIsStruct from './Support/valueTypeIsStruct.js';
+import addStackFor from './Support/addStackFor.js';
+import popStackOf from './Support/popStackOf.js';
 
 new TreeCompiler({
 	nonTerminal: 'fun-dec',
@@ -47,15 +46,16 @@ new TreeCompiler({
 			argSign: args,
 			scopeId: global.id,
 		});
-		content.args = args;
 		context.returnType = returnType;
 		TreeCompiler.compile(scope, context);
 		context.local = context.local.parent;
 		context.returnType = null;
 	},
-	execute: ({ content }, context) => {
-		const { args, scope } = content;
-		addStackFor(args);
-		popStackOf(args);
+	execute: async function* ({ content }, context) {
+		const data = context.global.get(content.name);
+		console.log('running function ' + data.name);
+		addStackFor(data.argSign);
+		yield* TreeCompiler.execute(content.scope, context);
+		popStackOf(data.argSign);
 	},
 });

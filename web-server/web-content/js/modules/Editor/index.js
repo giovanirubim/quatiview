@@ -45,6 +45,7 @@ export const setText = (text) => {
 };
 
 export const highlight = (start, end) => {
+	textarea.trigger('select');
 	textarea[0].selectionStart = start;
 	textarea[0].selectionEnd = end;
 };

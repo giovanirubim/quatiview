@@ -57,12 +57,45 @@ const reportCompilationError = (source, error) => {
 	}
 };
 
-const start = () => {
+let execution = {
+	paused: true,
+	done: true,
+	gen: null,
+	waitingStep: false,
+};
+
+export const step = async () => {
+	if (!execution.waitingStep) {
+		return false;
+	}
+	execution.waitingStep = false;
+	const { done } = await execution.gen.next();
+	if (!done) {
+		execution.waitingStep = true;
+	} else {
+		execution.done = true;
+		execution.waitingStep = false;
+		execution.gen = null;
+		project.terminal.writeln('Program exited');
+	}
+	return true;
+};
+
+const start = async () => {
+	while (!execution.done && !execution.paused) {
+		await step();
+	}
+};
+
+const run = async () => {
 	terminal.clear();
 	const source = editor.getText();
 	try {
 		const compiled = interpreter.compile(source);
-		compiled.execute(compiled);
+		execution.gen = compiled.execute(compiled);
+		execution.done = false;
+		execution.waitingStep = true;
+		await start();
 	} catch (error) {
 		if (error instanceof CompilationError) {
 			reportCompilationError(source, error);
@@ -86,21 +119,21 @@ export const init = () => {
 	button.upload.on('click', () => {
 		inputFile.trigger('click');
 	});
-	button.iniciar.on('click', start);
+	button.iniciar.on('click', run);
 };
 
 export const onupload = (handler) => {
 	uploadHandlers.push(handler);
 };
 
-let callNext = null;
+let inputHandler = null;
 
-export const next = () => {
-	callNext?.();
+export const triggerInput = () => {
+	inputHandler?.();
 };
 
-export const user = () => {
+export const inputEvent = () => {
 	return new Promise((done) => {
-		callNext = done;
+		inputHandler = done;
 	});
 };

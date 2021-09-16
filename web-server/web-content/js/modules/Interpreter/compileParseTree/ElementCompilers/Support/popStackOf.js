@@ -4,7 +4,7 @@ export default (vars) => {
     const { memory } = project;
     for (let varData of vars) {
         memory.free(varData.addr);
-        varData.stack.pop();
-        varData.addr = varData.stack.at(-1);
+        varData.memStack.pop();
+        varData.addr = varData.memStack.at(-1);
     }
 };

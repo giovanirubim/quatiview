@@ -43,4 +43,5 @@ new TreeCompiler({
 			context.varUidMap[uid] = varData;
 		}
 	},
+	execute: async function* () {},
 });

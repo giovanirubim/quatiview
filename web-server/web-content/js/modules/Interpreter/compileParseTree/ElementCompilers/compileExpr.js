@@ -25,4 +25,7 @@ new TreeCompiler({
         }
         return { valueType };
 	},
+    execute: async function* (node, context) {
+        console.log(node);
+    },
 });
