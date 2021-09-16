@@ -5,7 +5,7 @@ import typeToText from './Support/typeToText.js';
 new TreeCompiler({
 	nonTerminal: 'var-dec',
 	compile: ({ content }, context) => {
-		const { local, structSign } = context;
+		const { local, structSign, scopeVars } = context;
 		const type = content.type.content;
 		const { items } = content;
 		let offset = 0;
@@ -35,7 +35,10 @@ new TreeCompiler({
 				valueType,
 				arraySize,
 				lValue: true,
+				memStack: [],
+				addr: null,
 			};
+			scopeVars.push(varData);
 			local.set(name, varData);
 			context.varUidMap[uid] = varData;
 		}

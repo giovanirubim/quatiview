@@ -1,4 +1,4 @@
-class Chunk {
+export default class Chunk {
 	constructor({
 		prev = null,
 		next = null,
@@ -65,5 +65,3 @@ class Chunk {
 		return address >= start && address < end;
 	}
 }
-
-module.exports = Chunk;

@@ -2,17 +2,21 @@ import TreeCompiler from '../TreeCompiler.js';
 import Scope from '../Scope.js';
 import { CompilationError } from '../../../../errors.js';
 
+const allocate = 
+
 new TreeCompiler({
 	nonTerminal: 'program',
 	compile: ({ content: lines }) => {
 		const global = new Scope();
+		const globalVars = [];
 		const context = {
 			global,
 			local: global,
-			returnType: null,
 			structs: {},
+			returnType: null,
 			structSign: null,
 			varUidMap: {},
+			scopeVars: globalVars,
 		};
 		for (let line of lines) {
 			TreeCompiler.compile(line, context);
@@ -21,8 +25,11 @@ new TreeCompiler({
 		if (!main) {
 			throw new CompilationError('main function was not declared');
 		}
-		console.log(context.varUidMap);
+		return context;
 	},
-	execute: ({ content: lines }) => {
+	execute: async function* ({ content: lines }, context) {
+		const { global } = context;
+		const main = global.items.main.node;
+		TreeCompiler.execute(main);
 	},
 });

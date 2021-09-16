@@ -1,4 +1,4 @@
-const treeCompilerSet = {}
+const treeCompilerSet = {};
 
 export default class TreeCompiler {
     constructor({ nonTerminal, compile, execute }) {
@@ -12,9 +12,7 @@ export default class TreeCompiler {
         if (!treeCompiler) {
             throw `Tree compiler of ${tree.typeName} not found`;
         }
-        const data = treeCompiler.compile(tree, context);
-        tree.execute = (context) => TreeCompiler.execute(tree, context);
-        return data;
+        return treeCompiler.compile(tree, context);
     }
     static execute(tree, context) {
         const treeCompiler = treeCompilerSet[tree.typeName];

@@ -1,11 +1,12 @@
-const Chunk = require('./Chunk.js');
-const {
+import Chunk from './Chunk.js';
+
+import {
 	InvalidAddress,
 	UnallocatedMemoryAccess,
 	UninitializedMemoryAccess,
 	FreeingUnallocatedMemory,
 	FreeingANonAllocationAddress,
-} = require('../errors');
+} from '../../errors.js';
 
 const NULL = 0;
 const UNINITIALIZED_BYTE = Symbol('UNINITIALIZED_BYTE');
@@ -15,8 +16,12 @@ const pick = (arr) => arr[arr.length*Math.random() | 0];
 class Memory {
 
 	constructor() {
+		this.clear();
+	}
+
+	clear() {
 		this.firstAddress = 0x001000;
-		this.lastAddress  = 0xffffff;
+		this.lastAddress = 0xffffff;
 		this.bytes = {};
 		this.chunks = new Chunk({
 			address: this.firstAddress,
@@ -119,4 +124,4 @@ class Memory {
 	}
 }
 
-export default Memory;
+export default new Memory();
