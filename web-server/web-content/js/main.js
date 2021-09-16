@@ -1,38 +1,32 @@
-import * as Editor from './modules/Editor';
-import * as MemViewer from './modules/MemViewer';
-import * as Panel from './modules/Panel';
-import Terminal from './modules/Terminal';
-import Interpreter from './modules/Interpreter';
+import project from "./project.js";
+
+const { terminal, editor, memViewer, panel } = project;
 
 const loadMemView = () => {
 	const wrappingElement = $('#mem-view-section');
 	const updateSize = () => {
-		MemViewer.resize({
+		memViewer.resize({
 			width: parseInt(wrappingElement.css('width')),
 			height: parseInt(wrappingElement.css('height')),
 		});
 	};
-	MemViewer.setCanvas($('canvas')[0]);
+	memViewer.setCanvas($('canvas')[0]);
 	$(window).bind('resize', updateSize);
 	updateSize();
 };
 
 $(document).ready(() => {
-	Editor.load();
-	Editor.focus();
-	loadMemView();
-	MemViewer.start();
-	const terminal = new Terminal({
+	terminal.init({
 		textarea: $('#terminal-section textarea'),
 		input: $('#terminal-input'),
 	});
-	Panel.init({
-		editor: Editor,
-		memViewer: MemViewer,
-		terminal,
-		interpreter: Interpreter,
-	});
-	Panel.onupload((source) => Editor.setText(source));
-	window.terminal = terminal;
+	editor.load();
+	editor.focus();
+	loadMemView();
+	memViewer.start();
+	panel.init();
+	panel.onupload((source) => project.editor.setText(source));
 	$('form').on('submit', (e) => e.preventDefault());
 });
+
+window.project = project;

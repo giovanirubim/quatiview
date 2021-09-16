@@ -16,7 +16,7 @@ new TreeCompiler({
 			TreeCompiler.compile(line, context);
 		}
 	},
-	execute: ({ content: lines }) => {
-		
+	execute: ({ content: lines }, { project }) => {
+
 	},
 });

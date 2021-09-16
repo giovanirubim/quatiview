@@ -9,7 +9,7 @@ const pop = (array) => {
 };
 
 class Terminal {
-	constructor({
+	init({
 		textarea,
 		input,
 	}) {
@@ -65,4 +65,4 @@ class Terminal {
 	}
 }
 
-export default Terminal;
+export default new Terminal();

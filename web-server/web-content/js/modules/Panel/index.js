@@ -1,12 +1,14 @@
 import { CompilationError, LexycalError, SyntaticError } from "../../errors.js";
 import getLineOf from "./Support/getLineOf.js";
+import project from '../../Project.js';
 
 let button = {};
 let uploadHandlers = [];
-let editor;
-let memViewer;
-let terminal;
-let interpreter;
+const {
+	editor,
+	terminal,
+	interpreter,
+} = project;
 
 const bindInputFile = (inputFile) => {
 	inputFile.on('change', function() {
@@ -58,6 +60,7 @@ const start = () => {
 	const source = editor.getText();
 	try {
 		const compiled = interpreter.compile(source);
+		terminal.writeln('Compiled successfully');
 	} catch (error) {
 		if (error instanceof CompilationError) {
 			reportCompilationError(source, error);
@@ -67,11 +70,7 @@ const start = () => {
 	}
 };
 
-export const init = (dependencies) => {
-	editor = dependencies.editor;
-	memViewer = dependencies.memViewer;
-	terminal = dependencies.terminal;
-	interpreter = dependencies.interpreter;
+export const init = () => {
 	const buttons = $('#control-panel .panel-button');
 	buttons.each(function() {
 		const item = $(this);
@@ -90,4 +89,16 @@ export const init = (dependencies) => {
 
 export const onupload = (handler) => {
 	uploadHandlers.push(handler);
+};
+
+let callNext = null;
+
+export const next = () => {
+	callNext?.();
+};
+
+export const user = () => {
+	return new Promise((done) => {
+		callNext = done;
+	});
 };
