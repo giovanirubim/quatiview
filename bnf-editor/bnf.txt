@@ -34,4 +34,4 @@ if ::= 'if' '(' expr ')' scope ['else' scope]
 while ::= 'while' '(' expr ')' scope
 for ::= 'for' '(' [expr] ';' [expr] ';' [expr] ')' scope
 program ::= global_line*
-return ::= 'return' expr ';'
+return ::= 'return' [expr] ';'

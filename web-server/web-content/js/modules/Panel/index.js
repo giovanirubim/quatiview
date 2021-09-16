@@ -50,9 +50,11 @@ const reportCompilationError = (source, error) => {
 	} else {
 		terminal.writeln(`Error: ${error.message}`);
 	}
-	const { line, lineCount, pos } = getLineOf(source, index);
-	terminal.writeln(`${lineCount.toString().padStart(4, ' ')} | ${line}`);
-	terminal.writeln(`${' '.repeat(4)} |${' '.repeat(pos)}^`);
+	if (index != null) {
+		const { line, lineCount, pos } = getLineOf(source, index);
+		terminal.writeln(`${lineCount.toString().padStart(4, ' ')} | ${line}`);
+		terminal.writeln(`${' '.repeat(4)} |${' '.repeat(pos)}^`);
+	}
 };
 
 const start = () => {
@@ -60,7 +62,7 @@ const start = () => {
 	const source = editor.getText();
 	try {
 		const compiled = interpreter.compile(source);
-		terminal.writeln('Compiled successfully');
+		compiled.execute(compiled);
 	} catch (error) {
 		if (error instanceof CompilationError) {
 			reportCompilationError(source, error);
