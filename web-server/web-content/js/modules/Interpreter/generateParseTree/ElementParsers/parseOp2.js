@@ -9,11 +9,11 @@ const parseOp2 = (tokenGenerator) => {
         'asterisk',
     );
     if (operator) {
-        let item = parseOp2(tokenGenerator);
+        let operand = parseOp2(tokenGenerator);
         return new ParseTreeNode({
             typeName: 'op2',
-            content: { item, operator },
-            children: [ item, operator ],
+            content: { operand, operator },
+            children: [ operand, operator ],
         });
     }
     if (tokenGenerator.nextIs('sizeof')) {

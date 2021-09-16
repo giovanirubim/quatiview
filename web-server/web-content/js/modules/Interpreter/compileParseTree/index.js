@@ -7,6 +7,7 @@ import './ElementCompilers/compileId.js';
 import './ElementCompilers/compileIf.js';
 import './ElementCompilers/compileLocalLine.js';
 import './ElementCompilers/compileOp0.js';
+import './ElementCompilers/compileOp2.js';
 import './ElementCompilers/compileOp3.js';
 import './ElementCompilers/compileOp4.js';
 import './ElementCompilers/compileOp5.js';

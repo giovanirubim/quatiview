@@ -9,7 +9,7 @@ new TreeCompiler({
 		const valueType = typeToText(type.content, pointerCount);
 		const size = getTypeSize(valueType, context, type.startsAt);
 		return {
-			valueType,
+			valueType: 'int',
 			value: Number(size),
 		};
 	},
