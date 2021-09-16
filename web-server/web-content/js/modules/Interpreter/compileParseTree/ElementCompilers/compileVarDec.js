@@ -14,7 +14,14 @@ new TreeCompiler({
 			const totalPointerCount = pointerCount + (arraySize !== null)
 			const valueType = typeToText(type, totalPointerCount);
 			if (structSign) {
-				const size = getTypeSize(valueType, context, startsAt);
+				let size;
+				if (arraySize == null) {
+					size = getTypeSize(valueType, context, startsAt);
+				} else if (pointerCount) {
+					size = arraySize*4;
+				} else {
+					size = getTypeSize(typeToText(type))*arraySize;
+				}
 				structSign.vars[name] = { name, valueType, size, offset };
 				offset += size;
 				continue;

@@ -16,6 +16,7 @@ new TreeCompiler({
         for (let item of vars) {
             TreeCompiler.compile(item, context);
         }
+        console.log(context.structSign);
         context.structSign = null;
         structSign.size = Object.values(structSign.vars)
             .map(item => item.size)

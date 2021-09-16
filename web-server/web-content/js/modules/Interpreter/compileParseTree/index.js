@@ -5,6 +5,7 @@ import './ElementCompilers/compileExpr.js';
 import './ElementCompilers/compileFunDec.js';
 import './ElementCompilers/compileId.js';
 import './ElementCompilers/compileIf.js';
+import './ElementCompilers/compileIndexAcc.js';
 import './ElementCompilers/compileLocalLine.js';
 import './ElementCompilers/compileOp0.js';
 import './ElementCompilers/compileOp1.js';
