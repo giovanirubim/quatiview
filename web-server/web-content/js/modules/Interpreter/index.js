@@ -1,15 +1,10 @@
-import SourceConsumer from './SourceConsumer.js';
-import generateParseTree from './generateParseTree';
-import compileParseTree from './compileParseTree';
-import TreeCompiler from './compileParseTree/TreeCompiler.js';
+import SourceConsumer from './Support/SourceConsumer.js';
+import TokenGenerator from './TokenGenerator.js';
+import TreeParser from './Model/NonTerminal.js';
+import './LanguageDefinitions/NonTerminals';
 
-export default class Interpreter {
-	static compile(sourceCode) {
-		const tree = generateParseTree(new SourceConsumer(sourceCode));
-		const context = compileParseTree(tree);
-		return {
-			tree,
-			execute: () => TreeCompiler.execute(tree, context),
-		};
-	}
-}
+export const run = (source) => {
+    const sourceConsumer = new SourceConsumer(source);
+    const tokenGenerator = new TokenGenerator(sourceConsumer);
+    TreeParser.parse('id', { tokenGenerator });
+};

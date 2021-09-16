@@ -1,1 +1,0 @@
-export default (valueType) => valueType.includes('*') || valueType === 'int';

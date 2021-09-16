@@ -1,68 +1,61 @@
+let textarea;
+let input;
+const buffer = [];
+const readyHandler = null;
+
 const stringToBytes = (string) => {
 	const chars = string.split('');
 	return chars.map((char) => char.charCodeAt(0));
 };
 
-const pop = (array) => {
-	const [ item ] = array.splice(0, 1);
-	return item;
+const handleInput = () => {
 };
 
-class Terminal {
-	init({
-		textarea,
-		input,
-	}) {
-		this.textarea = textarea;
-		this.input = input;
-		this.buffer = [];
-		this.readyHandler = null;
-		this.disable();
-		input.on('keydown', (e) => {
-			if (!/enter/i.test(e.key)) {
-				return;
-			}
-			if (e.ctrlKey && e.shiftKey && e.altKey) {
-				return;
-			}
-			this.disable();
-			const string = input[0].value + '\n';
-			input.val('');
-			this.buffer.push(...stringToBytes(string));
-			const { readyHandler } = this;
-			if (readyHandler !== null) {
-				this.readyHandler = null;
-				readyHandler(pop(this.buffer));
-			}
-		});
+const bindInput = () => input.on('keydown', (e) => {
+	if (!/enter/i.test(e.key)) {
+		return;
 	}
-	enable() {
-		this.input.removeAttr('disabled');
-		return this;
+	if (e.ctrlKey && e.shiftKey && e.altKey) {
+		return;
 	}
-	disable() {
-		this.input.attr({ disabled: 'true' });
-		return this;
-	}
-	putchar(byte) {
-		this.textarea[0].value += String.fromCharCode(byte);
-		return this;
-	}
-	getchar() {
-		if (this.buffer.length === 0) {
-			this.enable();
-			return new Promise((done) => this.readyHandler = done);
-		}
-		return Promise.resolve(pop(this.buffer));
-	}
-	writeln(string) {
-		this.textarea[0].value += string + '\n';
-		return this;
-	}
-	clear() {
-		this.textarea[0].value = '';
-		return this;
-	}
-}
+	disable();
+	const string = input[0].value + '\n';
+	input.val('');
+	buffer.push(...stringToBytes(string));
+	handleInput();
+});
 
-export default new Terminal();
+export const init = ({ textarea, input }) => {
+	textarea = textarea;
+	input = input;
+	disable();
+	bindInput();
+};
+
+export const enable = () => {
+	input.removeAttr('disabled');
+};
+
+export const disable = () => {
+	input.attr({ disabled: 'true' });
+};
+
+export const putchar = (byte) => {
+	textarea[0].value += String.fromCharCode(byte);
+};
+
+export const getchar = () => {
+	if (buffer.length === 0) {
+		enable();
+		return new Promise((done) => readyHandler = done);
+	}
+	return Promise.resolve(pop(buffer));
+};
+
+export const writeln = (string) => {
+	textarea[0].value += string + '\n';
+};
+
+export const clear = () => {
+	textarea[0].value = '';
+};
