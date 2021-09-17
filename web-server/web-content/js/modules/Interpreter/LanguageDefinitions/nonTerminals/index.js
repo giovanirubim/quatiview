@@ -1,4 +1,10 @@
-import './Parsers/id.js';
 import './Parsers/char-const.js';
 import './Parsers/str-const.js';
 import './Parsers/int-const.js';
+import './Parsers/const.js';
+import './Parsers/int-type.js';
+import './Parsers/struct-type.js';
+import './Parsers/void-type.js';
+import './Parsers/type.js';
+import './Parsers/var-item.js';
+import './Parsers/var-dec.js';

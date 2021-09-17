@@ -1,6 +1,6 @@
-import TreeParser from '../../../TreeParser.js';
+import NonTerminal from "../../../Model/NonTerminal.js";
 
-new TreeParser({
+new NonTerminal({
     name: 'str-const',
     parse: ({ tokenGenerator }) => tokenGenerator.pop('str-const'),
 });
