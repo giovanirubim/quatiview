@@ -3,7 +3,7 @@ int_const ::= /^([1-9]\d*|0)\b/
 char_const ::= /^'([^\n'\\]|\\[\x21-\x7e])'/
 str_const ::= /^"([^\n"\\]|\\[\\n"])*"/
 const ::= int_const | str_const | char_const | 'NULL'
-op9 ::= op8 ('=' op8)*
+op9 ::= op8 ['=' op9]
 op8 ::= op7 ('||' op7)*
 op7 ::= op6 ('&&' op6)*
 op6 ::= op5 (('==' | '!=') op5)*
