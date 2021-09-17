@@ -8,7 +8,7 @@ export default class TreeParser {
         this.parse = parse;
         map[name] = this;
     }
-    static parse(name, tokenGenerator) {
+    static parse(name, { tokenGenerator }) {
         const nonTerminal = map[name];
         if (nonTerminal === undefined) {
             throw `No TreeParser defined for ${name}`;
@@ -16,7 +16,7 @@ export default class TreeParser {
         const prevTarget = tokenGenerator.target;
         const children = [];
         tokenGenerator.target = children;
-        const content = nonTerminal.parse(tokenGenerator);
+        const content = nonTerminal.parse({ tokenGenerator });
         tokenGenerator.target = prevTarget;
         return new ParseTreeNode({ name, content, children });
     }

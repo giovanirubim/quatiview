@@ -8,10 +8,20 @@ export const run = (source) => {
     const sourceConsumer = new SourceConsumer(source);
     const tokenGenerator = new TokenGenerator(sourceConsumer);
     try {
-        return TreeParser.parse('id', { tokenGenerator });
+        return TreeParser.parse('str-const', { tokenGenerator });
     } catch(error) {
         if (error instanceof CompilationError) {
-            console.log(error, error.index);
+            if (error.index === source.index) {
+                console.log('Unexpected end of file');
+            } else {
+                console.log('at ' + error.index);
+                console.log(error);
+                console.log(source.substr(error.index));
+            }
+        } else {
+            console.error(error);
         }
     }
 };
+
+window.run = run;

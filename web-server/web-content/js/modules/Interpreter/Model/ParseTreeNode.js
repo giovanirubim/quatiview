@@ -18,8 +18,6 @@ export default class ParseTreeNode {
 		}
 		this.content = content ?? null;
 		this.length = this.endsAt - this.startsAt;
-	}
-	isToken() {
-		return (typeof content) === 'string';
+		this.isToken = (typeof content) === 'string';
 	}
 }
