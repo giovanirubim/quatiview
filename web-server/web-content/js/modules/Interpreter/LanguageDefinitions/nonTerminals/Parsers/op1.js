@@ -7,7 +7,6 @@ const tokenToNonTerminal = {
     'arrow': 'ptr-member-acc',
 };
 
-
 new NonTerminal({
     name: 'op1',
     parse: (ctx) => {
