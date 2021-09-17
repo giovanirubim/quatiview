@@ -1,8 +1,10 @@
 import SourceConsumer from './Support/SourceConsumer.js';
 import TokenGenerator from './TokenGenerator.js';
-import TreeParser from './Model/TreeParser.js';
-import './LanguageDefinitions/NonTerminals';
+import TreeParser from './TreeParser.js';
 import { CompilationError } from '../errors.js';
+
+// Load non terminals
+import './LanguageDefinitions/NonTerminals/';
 
 export const run = (source) => {
     const sourceConsumer = new SourceConsumer(source);

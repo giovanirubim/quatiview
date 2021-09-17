@@ -1,4 +1,4 @@
-import TreeParser from '../../../Model/TreeParser.js';
+import TreeParser from '../../../TreeParser.js';
 
 new TreeParser({
     name: 'int-const',
