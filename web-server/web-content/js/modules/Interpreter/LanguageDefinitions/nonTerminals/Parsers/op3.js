@@ -5,11 +5,7 @@ new NonTerminal({
     parse: (ctx) => {
         let root = ctx.parse('op2');
         for (;;) {
-            const operator = ctx.token.popIfIs(
-                'asterisk',
-                'slash',
-                'percent',
-            );
+            const operator = ctx.token.popIfIs('asterisk', 'slash', 'percent');
             if (!operator) break;
             root = {
                 operator: operator.content,

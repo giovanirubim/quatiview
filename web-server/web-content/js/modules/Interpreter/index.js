@@ -26,5 +26,3 @@ export const run = (source) => {
         }
     }
 };
-
-window.run = run;
