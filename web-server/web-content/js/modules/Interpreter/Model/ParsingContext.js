@@ -5,6 +5,34 @@ import { CompilationError } from "../../errors.js";
 export default class ParsingContext {
     constructor({ tokenGenerator }) {
         this.token = tokenGenerator;
+        this.structs = {};
+        this.current = {
+            varDecType: null,
+        };
+        this.stacks = {
+            varDecType: [],
+        };
+    }
+    pushData(name, value) {
+        this.stacks[name].push(this.current[name]);
+        this.current[name] = value;
+    }
+    popData(name) {
+        this.current[name] = this.stacks[name].pop();
+    }
+    getTypeSize(type, index) {
+        if (type.endsWith('*')) return 4;
+        if (type === 'char') return 1;
+        if (type === 'int') return 4;
+        if (type.startsWith('struct ')) {
+            const [ name ] = type.match(/\s\w+$/);
+            const size = this.structs[name]?.size;
+            if (size != null) return size;
+        }
+        throw new CompilationError(
+            `storage size of '${type}' isn't known`,
+            index,
+        );
     }
     parse(name) {
         const nonTerminal = NonTerminal.getByName(name);
@@ -47,3 +75,5 @@ export default class ParsingContext {
         throw furthestError;
     }
 }
+
+window.ctx = new ParsingContext({ });

@@ -3,13 +3,11 @@ import NonTerminal from "../../../Model/NonTerminal.js";
 new NonTerminal({
     name: 'var-dec',
     parse: (ctx) => {
-        const type = ctx.parse('type');
-        const items = [ ctx.parse('var-item') ];
-        const { token } = ctx;
-        while (token.popIfIs('comma')) {
-            items.push(ctx.parse('var-item'));
+        const type = ctx.parse('type').content;
+        ctx.parse('var-item');
+        while (ctx.token.popIfIs('comma')) {
+            ctx.parse('var-item');
         }
-        token.pop('semicolon');
-        return { type, items };
+        ctx.token.pop('semicolon');
     },
 });

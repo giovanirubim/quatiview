@@ -31,13 +31,15 @@ export const run = (source) => {
     }
 };
 
+const compile = () => {
+    console.clear();
+    Terminal.clear();
+    if (run(Editor.getText())) Terminal.writeln('Success');
+};
+
 $(document).ready(() => {
     Editor.load();
     Terminal.init();
-    $('#editor-section textarea').on('input', () => {
-        Terminal.clear();
-        if (run(Editor.getText())) Terminal.writeln('Success');
-    });
-    Terminal.clear();
-    if (run(Editor.getText())) Terminal.writeln('Success');
+    $('#editor-section textarea').on('input', compile);
+    compile();
 });

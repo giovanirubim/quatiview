@@ -5,6 +5,11 @@ new NonTerminal({
     parse: (ctx) => {
         const { token } = ctx;
         const name = ctx.parse('struct-type').content;
+        const structDef = {
+            members: {},
+            size: null,
+        };
+        ctx.current.structDef = structDef;
         token.pop('left-brackets');
         const vars = [ ctx.parse('var-dec') ];
         while (!token.popIfIs('right-brackets')) {
