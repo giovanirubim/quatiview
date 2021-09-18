@@ -5,7 +5,7 @@ new NonTerminal({
     parse: (ctx) => {
         let root = ctx.parse('op3');
         for (;;) {
-            const operator = ctx.tokenGenerator.popIfIs(
+            const operator = ctx.token.popIfIs(
                 'plus',
                 'minus',
             );

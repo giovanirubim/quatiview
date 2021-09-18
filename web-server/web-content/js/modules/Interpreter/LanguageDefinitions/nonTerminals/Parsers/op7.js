@@ -4,7 +4,7 @@ new NonTerminal({
     name: 'op7',
     parse: (ctx) => {
         let root = ctx.parse('op6');
-        while (ctx.tokenGenerator.popIfIs('logical-and')) {
+        while (ctx.token.popIfIs('logical-and')) {
             root = {
                 left: root,
                 right: ctx.parse('op6'),

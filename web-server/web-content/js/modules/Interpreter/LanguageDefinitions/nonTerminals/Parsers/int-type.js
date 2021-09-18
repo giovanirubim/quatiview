@@ -2,5 +2,5 @@ import NonTerminal from "../../../Model/NonTerminal.js";
 
 new NonTerminal({
     name: 'int-type',
-    parse: (ctx) => ctx.tokenGenerator.pop('int', 'char'),
+    parse: (ctx) => ctx.token.pop('int', 'char'),
 });

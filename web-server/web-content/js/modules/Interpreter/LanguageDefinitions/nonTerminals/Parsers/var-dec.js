@@ -5,11 +5,11 @@ new NonTerminal({
     parse: (ctx) => {
         const type = ctx.parse('type');
         const items = [ ctx.parse('var-item') ];
-        const { tokenGenerator } = ctx;
-        while (tokenGenerator.popIfIs('comma')) {
+        const { token } = ctx;
+        while (token.popIfIs('comma')) {
             items.push(ctx.parse('var-item'));
         }
-        tokenGenerator.pop('semicolon');
+        token.pop('semicolon');
         return { type, items };
     },
 });

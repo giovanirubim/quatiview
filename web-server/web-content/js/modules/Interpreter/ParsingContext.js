@@ -4,7 +4,7 @@ import { CompilationError } from "../errors.js";
 
 export default class ParsingContext {
     constructor({ tokenGenerator }) {
-        this.tokenGenerator = tokenGenerator;
+        this.token = tokenGenerator;
     }
     parse(name) {
         const nonTerminal = NonTerminal.getByName(name);

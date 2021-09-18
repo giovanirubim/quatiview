@@ -68,6 +68,7 @@ add({ name: 'logical-or', pattern: '||' });
 
 // Single character symbols
 add({ name: 'ampersand', pattern: '&' });
+add({ name: 'exclamation-mark', pattern: '!' });
 add({ name: 'assign', pattern: '=' });
 add({ name: 'asterisk', pattern: '*' });
 add({ name: 'comma', pattern: ',' });

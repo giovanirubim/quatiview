@@ -12,7 +12,7 @@ new NonTerminal({
     parse: (ctx) => {
         let root = ctx.parse('op0');
         for (;;) {
-            const token = ctx.tokenGenerator().next();
+            const token = ctx.token.next();
             if (!token) break;
             const nonTerminal = tokenToNonTerminal[token.name];
             if (!nonTerminal) break;
