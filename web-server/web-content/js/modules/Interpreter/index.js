@@ -1,12 +1,12 @@
-import * as Editor from '../Editor';
-import * as Terminal from '../Terminal';
+import * as Editor from '../Editor/';
+import * as Terminal from '../Terminal/';
 import SourceConsumer from './Support/SourceConsumer.js';
 import TokenGenerator from './TokenGenerator.js';
-import ParsingContext from './ParsingContext.js';
 import { CompilationError } from '../errors.js';
 
 // Load non terminals
 import './LanguageDefinitions/NonTerminals/';
+import ParsingContext from './Model/ParsingContext.js';
 
 export const run = (source) => {
     const sourceConsumer = new SourceConsumer(source);

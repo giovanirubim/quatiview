@@ -1,6 +1,6 @@
-import NonTerminal from "./Model/NonTerminal.js";
-import ParseTreeNode from "./Model/ParseTreeNode.js";
-import { CompilationError } from "../errors.js";
+import NonTerminal from "./NonTerminal.js";
+import ParseTreeNode from "./ParseTreeNode.js";
+import { CompilationError } from "../../errors.js";
 
 export default class ParsingContext {
     constructor({ tokenGenerator }) {

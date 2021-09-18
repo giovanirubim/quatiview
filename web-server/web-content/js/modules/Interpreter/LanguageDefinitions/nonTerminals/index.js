@@ -12,7 +12,6 @@ import './Parsers/op0.js';
 import './Parsers/expr.js';
 import './Parsers/neg.js';
 import './Parsers/ptr-acc.js';
-import './Parsers/addr-of.js';
 import './Parsers/not.js';
 import './Parsers/arg-call.js';
 import './Parsers/index-acc.js';
