@@ -1,7 +1,7 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
 
 new NonTerminal({
-    name: 'func-dec',
+    name: 'fun-dec',
     parse: (ctx) => {
         const type = ctx.parse('type');
         const pointerCount = ctx.token.popMany('asterisk').length;
