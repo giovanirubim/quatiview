@@ -4,8 +4,8 @@ new NonTerminal({
     name: 'op2',
     parse: (ctx) => ctx.parseOneOf(
         'neg',
-        'ptr_acc',
-        'addr_of',
+        'ptr-acc',
+        'addr-of',
         'not',
         'sizeof',
         'op1',

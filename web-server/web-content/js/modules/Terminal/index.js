@@ -25,9 +25,9 @@ const bindInput = () => input.on('keydown', (e) => {
 	handleInput();
 });
 
-export const init = ({ textarea, input }) => {
-	textarea = textarea;
-	input = input;
+export const init = () => {
+	textarea = $('#terminal-section textarea');
+	input = $('#terminal-section input');
 	disable();
 	bindInput();
 };

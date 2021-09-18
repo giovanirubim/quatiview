@@ -9,6 +9,6 @@ new NonTerminal({
             token.pop('right-parentheses');
             return expr;
         }
-        return token.pop('id', 'const');
+        return token.popIfIs('id') || ctx.parse('const');
     },
 });

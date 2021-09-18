@@ -10,6 +10,6 @@ new NonTerminal({
         const args = ctx.token.nextIs('right-parentheses') ? null : ctx.parse('arg-list');
         ctx.token.pop('right-parentheses');
         const scope = ctx.parse('scope');
-        return { type, pointerCount, name, args };
+        return { type, pointerCount, name, args, scope };
     },
 });

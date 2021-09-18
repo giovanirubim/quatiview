@@ -1,7 +1,7 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
 
 new NonTerminal({
-    name: 'if',
+    name: 'while',
     parse: (ctx) => {
         const { token } = ctx;
         token.pop('while');

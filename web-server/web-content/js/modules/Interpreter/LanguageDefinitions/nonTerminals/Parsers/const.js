@@ -2,9 +2,10 @@ import NonTerminal from "../../../Model/NonTerminal.js";
 
 new NonTerminal({
     name: 'const',
-    parse: (ctx) => ctx.parseOneOf(
+    parse: ({ token }) => token.pop(
         'int-const',
         'char-const',
-        'str-const'
+        'str-const',
+        'NULL',
     ),
 });

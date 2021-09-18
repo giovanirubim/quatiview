@@ -15,12 +15,12 @@ export default class ParsingContext {
         if (parse == null) {
             throw `No parser defined for ${name}`;
         }
-        const { tokenGenerator } = this;
-        const prevTarget = tokenGenerator.target;
+        const { token } = this;
+        const prevTarget = token.target;
         const children = [];
-        tokenGenerator.target = children;
+        token.target = children;
         const content = parse(this);
-        tokenGenerator.target = prevTarget;
+        token.target = prevTarget;
         if (content instanceof ParseTreeNode) {
             return content;
         }
@@ -28,13 +28,13 @@ export default class ParsingContext {
     }
     parseOneOf(...names) {
         let furthestError = null;
-        const { tokenGenerator } = this;
-        const state = tokenGenerator.getState();
+        const { token } = this;
+        const state = token.getState();
         for (let name of names) {
             try {
                 return this.parse(name);
             } catch(error) {
-                tokenGenerator.setState(state);
+                token.setState(state);
                 if (!(error instanceof CompilationError)) {
                     throw error;
                 }

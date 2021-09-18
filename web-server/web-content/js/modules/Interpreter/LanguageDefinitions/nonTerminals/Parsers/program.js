@@ -4,7 +4,7 @@ new NonTerminal({
     name: 'program',
     parse: (ctx) => {
         const lines = [];
-        while (!ctx.token.end()) {
+        while (ctx.token.next()) {
             lines.push(ctx.parse('global-line'));
         }
         return lines;
