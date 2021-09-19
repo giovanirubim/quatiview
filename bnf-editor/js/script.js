@@ -61,8 +61,9 @@ const parseLine = (line) => {
 		return {type: 'optional', content}
 	}
 	let popId = () => {
-		if (!next().match(/^\w+$/)) abort()
-		return {type: 'id', content: pop()}
+		if (!next().match(/^[\w\-]+$/)) abort()
+		const content = pop();
+		return {type: 'id', content }
 	}
 	let popWrappedExpr = () => {
 		if (pop() !== '(') abort()
@@ -142,7 +143,7 @@ let toSpan = (text) => {
 		type = 'optional'
 	} else if (text.match(/[\(\)]/)) {
 		type = 'bracket'
-	} else if (text.match(/^\w+$/)) {
+	} else if (text.match(/^[\w\-]+$/)) {
 		type = 'id" name="' + text
 	} else {
 		type = 'unknown'
@@ -183,7 +184,7 @@ const bindInput = (input) => {
 	})
 	input.on('blur', solve)
 }
-const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|\w+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
+const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|[\w\-]+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
 const toTokenList = (str) => {
 	const matches = [...str.matchAll(tokenRegex)]
 	return matches.map((match) => match[0])
