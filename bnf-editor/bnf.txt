@@ -2,8 +2,7 @@ id ::= /^[a-zA-Z_]\w*/
 int-const ::= /^([1-9]\d*|0)\b/
 char-const ::= /^'([^\n'\\]|\\[\x21-\x7e])'/
 str-const ::= /^"([^\n"\\]|\\[\\n"])*"/
-null ::= 'NULL'
-const ::= int-const | str-const | char-const | null
+const ::= int-const | str-const | char-const | 'NULL'
 op9 ::= op8 ['=' op9]
 op8 ::= op7 ('||' op7)*
 op7 ::= op6 ('&&' op6)*
