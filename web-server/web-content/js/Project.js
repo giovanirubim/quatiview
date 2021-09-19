@@ -1,9 +1,9 @@
-import * as Editor from './modules/Editor';
-import * as MemViewer from './modules/MemViewer';
-import * as Panel from './modules/Panel';
-import Terminal from './modules/Terminal';
-import Interpreter from './modules/Interpreter';
-import Memory from './modules/Memory';
+import * as Editor from './Modules/Editor';
+import * as MemViewer from './Modules/MemViewer';
+import * as Panel from './Modules/Panel';
+import Terminal from './Modules/Terminal';
+import Interpreter from './Modules/Interpreter';
+import Memory from './Modules/Memory';
 
 const project = {
 	editor: Editor,

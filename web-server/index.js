@@ -15,6 +15,7 @@ http.createServer((req, res) => {
 	try {
 		if (urlpath.endsWith('/')) {
 			const jspathname = path.join(__dirname, 'web-content', urlpath, 'index.js');
+			console.log(jspathname);
 			if (fs.existsSync(jspathname)) {
 				urlpath += 'index.js';
 			} else {
