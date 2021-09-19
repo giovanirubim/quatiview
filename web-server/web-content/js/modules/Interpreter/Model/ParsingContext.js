@@ -1,17 +1,17 @@
 import NonTerminal from "./NonTerminal.js";
 import ParseTreeNode from "./ParseTreeNode.js";
-import { CompilationError } from "../../errors.js";
+import { CompilationError, SyntaticError } from "../../errors.js";
 
 export default class ParsingContext {
     constructor({ tokenGenerator }) {
         this.token = tokenGenerator;
         this.structs = {};
         this.current = {
-            varDecType: null,
+            varDec: null,
             structDec: null,
         };
         this.stacks = {
-            varDecType: [],
+            varDec: [],
             structDec: [],
         };
     }
@@ -27,7 +27,7 @@ export default class ParsingContext {
         if (type === 'char') return 1;
         if (type === 'int') return 4;
         if (type.startsWith('struct ')) {
-            const [ name ] = type.match(/\s\w+$/);
+            const [ name ] = type.match(/\b\w+$/);
             const size = this.structs[name]?.size;
             if (size != null) return size;
         }
@@ -65,7 +65,7 @@ export default class ParsingContext {
                 return this.parse(name);
             } catch(error) {
                 token.setState(state);
-                if (!(error instanceof CompilationError)) {
+                if (!(error instanceof SyntaticError)) {
                     throw error;
                 }
                 if (furthestError && furthestError.index > error.index) {
@@ -77,5 +77,3 @@ export default class ParsingContext {
         throw furthestError;
     }
 }
-
-window.ctx = new ParsingContext({ });

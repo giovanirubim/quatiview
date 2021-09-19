@@ -13,7 +13,9 @@ export const run = (source) => {
     const tokenGenerator = new TokenGenerator(sourceConsumer);
     const context = new ParsingContext({ tokenGenerator });
     try {
-        return context.parse('program');
+        const res = context.parse('program');
+        console.log(context);
+        return res;
     } catch(error) {
         if (error instanceof CompilationError) {
             if (error.index === source.index) {
@@ -34,7 +36,9 @@ export const run = (source) => {
 const compile = () => {
     console.clear();
     Terminal.clear();
-    if (run(Editor.getText())) Terminal.writeln('Success');
+    if (run(Editor.getText())) {
+        Terminal.writeln('Success');
+    }
 };
 
 $(document).ready(() => {
