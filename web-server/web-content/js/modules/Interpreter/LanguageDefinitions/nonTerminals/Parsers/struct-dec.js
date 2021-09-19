@@ -4,18 +4,19 @@ new NonTerminal({
     name: 'struct-dec',
     parse: (ctx) => {
         const { token } = ctx;
-        const name = ctx.parse('struct-type').content;
         const structDef = {
+            name: ctx.parse('struct-type').content,
             members: {},
+            currentOffset: 0,
             size: null,
         };
-        ctx.current.structDef = structDef;
+        ctx.push('structDec', structDef);
         token.pop('left-brackets');
-        const vars = [ ctx.parse('var-dec') ];
+        ctx.parse('var-dec');
         while (!token.popIfIs('right-brackets')) {
-            vars.push(ctx.parse('var-dec'));
+            ctx.parse('var-dec');
         }
+        ctx.pop('structDec');
         token.pop('semicolon');
-        return { name, vars };
     },
 });

@@ -8,16 +8,18 @@ export default class ParsingContext {
         this.structs = {};
         this.current = {
             varDecType: null,
+            structDec: null,
         };
         this.stacks = {
             varDecType: [],
+            structDec: [],
         };
     }
-    pushData(name, value) {
+    push(name, value) {
         this.stacks[name].push(this.current[name]);
         this.current[name] = value;
     }
-    popData(name) {
+    pop(name) {
         this.current[name] = this.stacks[name].pop();
     }
     getTypeSize(type, index) {
