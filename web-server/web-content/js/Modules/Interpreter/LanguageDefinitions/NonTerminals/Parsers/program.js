@@ -9,4 +9,9 @@ new NonTerminal({
         }
         return lines;
     },
+    compile: (ctx, node) => {
+        for (let line of node.content) {
+            ctx.compile(line);
+        }
+    },
 });

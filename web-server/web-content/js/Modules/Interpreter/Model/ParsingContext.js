@@ -36,12 +36,15 @@ export default class ParsingContext {
             index,
         );
     }
-    parse(name) {
+    getNonTerminal(name) {
         const nonTerminal = NonTerminal.getByName(name);
         if (nonTerminal == null) {
             throw `No NonTerminal defined for ${name}`;
         }
-        const { parse } = nonTerminal;
+        return nonTerminal;
+    }
+    parse(name) {
+        const { parse } = this.getNonTerminal(name);
         if (parse == null) {
             throw `No parser defined for ${name}`;
         }
@@ -55,6 +58,14 @@ export default class ParsingContext {
             return content;
         }
         return new ParseTreeNode({ name, content, children });
+    }
+    compile(node) {
+        const { name } = node;
+        const { compile } = this.getNonTerminal(name);
+        if (compile == null) {
+            throw `No compiler defined for ${name}`;
+        }
+        return compile(this, node);
     }
     parseOneOf(...names) {
         let furthestError = null;

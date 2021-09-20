@@ -13,9 +13,10 @@ export const run = (source) => {
     const tokenGenerator = new TokenGenerator(sourceConsumer);
     const context = new ParsingContext({ tokenGenerator });
     try {
-        const res = context.parse('program');
+        const tree = context.parse('program');
+        const obj = context.compile(tree);
         console.log(context);
-        return res;
+        return obj;
     } catch(error) {
         if (error instanceof CompilationError) {
             if (error.index === source.index) {

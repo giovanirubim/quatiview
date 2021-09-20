@@ -10,11 +10,9 @@ export default class ParseTreeNode {
 			}
 			this.startsAt = startsAt;
 			this.endsAt = endsAt;
-			// this.children = children;
 		} else {
 			this.startsAt = startsAt;
 			this.endsAt = endsAt;
-			// this.children = null;
 		}
 		this.content = content ?? null;
 		this.length = this.endsAt - this.startsAt;
