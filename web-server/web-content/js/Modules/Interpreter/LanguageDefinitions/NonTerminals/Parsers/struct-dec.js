@@ -20,9 +20,16 @@ new NonTerminal({
             members: {},
             size: null,
         };
+        ctx.structs[name] = struct;
         ctx.push({ struct });
         for (let line of lines) {
             ctx.compile(line);
+        }
+        struct.size = 0;
+        for (let name in struct.members) {
+            const member = struct.members[name];
+            member.offset = struct.size;
+            struct.size += member.size;
         }
         ctx.pop('struct');
     },

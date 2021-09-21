@@ -4,10 +4,27 @@ new NonTerminal({
     name: 'var-dec',
     parse: (ctx) => {
         const type = ctx.parse('type').content;
-        ctx.parse('var-item');
+        const items = [ ctx.parse('var-item') ];
         while (ctx.token.popIfIs('comma')) {
-            ctx.parse('var-item');
+            items.push(ctx.parse('var-item'));
         }
         ctx.token.pop('semicolon');
+        return { type, items };
+    },
+    compile: (ctx, node) => {
+        const { type: decType, items } = node.content;
+        for (let item of items) {
+            const { name, pointerCount } = item.content;
+            const type = decType + '*'.repeat(pointerCount);
+            const size = ctx.getTypeSize(type, item.startsAt);
+            const { struct } = ctx.current;
+            if (struct) {
+                struct.members[name] = { name, size, type, offset: null };
+            } else {
+                const id = ++ ctx.lastVarUid;
+                const data = { id, name, size, type };
+                ctx.vars[id] = data;
+            }
+        }
     },
 });

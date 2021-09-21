@@ -1,10 +1,13 @@
 import NonTerminal from "./NonTerminal.js";
 import ParseTreeNode from "./ParseTreeNode.js";
+import Scope from './Scope.js';
 import { CompilationError, SyntaticError } from "../../errors.js";
 
 export default class ParsingContext {
     constructor({ tokenGenerator }) {
         this.token = tokenGenerator;
+        this.lastVarUid = 0;
+        this.vars = {};
         this.structs = {};
         this.current = {
             varDec: null,
@@ -14,6 +17,7 @@ export default class ParsingContext {
             varDec: [],
             struct: [],
         };
+        this.scope = new Scope();
     }
     push(a, b) {
         if (typeof a === 'string') {
