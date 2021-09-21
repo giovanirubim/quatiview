@@ -8,19 +8,30 @@ export default class ParsingContext {
         this.structs = {};
         this.current = {
             varDec: null,
-            structDec: null,
+            struct: null,
         };
         this.stacks = {
             varDec: [],
-            structDec: [],
+            struct: [],
         };
     }
-    push(name, value) {
-        this.stacks[name].push(this.current[name]);
-        this.current[name] = value;
+    push(a, b) {
+        if (typeof a === 'string') {
+            const [ name, value ] = [ a, b ];
+            this.stacks[name].push(this.current[name]);
+            this.current[name] = value;
+        }
+        if (a instanceof Object) {
+            for (let name in a) {
+                const value = a[name];
+                this.push(name, value);
+            }
+        }
     }
-    pop(name) {
-        this.current[name] = this.stacks[name].pop();
+    pop(...names) {
+        for (let name of names) {
+            this.current[name] = this.stacks[name].pop();
+        }
     }
     getTypeSize(type, index) {
         if (type.endsWith('*')) return 4;

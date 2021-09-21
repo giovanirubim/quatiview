@@ -20,8 +20,10 @@ new NonTerminal({
             members: {},
             size: null,
         };
+        ctx.push({ struct });
         for (let line of lines) {
             ctx.compile(line);
         }
+        ctx.pop('struct');
     },
 });
