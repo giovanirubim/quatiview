@@ -47,7 +47,7 @@ export default class ParsingContext {
         if (type.endsWith('*')) return 4;
         if (type === 'char') return 1;
         if (type === 'int') return 4;
-        if (type.startsWith('struct ')) {
+        if (/^struct\s/.test(type)) {
             const [ name ] = type.match(/\b\w+$/);
             const size = this.structs[name]?.size;
             if (size != null) return size;
@@ -70,15 +70,13 @@ export default class ParsingContext {
             throw `No parser defined for ${name}`;
         }
         const { token } = this;
-        const prevTarget = token.target;
-        const children = [];
-        token.target = children;
+        const startsAt = token.nextIndex;
         const content = parse(this);
-        token.target = prevTarget;
+        const endsAt = token.lastIndex;
         if (content instanceof ParseTreeNode) {
             return content;
         }
-        return new ParseTreeNode({ name, content, children });
+        return new ParseTreeNode({ name, startsAt, endsAt, content });
     }
     compile(node) {
         const { name } = node;

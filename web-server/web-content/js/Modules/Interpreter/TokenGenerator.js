@@ -7,11 +7,21 @@ export default class TokenGenerator {
 		this.sourceConsumer = sourceConsumer;
 		this.cache = null;
 		this.target = null;
+		const index = sourceConsumer.getIndex();
+		this.nextIndex = index;
+		this.lastIndex = index;
 	}
 	throwSyntaticError(expected = null) {
 		throw new SyntaticError(this.sourceConsumer.getIndex(), expected);
 	}
-	popAny() {
+	popCache() {
+		const { cache } = this;
+		this.cache = null;
+		this.lastIndex = cache.endsAt;
+		this.nextIndex = this.sourceConsumer.getIndex();
+		return cache;
+	}
+	loadCache() {
 		const { cache, sourceConsumer } = this;
 		if (cache !== null) {
 			this.cache = null;
@@ -28,16 +38,19 @@ export default class TokenGenerator {
 			if (match === null) {
 				continue;
 			}
-			const node = new ParseTreeNode({
+			this.cache = new ParseTreeNode({
 				name: token.name,
 				startsAt: startsAt,
 				endsAt: startsAt + match.length,
 				content: match,
 			});
-			this.target?.push?.(node);
-			return node;
+			return this;
 		}
 		throw new LexycalError(startsAt);
+	}
+	popAny() {
+		if (!this.cache) this.loadCache();
+		return this.popCache();
 	}
 	pop(...names) {
 		const expected = names.length === 1 ? names[0] : null;
@@ -53,7 +66,7 @@ export default class TokenGenerator {
 	popMany(name) {
 		const result = [];
 		while (this.next()?.name === name) {
-			result.push(this.popAny());
+			result.push(this.popCache());
 		}
 		return result;
 	}
@@ -65,7 +78,8 @@ export default class TokenGenerator {
 		if (sourceConsumer.end()) {
 			return null;
 		}
-		return this.cache = this.popAny();
+		this.loadCache();
+		return this.cache;
 	}
 	nextIs(...names) {
 		const next = this.next();
@@ -76,18 +90,20 @@ export default class TokenGenerator {
 	}
 	popIfIs(...names) {
 		if (this.nextIs(...names)) {
-			return this.popAny();
+			return this.popCache();
 		}
 		return null;
 	}
 	getState() {
 		const consumerState = this.sourceConsumer.getState();
-		const { cache } = this;
-		return { consumerState, cache };
+		const { cache, lastIndex, nextIndex } = this;
+		return { consumerState, cache, lastIndex, nextIndex };
 	}
-	setState({ consumerState, cache }) {
+	setState({ consumerState, cache, lastIndex, nextIndex }) {
 		this.sourceConsumer.setState(consumerState);
 		this.cache = cache;
+		this.lastIndex = lastIndex;
+		this.nextIndex = nextIndex;
 		return this;
 	}
 }

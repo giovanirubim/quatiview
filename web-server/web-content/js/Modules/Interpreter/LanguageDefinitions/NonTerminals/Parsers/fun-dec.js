@@ -21,8 +21,10 @@ new NonTerminal({
     },
     compile: (ctx, node) => {
         const { returnType, name, args, scope } = node.content;
-        for (let { content: { type, item } } of args) {
-            console.log(type, item);
+        for (let { content } of args) {
+            const { type: typeItem, item } = content;
+            const type = typeItem.content + '*'.repeat(item.content.pointerCount);
+            const size = ctx.getTypeSize(type, typeItem.startsAt);
         }
     },
 });

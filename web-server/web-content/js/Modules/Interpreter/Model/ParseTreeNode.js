@@ -1,5 +1,5 @@
 export default class ParseTreeNode {
-	constructor({ name, startsAt, endsAt, children, content }) {
+	constructor({ name, startsAt, endsAt, content }) {
 		this.name = name;
 		this.startsAt = startsAt;
 		this.endsAt = endsAt;
