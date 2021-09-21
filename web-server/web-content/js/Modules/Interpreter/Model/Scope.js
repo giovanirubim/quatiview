@@ -1,9 +1,9 @@
 export default class Scope {
     constructor(parent = null) {
-        this.parent = parent;
+        this.$parent = parent;
     }
     get(name) {
-        return this[name] ?? this.parent?.get(name) ?? null;
+        return this[name] ?? this.$parent?.get(name) ?? null;
     }
     set(a, b) {
         if (typeof a === 'string') {

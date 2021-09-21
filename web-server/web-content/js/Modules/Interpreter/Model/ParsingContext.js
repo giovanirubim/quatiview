@@ -6,8 +6,8 @@ import { CompilationError, SyntaticError } from "../../errors.js";
 export default class ParsingContext {
     constructor({ tokenGenerator }) {
         this.token = tokenGenerator;
-        this.lastVarUid = 0;
-        this.vars = {};
+        this.lastUid = 0;
+        this.uidMap = {};
         this.structs = {};
         this.current = {
             varDec: null,
@@ -17,7 +17,13 @@ export default class ParsingContext {
             varDec: [],
             struct: [],
         };
-        this.scope = new Scope();
+        const globalScope = new Scope();
+        this.global = globalScope;
+        this.local = globalScope;
+    }
+    createUid(data) {
+        const uid = ++ this.lastUid;
+        return this.uidMap[uid] = { uid, ...data };
     }
     push(a, b) {
         if (typeof a === 'string') {

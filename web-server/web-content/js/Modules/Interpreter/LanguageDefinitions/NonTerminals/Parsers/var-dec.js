@@ -17,13 +17,18 @@ new NonTerminal({
             const { name, pointerCount } = item.content;
             const type = decType + '*'.repeat(pointerCount);
             const size = ctx.getTypeSize(type, item.startsAt);
-            const { struct } = ctx.current;
+            const { struct, fn } = ctx.current;
             if (struct) {
                 struct.members[name] = { name, size, type, offset: null };
             } else {
-                const id = ++ ctx.lastVarUid;
-                const data = { id, name, size, type };
-                ctx.vars[id] = data;
+                const data = ctx.createUid({
+                    name,
+                    size,
+                    type,
+                    mem: [],
+                });
+                ctx.local.set(name, data);
+                if (fn) fn.vars.push(data);
             }
         }
     },

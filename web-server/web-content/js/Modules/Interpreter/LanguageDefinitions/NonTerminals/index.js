@@ -14,6 +14,7 @@ import './Parsers/neg.js';
 import './Parsers/ptr-acc.js';
 import './Parsers/not.js';
 import './Parsers/arg-call.js';
+import './Parsers/id.js';
 import './Parsers/index-acc.js';
 import './Parsers/member-acc.js';
 import './Parsers/ptr-member-acc.js';

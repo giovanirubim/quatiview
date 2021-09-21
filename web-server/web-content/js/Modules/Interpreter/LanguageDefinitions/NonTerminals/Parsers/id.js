@@ -1,8 +1,9 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
 
 new NonTerminal({
-    name: 'global-line',
+    name: 'id',
     parse: (ctx) => {
-        return ctx.parseOneOf('var-dec', 'fun-dec', 'struct-dec');
+        const name = ctx.token.pop('id').content;
+        return { name };
     },
 });
