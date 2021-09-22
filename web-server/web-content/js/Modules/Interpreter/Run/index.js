@@ -14,6 +14,7 @@ import le from './Instructions/le.js';
 import ge from './Instructions/ge.js';
 import _if from './Instructions/if.js';
 import malloc from './Instructions/malloc.js';
+import free from './Instructions/free.js';
 
 const map = {
     call,
@@ -27,6 +28,7 @@ const map = {
     lt, gt, le, ge,
     if: _if,
     malloc,
+    free,
 };
 
 export default (obj) => {

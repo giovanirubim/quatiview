@@ -1,5 +1,9 @@
 import Net from '../../../Net.js';
 
+const isInt = (type) => {
+    return type === 'int' || type.endsWith('*');
+};
+
 export default async ({ src }) => {
     if (src.addr) {
         const addr = src.addr.at(-1);
@@ -9,9 +13,9 @@ export default async ({ src }) => {
                 value: Net.memory.read(addr),
             };
         }
-        if (src.type === 'int') {
+        if (isInt(src.type)) {
             return {
-                type: 'int',
+                type: src.type,
                 value: Net.memory.readWord(addr),
             };
         }

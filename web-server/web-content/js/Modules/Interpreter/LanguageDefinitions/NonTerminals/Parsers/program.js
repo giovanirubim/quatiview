@@ -9,7 +9,7 @@ const addPutchar = (ctx) => {
         type: 'void(*)(char)',
         returnType: 'void',
         argTypes: ['char'], vars: [arg], args: [arg],
-        run: { instruction: 'putchar', byte },
+        run: { instruction: 'putchar', byte, ctx },
     };
     ctx.global.set({ 'putchar': data });
 };
@@ -27,6 +27,19 @@ const addMalloc = (ctx) => {
     ctx.global.set({ 'malloc': data });
 };
 
+const addFree = (ctx) => {
+    const arg = { name: 'addr', type: 'void*', size: 4, addr: [] };
+    const addr = { instruction: 'load', src: arg };
+    const data = {
+        name: 'free',
+        type: 'void(*)(void*)',
+        returnType: 'void',
+        argTypes: ['void*'], vars: [arg], args: [arg],
+        run: { instruction: 'free', addr, ctx },
+    };
+    ctx.global.set({ 'free': data });
+};
+
 new NonTerminal({
     name: 'program',
     parse: (ctx) => {
@@ -39,6 +52,7 @@ new NonTerminal({
     compile: (ctx, node) => {
         addPutchar(ctx);
         addMalloc(ctx);
+        addFree(ctx);
         for (let line of node.content) {
             ctx.compile(line);
         }

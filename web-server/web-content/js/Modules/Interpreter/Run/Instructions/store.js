@@ -1,20 +1,17 @@
 import Net from '../../../Net.js';
 
+const isIntNumber = (type) => {
+    return type === 'int' || type === 'char' || type.endsWith('*');
+};
+
 export default async ({ src, dst }) => {
-    if (dst.type === 'char') {
-        if (src.type === 'int' || src.type === 'char') {
-            if (src.value != null) {
-                Net.memory.write(dst.addr.at(-1), src.value & 255);
-                return src;
-            }
+    if (isIntNumber(dst.type)) {
+        if (dst.type === 'char') {
+            Net.memory.write(dst.addr.at(-1), src.value & 255);
+        } else {
+            Net.memory.writeWord(dst.addr.at(-1), src.value);
         }
-    } else if (dst.type === 'int') {
-        if (src.type === 'int' || src.type === 'char') {
-            if (src.value != null) {
-                Net.memory.writeWord(dst.addr.at(-1), src.value);
-                return src;
-            }
-        }
+        return src;
     }
     throw new Error('dunno wat TODO');
 };
