@@ -15,7 +15,6 @@ export const run = (source) => {
     try {
         const tree = context.parse('program');
         const obj = context.compile(tree);
-        console.log(context);
         return obj;
     } catch(error) {
         if (error instanceof CompilationError) {

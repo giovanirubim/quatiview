@@ -1,13 +1,14 @@
 export default class Scope {
     constructor(parent = null) {
-        this.$parent = parent;
+        this.parent = parent;
+        this.data = {};
     }
     get(name) {
-        return this[name] ?? this.$parent?.get(name) ?? null;
+        return this.data[name] ?? this.parent?.get(name) ?? null;
     }
     set(a, b) {
         if (typeof a === 'string') {
-            this[a] = b;
+            this.data[a] = b;
             return;
         }
         if (a instanceof Object) {

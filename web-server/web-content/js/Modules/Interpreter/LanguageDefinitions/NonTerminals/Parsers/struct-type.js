@@ -6,6 +6,4 @@ new NonTerminal({
         token.pop('struct');
         return token.pop('id').content;
     },
-    compile: (ctx, node) => {
-    },
 });

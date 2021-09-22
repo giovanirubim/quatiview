@@ -9,6 +9,9 @@ export default class ParsingContext {
         this.lastUid = 0;
         this.uidMap = {};
         this.structs = {};
+        this.consts = [];
+        this.operand = null;
+        this.returned = null;
         this.current = {
             varDec: null,
             struct: null,
@@ -42,6 +45,12 @@ export default class ParsingContext {
         for (let name of names) {
             this.current[name] = this.stacks[name].pop();
         }
+    }
+    stackScope() {
+        this.local = new Scope(this.local);
+    }
+    popScope() {
+        this.local = this.local.parent;
     }
     getTypeSize(type, index) {
         if (type.endsWith('*')) return 4;

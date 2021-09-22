@@ -6,7 +6,7 @@ new NonTerminal({
         const { token } = ctx;
         const name = ctx.parse('struct-type').content;
         token.pop('left-brackets');
-        const lines = [];
+        const lines = [ ctx.parse('var-dec') ];
         while (!token.popIfIs('right-brackets')) {
             lines.push(ctx.parse('var-dec'));
         }

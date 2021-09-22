@@ -1,3 +1,4 @@
+import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
 
 const tokenToNonTerminal = {
@@ -5,6 +6,15 @@ const tokenToNonTerminal = {
     'left-square-brackets': 'index-acc',
     'dot': 'member-acc',
     'arrow': 'ptr-member-acc',
+};
+
+const compileTree = (ctx, node) => {
+    const { operand, operation } = node;
+    if (operand == null) {
+        return ctx.compile(node);
+    }
+    ctx.operand = compileTree(ctx, operand);
+    return ctx.compile(operation);
 };
 
 new NonTerminal({
@@ -21,4 +31,5 @@ new NonTerminal({
         }
         return root;
     },
+    compile: (ctx, node) => compileTree(ctx, node.content),
 });

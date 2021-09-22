@@ -11,4 +11,10 @@ new NonTerminal({
         }
         return lines;
     },
+    compile: (ctx, { content: lines }) => {
+        ctx.stackScope();
+        const result = lines.map((line) => ctx.compile(line));
+        ctx.popScope();
+        return result.filter((line) => line != null);
+    },
 });

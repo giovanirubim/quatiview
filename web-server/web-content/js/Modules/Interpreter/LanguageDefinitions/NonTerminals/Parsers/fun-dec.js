@@ -21,10 +21,38 @@ new NonTerminal({
     },
     compile: (ctx, node) => {
         const { returnType, name, args, scope } = node.content;
+        ctx.stackScope();
+        const argTypes = [];
         for (let { content } of args) {
             const { type: typeItem, item } = content;
+            const { name } = item.content;
             const type = typeItem.content + '*'.repeat(item.content.pointerCount);
             const size = ctx.getTypeSize(type, typeItem.startsAt);
+            const data = ctx.createUid({
+                name,
+                type,
+                size,
+                mem: [],
+            });
+            ctx.local.set(name, data);
+            argTypes.push(type);
         }
+        const type = `${returnType}(*)(${argTypes.join(',')})`;
+        const data = ctx.createUid({
+            name,
+            type,
+            returnType,
+            argTypes,
+            vars: [],
+            run: null,
+        });
+        ctx.global.set(name, data);
+        ctx.current.fn = data;
+        data.body = {
+            instruction: 'run',
+            lines: ctx.compile(scope),
+        }
+        ctx.current.fn = null;
+        ctx.popScope();
     },
 });

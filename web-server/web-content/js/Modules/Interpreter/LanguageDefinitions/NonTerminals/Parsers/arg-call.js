@@ -15,4 +15,15 @@ new NonTerminal({
         ctx.token.pop('right-parentheses');
         return args;
     },
+    compile: (ctx, { content }) => {
+        const fn = ctx.operand;
+        const args = content.map((item) => ctx.compile(item));
+        const res = {
+            instruction: 'call',
+            fn,
+            args,
+            type: fn.returnType,
+        };
+        return res;
+    },
 });

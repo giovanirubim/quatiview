@@ -1,3 +1,4 @@
+import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
 
 new NonTerminal({
@@ -13,5 +14,15 @@ new NonTerminal({
         for (let line of node.content) {
             ctx.compile(line);
         }
+        const main = ctx.global.get('main');
+        if (!main) {
+            throw new CompilationError(`'main' undeclared`);
+        }
+        return {
+            instruction: 'call',
+            fn: main,
+            args: [],
+            type: main.returnType,
+        };
     },
 });

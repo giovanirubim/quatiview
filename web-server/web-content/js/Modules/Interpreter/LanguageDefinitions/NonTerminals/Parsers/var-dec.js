@@ -23,8 +23,8 @@ new NonTerminal({
             } else {
                 const data = ctx.createUid({
                     name,
-                    size,
                     type,
+                    size,
                     mem: [],
                 });
                 ctx.local.set(name, data);
