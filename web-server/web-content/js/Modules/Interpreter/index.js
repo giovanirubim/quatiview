@@ -1,9 +1,7 @@
-import * as Editor from '../Editor/';
-import * as Terminal from '../Terminal/';
+import Net from '../Net.js';
 import Run from './Run/';
 import SourceConsumer from './Support/SourceConsumer.js';
 import TokenGenerator from './TokenGenerator.js';
-import { CompilationError } from '../errors.js';
 
 // Load non terminals
 import './LanguageDefinitions/NonTerminals/';
@@ -15,5 +13,6 @@ export const run = async (source) => {
     const context = new ParsingContext({ tokenGenerator });
     const parseTree = context.parse('program');
     const program = context.compile(parseTree);
+    Net.memory.clear();
     return Run(program);
 };

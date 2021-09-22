@@ -13,6 +13,7 @@ import gt from './Instructions/gt.js';
 import le from './Instructions/le.js';
 import ge from './Instructions/ge.js';
 import _if from './Instructions/if.js';
+import malloc from './Instructions/malloc.js';
 
 const map = {
     call,
@@ -25,6 +26,7 @@ const map = {
     div, mod, mul,
     lt, gt, le, ge,
     if: _if,
+    malloc,
 };
 
 export default (obj) => {
