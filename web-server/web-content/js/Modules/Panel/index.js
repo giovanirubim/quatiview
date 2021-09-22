@@ -13,8 +13,8 @@ const bindInputFile = (inputFile) => {
 		const [file] = files;
 		const reader = new FileReader();
 		reader.onload = (e) => {
-			const text = e.target.result;
-			uploadHandlers.forEach((handler) => handler(text));
+			Net.editor.setText(e.target.result);
+			Net.editor.storeText();
 		};
 		reader.readAsText(file);
 		inputFile.val('');
@@ -70,6 +70,8 @@ const run = async () => {
 	const source = Net.editor.getText();
 	try {
 		await Net.interpreter.run(source);
+		Net.terminal.writeln('');
+		Net.terminal.writeln('Program exited');
 	} catch (error) {
 		if (error instanceof CompilationError) {
 			reportCompilationError(source, error);
@@ -83,15 +85,17 @@ export const init = () => {
 	const buttons = $('#control-panel .panel-button');
 	buttons.each(function() {
 		const item = $(this);
-		let name = item.attr('title')
-			.toLowerCase()
-			.normalize('NFD')
-			.replace(/[^\x00-\x7f]/g, '');
-		button[name] = item;
+		let id = item.attr('button-id');
+		button[id] = item;
 	});
 	const inputFile = createInputFile();
 	button.upload.on('click', () => {
 		inputFile.trigger('click');
 	});
-	button.executar.on('click', run);
+	button.run.on('click', run);
+	$(window).on('keydown', (e) => {
+		if (!e.ctrlKey && !e.shiftKey && !e.altKey && e.key === 'F10') {
+			run();
+		}
+	});
 };

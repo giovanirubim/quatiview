@@ -6,7 +6,7 @@ import {
 	UninitializedMemoryAccess,
 	FreeingUnallocatedMemory,
 	FreeingANonAllocationAddress,
-} from '../../errors.js';
+} from '../errors.js';
 
 const NULL = 0;
 const UNINITIALIZED_BYTE = Symbol('UNINITIALIZED_BYTE');

@@ -1,6 +1,29 @@
 import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
 
+const addPutchar = (ctx) => {
+    const arg = ctx.createUid({
+        name: 'c',
+        type: 'char',
+        size: 1,
+        addr: [],
+    });
+    const byte = {
+        instruction: 'load',
+        src: arg,
+    };
+    const data = ctx.createUid({
+        name: 'putchar',
+        type: 'void(*)(char)',
+        returnType: 'void',
+        argTypes: ['char'],
+        vars: [arg],
+        args: [arg],
+        run: { instruction: 'putchar', byte },
+    });
+    ctx.global.set({ 'putchar': data });
+};
+
 new NonTerminal({
     name: 'program',
     parse: (ctx) => {
@@ -11,6 +34,7 @@ new NonTerminal({
         return lines;
     },
     compile: (ctx, node) => {
+        addPutchar(ctx);
         for (let line of node.content) {
             ctx.compile(line);
         }

@@ -13,4 +13,10 @@ new NonTerminal({
         }
         return str.charCodeAt(2);
     },
+    compile: (ctx, { content }) => {
+        return {
+            type: 'int',
+            value: content,
+        };
+    },
 });

@@ -10,4 +10,13 @@ new NonTerminal({
         const right = ctx.parse('op9');
         return { left, right };
     },
+    compile: (ctx, node) => {
+        const { left, right } = node.content;
+        const dst = ctx.compile(left);
+        const src = ctx.compile(right);
+        return {
+            instruction: 'assign',
+            src, dst,
+        };
+    },
 });

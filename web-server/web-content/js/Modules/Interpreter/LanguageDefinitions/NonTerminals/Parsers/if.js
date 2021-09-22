@@ -12,4 +12,13 @@ new NonTerminal({
         const scopeFalse = token.popIfIs('else') ? ctx.parse('scope') : null;
         return { cond, scopeTrue, scopeFalse };
     },
+    compile: (ctx, { content }) => {
+        const { cond, scopeTrue, scopeFalse } = content;
+        return {
+            instruction: 'if',
+            cond: ctx.compile(cond),
+            scopeTrue: ctx.compile(scopeTrue),
+            scopeFalse: scopeFalse ? ctx.compile(scopeFalse) : null,
+        };
+    },
 });

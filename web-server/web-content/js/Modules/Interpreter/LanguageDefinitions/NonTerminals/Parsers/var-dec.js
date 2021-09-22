@@ -25,7 +25,7 @@ new NonTerminal({
                     name,
                     type,
                     size,
-                    mem: [],
+                    addr: [],
                 });
                 ctx.local.set(name, data);
                 if (fn) fn.vars.push(data);

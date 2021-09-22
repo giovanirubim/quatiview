@@ -1,5 +1,22 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
 
+const compileTree = (ctx, node) => {
+    const { left, operator, right } = node;
+    if (left == null) {
+        return ctx.compile(node);
+    }
+    const a = compileTree(ctx, left);
+    const b = ctx.compile(right);
+    const name = '==' ? 'eq' : 'dif';
+    const res = {
+        instruction: name,
+        a,
+        b,
+    };
+    console.log(res);
+    return res;
+};
+
 new NonTerminal({
     name: 'op6',
     parse: (ctx) => {
@@ -15,4 +32,5 @@ new NonTerminal({
         }
         return root;
     },
+    compile: (ctx, node) => compileTree(ctx, node.content),
 });

@@ -22,7 +22,15 @@ new NonTerminal({
     compile: (ctx, node) => {
         const { returnType, name, args, scope } = node.content;
         ctx.stackScope();
-        const argTypes = [];
+        const fn = ctx.createUid({
+            name,
+            type: null,
+            returnType,
+            argTypes: [],
+            args: [],
+            vars: [],
+            run: null,
+        });
         for (let { content } of args) {
             const { type: typeItem, item } = content;
             const { name } = item.content;
@@ -32,23 +40,17 @@ new NonTerminal({
                 name,
                 type,
                 size,
-                mem: [],
+                addr: [],
             });
             ctx.local.set(name, data);
-            argTypes.push(type);
+            fn.vars.push(data);
+            fn.args.push(data);
+            fn.argTypes.push(type);
         }
-        const type = `${returnType}(*)(${argTypes.join(',')})`;
-        const data = ctx.createUid({
-            name,
-            type,
-            returnType,
-            argTypes,
-            vars: [],
-            run: null,
-        });
-        ctx.global.set(name, data);
-        ctx.current.fn = data;
-        data.body = {
+        fn.type = `${returnType}(*)(${fn.argTypes.join(',')})`;
+        ctx.global.set(name, fn);
+        ctx.current.fn = fn;
+        fn.run = {
             instruction: 'run',
             lines: ctx.compile(scope),
         }

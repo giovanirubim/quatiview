@@ -16,9 +16,6 @@ new NonTerminal({
         if (data.returnType != null) {
             return data;
         }
-        return {
-            instruction: 'load',
-            ... data,
-        };
+        return data;
     },
 });

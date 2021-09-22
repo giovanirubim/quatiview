@@ -6,7 +6,6 @@ export default class TokenGenerator {
 	constructor(sourceConsumer) {
 		this.sourceConsumer = sourceConsumer;
 		this.cache = null;
-		this.target = null;
 		const index = sourceConsumer.getIndex();
 		this.nextIndex = index;
 		this.lastIndex = index;
