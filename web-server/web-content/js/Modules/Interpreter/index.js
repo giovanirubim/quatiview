@@ -9,7 +9,7 @@ import { CompilationError } from '../errors.js';
 import './LanguageDefinitions/NonTerminals/';
 import ParsingContext from './Model/ParsingContext.js';
 
-export default async (source) => {
+export const run = async (source) => {
     const sourceConsumer = new SourceConsumer(source);
     const tokenGenerator = new TokenGenerator(sourceConsumer);
     const context = new ParsingContext({ tokenGenerator });

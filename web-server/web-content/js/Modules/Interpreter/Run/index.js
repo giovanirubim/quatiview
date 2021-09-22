@@ -1,4 +1,4 @@
-import call from './instructions/call.js';
+import call from './Instructions/call.js';
 import assign from './Instructions/assign.js';
 
 const map = {
