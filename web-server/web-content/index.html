@@ -11,11 +11,15 @@
 	<body>
 		<div id="control-panel">
 			<div class="panel-button" title="Upload"><i class="fas fa-file-upload"></i></div>
-			<div class="panel-button" title="Parar"><i class="fas fa-stop-circle"></i></div>
-			<div class="panel-button" title="Iniciar"><i class="fas fa-play-circle"></i></div>
+			<div class="panel-button" title="Executar"><i class="fas fa-sync-alt"></i></div>
+			<div class="panel-button hidden" title="Parar"><i class="fas fa-stop-circle"></i></div>
 			<div class="panel-button" title="Pause"><i class="fas fa-pause-circle"></i></div>
-			<div class="panel-button" title="Avançar"><i class="fas fa-chevron-circle-right"></i></div>
-			<div class="panel-button" title="Finalizar"><i class="fas fa-arrow-alt-circle-right"></i></div>
+			<div class="panel-button hidden" title="Continue"><i class="fas fa-play-circle"></i></div>
+			<div class="panel-button hidden" title="Avançar"><i class="fas fa-chevron-circle-right"></i></div>
+			<div class="panel-speed">
+				<div class="title">Speed:</div>
+				<input type="range" min="0" max="1" step="any" value=".1">
+			</div>
 		</div>
 		<form spellcheck="false">
 			<div id="editor-section">
