@@ -8,6 +8,14 @@ export default async ({ src, dst }) => {
                 return src;
             }
         }
+    } else if (dst.type === 'int') {
+        if (src.type === 'int' || src.type === 'char') {
+            if (src.value != null) {
+                Net.memory.writeWord(dst.addr.at(0), src.value);
+                return src;
+            }
+        }
     }
+    console.log(src, dst);
     throw new Error('dunno wat TODO');
 };

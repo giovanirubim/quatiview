@@ -135,14 +135,14 @@ class Memory {
 		}
 	}
 
-	setWord(dst, word) {
+	writeWord(dst, word) {
 		this.write(dst, word & 255);
 		this.write(dst + 1, (word >> 8) & 255);
 		this.write(dst + 2, (word >> 16) & 255);
 		this.write(dst + 3, (word >> 24) & 255);
 	}
 
-	getWord(src) {
+	readWord(src) {
 		return (
 			this.read(src)
 			| (this.read(src + 1) << 8)

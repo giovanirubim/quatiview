@@ -1,5 +1,18 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
 
+const compileTree = (ctx, node) => {
+    const { left, operator, right } = node;
+    if (left == null) {
+        return ctx.compile(node);
+    }
+    const a = compileTree(ctx, left);
+    const b = ctx.compile(right);
+    return {
+        instruction: operator === '+' ? 'sum' : 'sub',
+        a, b,
+    };
+};
+
 new NonTerminal({
     name: 'op4',
     parse: (ctx) => {
@@ -15,4 +28,5 @@ new NonTerminal({
         }
         return root;
     },
+    compile: (ctx, node) => compileTree(ctx, node.content),
 });
