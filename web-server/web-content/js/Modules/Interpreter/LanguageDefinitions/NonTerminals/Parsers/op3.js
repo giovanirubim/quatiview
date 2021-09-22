@@ -1,5 +1,24 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
 
+const opToInst = {
+    '*': 'mul',
+    '/': 'div',
+    '%': 'mod',
+};
+
+const compileTree = (ctx, node) => {
+    const { left, operator, right } = node;
+    if (left == null) {
+        return ctx.compile(node);
+    }
+    const a = compileTree(ctx, left);
+    const b = ctx.compile(right);
+    return {
+        instruction: opToInst[operator],
+        a, b,
+    };
+};
+
 new NonTerminal({
     name: 'op3',
     parse: (ctx) => {
@@ -15,4 +34,5 @@ new NonTerminal({
         }
         return root;
     },
+    compile: (ctx, node) => compileTree(ctx, node.content),
 });

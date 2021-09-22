@@ -15,6 +15,9 @@ new NonTerminal({
         ctx.stackScope();
         const result = lines.map((line) => ctx.compile(line));
         ctx.popScope();
-        return result.filter((line) => line?.instruction != null);
+        return {
+            instruction: 'run',
+            lines: result.filter((line) => line?.instruction != null),
+        };
     },
 });

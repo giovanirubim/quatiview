@@ -50,10 +50,7 @@ new NonTerminal({
         fn.type = `${returnType}(*)(${fn.argTypes.join(',')})`;
         ctx.global.set(name, fn);
         ctx.current.fn = fn;
-        fn.run = {
-            instruction: 'run',
-            lines: ctx.compile(scope),
-        }
+        fn.run = ctx.compile(scope);
         ctx.current.fn = null;
         ctx.popScope();
     },

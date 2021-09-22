@@ -9,6 +9,12 @@ export default async ({ src }) => {
                 value: Net.memory.read(addr),
             };
         }
+        if (src.type === 'int') {
+            return {
+                type: 'int',
+                value: Net.memory.readWord(addr),
+            };
+        }
     }
     throw new Error('Load: dunno wat TODO');
 };
