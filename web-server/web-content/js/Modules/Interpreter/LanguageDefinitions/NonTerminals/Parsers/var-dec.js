@@ -21,12 +21,12 @@ new NonTerminal({
             if (struct) {
                 struct.members[name] = { name, size, type, offset: null };
             } else {
-                const data = ctx.createUid({
+                const data = {
                     name,
                     type,
                     size,
                     addr: [],
-                });
+                };
                 ctx.local.set(name, data);
                 if (fn) fn.vars.push(data);
             }

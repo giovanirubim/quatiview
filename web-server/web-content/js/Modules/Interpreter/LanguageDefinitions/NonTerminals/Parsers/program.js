@@ -2,17 +2,17 @@ import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
 
 const addPutchar = (ctx) => {
-    const arg = ctx.createUid({
+    const arg = {
         name: 'c',
         type: 'char',
         size: 1,
         addr: [],
-    });
+    };
     const byte = {
         instruction: 'load',
         src: arg,
     };
-    const data = ctx.createUid({
+    const data = {
         name: 'putchar',
         type: 'void(*)(char)',
         returnType: 'void',
@@ -20,7 +20,7 @@ const addPutchar = (ctx) => {
         vars: [arg],
         args: [arg],
         run: { instruction: 'putchar', byte },
-    });
+    };
     ctx.global.set({ 'putchar': data });
 };
 

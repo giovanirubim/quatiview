@@ -29,11 +29,11 @@ new NonTerminal({
         return bytes;
     },
     compile: (ctx, { content: bytes }) => {
-        const data = ctx.createUid({
+        const data = {
             type: 'char*',
             value: null,
             bytes,
-        });
+        };
         ctx.consts.push(data);
         return data;
     },

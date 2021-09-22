@@ -22,7 +22,7 @@ new NonTerminal({
     compile: (ctx, node) => {
         const { returnType, name, args, scope } = node.content;
         ctx.stackScope();
-        const fn = ctx.createUid({
+        const fn = {
             name,
             type: null,
             returnType,
@@ -30,18 +30,18 @@ new NonTerminal({
             args: [],
             vars: [],
             run: null,
-        });
+        };
         for (let { content } of args) {
             const { type: typeItem, item } = content;
             const { name } = item.content;
             const type = typeItem.content + '*'.repeat(item.content.pointerCount);
             const size = ctx.getTypeSize(type, typeItem.startsAt);
-            const data = ctx.createUid({
+            const data = {
                 name,
                 type,
                 size,
                 addr: [],
-            });
+            };
             ctx.local.set(name, data);
             fn.vars.push(data);
             fn.args.push(data);
