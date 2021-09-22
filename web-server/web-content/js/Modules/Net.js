@@ -8,5 +8,6 @@ export default ({
     editor: Editor,
     terminal: Terminal,
     panel: Panel,
+	interpreter: Interpreter,
 	eventManager: EventManager,
 });

@@ -69,10 +69,7 @@ const run = async () => {
 	Net.terminal.clear();
 	const source = Net.editor.getText();
 	try {
-		execution.exec = Net.interpreter.execute(source);
-		execution.done = false;
-		execution.waitingStep = true;
-		await start();
+		await Net.interpreter.run(source);
 	} catch (error) {
 		if (error instanceof CompilationError) {
 			reportCompilationError(source, error);
