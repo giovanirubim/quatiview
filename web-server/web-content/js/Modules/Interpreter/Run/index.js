@@ -17,7 +17,8 @@ const map = {
 export default (obj) => {
     const fn = map[obj.instruction];
     if (!fn) {
-        throw `Undefined method to execute ${obj.instruction}`;
+        console.error(obj);
+        throw new Error(`Undefined method to execute ${obj.instruction}`);
     }
     return fn(obj);
 };
