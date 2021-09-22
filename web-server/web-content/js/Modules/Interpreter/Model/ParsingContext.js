@@ -93,7 +93,10 @@ export default class ParsingContext {
         if (compile == null) {
             throw `No compiler defined for ${name}`;
         }
-        return compile(this, node);
+        const instruction = compile(this, node);
+        if (!instruction) return null;
+        instruction.ctx = this;
+        return instruction;
     }
     parseOneOf(...names) {
         let furthestError = null;

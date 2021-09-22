@@ -7,5 +7,9 @@ const map = {
 };
 
 export default (obj) => {
-    return map[obj.instruction](obj);
+    const fn = map[obj.instruction];
+    if (!fn) {
+        throw `Undefined method to execute ${obj.instruction}`;
+    }
+    fn(obj);
 };

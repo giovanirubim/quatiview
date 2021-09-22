@@ -1,2 +1,2 @@
-export default (ctx, { args, fn }) => {
+export default ({ ctx, args, fn }) => {
 };

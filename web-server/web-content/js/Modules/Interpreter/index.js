@@ -1,5 +1,6 @@
 import * as Editor from '../Editor/';
 import * as Terminal from '../Terminal/';
+import Run from './Run/';
 import SourceConsumer from './Support/SourceConsumer.js';
 import TokenGenerator from './TokenGenerator.js';
 import { CompilationError } from '../errors.js';
@@ -14,8 +15,7 @@ export const run = (source) => {
     const context = new ParsingContext({ tokenGenerator });
     try {
         const tree = context.parse('program');
-        const obj = context.compile(tree);
-        return obj;
+        return context.compile(tree);
     } catch(error) {
         if (error instanceof CompilationError) {
             if (error.index === source.index) {
@@ -36,8 +36,10 @@ export const run = (source) => {
 const compile = () => {
     console.clear();
     Terminal.clear();
-    if (run(Editor.getText())) {
+    const start = run(Editor.getText());
+    if (start) {
         Terminal.writeln('Success');
+        Run(start);
     }
 };
 
