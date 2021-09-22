@@ -4,14 +4,17 @@
 body {
 	--panel-height: 36px;
 	--editor-width: 450px;
-	--terminal-height: 275px;
+	--terminal-height: 300px;
+	--spacing: 5px;
+	background-color: #111;
 }
 #control-panel {
 	position: absolute;
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	height: var(--panel-height);
+	top: var(--spacing);
+	left: var(--spacing);
+	right: var(--spacing);
+	height: calc(var(--panel-height));
+	background-color: #aaa;
 }
 #control-panel .panel-button {
 	float: left;
@@ -35,10 +38,10 @@ body {
 }
 #editor-section {
 	position: absolute;
-	left: 0px;
-	top: var(--panel-height);
+	left: var(--spacing);
+	top: calc(var(--panel-height) + var(--spacing)*2);
 	width: var(--editor-width);
-	bottom: var(--terminal-height);
+	bottom: var(--spacing);
 }
 #editor-section textarea {
 	--padding: 10px;
@@ -57,11 +60,11 @@ body {
 }
 #terminal-section {
 	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
+	bottom: var(--spacing);
+	left: calc(var(--spacing)*2 + var(--editor-width));
+	right: var(--spacing);
 	height: var(--terminal-height);
-	background-color: #111;
+	background-color: #000;
 	--padding: 10px;
 	--input-height: 30px;
 	font-size: 0px;
@@ -92,11 +95,12 @@ body {
 }
 #mem-view-section {
 	position: absolute;
-	top: var(--panel-height);
-	left: var(--editor-width);
-	bottom: var(--terminal-height);
-	right: 0px;
+	top: calc(var(--panel-height) + var(--spacing)*2);
+	left: calc(var(--editor-width) + var(--spacing)*2);
+	bottom: calc(var(--terminal-height) + var(--spacing)*2);
+	right: var(--spacing);
 	overflow: hidden;
+	background-color: #222;
 }
 .hidden {
 	display: none;
