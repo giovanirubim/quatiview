@@ -94,6 +94,8 @@ export const init = () => {
 	button.run.on('click', run);
 	$(window).on('keydown', (e) => {
 		if (!e.ctrlKey && !e.shiftKey && !e.altKey && e.key === 'F10') {
+			e.preventDefault();
+			e.stopPropagation();
 			run();
 		}
 	});

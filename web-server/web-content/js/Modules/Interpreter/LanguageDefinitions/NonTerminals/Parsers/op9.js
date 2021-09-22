@@ -16,7 +16,9 @@ new NonTerminal({
         const src = ctx.compile(right);
         return {
             instruction: 'assign',
-            src, dst,
+            src,
+            dst,
+            type: src.type,
         };
     },
 });

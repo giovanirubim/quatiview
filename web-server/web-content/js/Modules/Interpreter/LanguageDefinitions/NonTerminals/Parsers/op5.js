@@ -17,6 +17,7 @@ const compileTree = (ctx, node) => {
     return {
         instruction: opToInst[operator],
         a, b,
+        type: 'int',
     };
 };
 

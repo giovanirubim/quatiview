@@ -5,7 +5,7 @@ new NonTerminal({
     parse: (ctx) => {
         return Number(ctx.token.pop('int-const').content);
     },
-    compile: (ctx, { content }) => ({
+    compile: ({ content }) => ({
         type: 'int',
         value: content,
     }),

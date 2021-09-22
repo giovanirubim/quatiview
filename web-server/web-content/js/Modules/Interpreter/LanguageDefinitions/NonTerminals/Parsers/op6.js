@@ -12,8 +12,8 @@ const compileTree = (ctx, node) => {
         instruction: name,
         a,
         b,
+        type: 'int',
     };
-    console.log(res);
     return res;
 };
 

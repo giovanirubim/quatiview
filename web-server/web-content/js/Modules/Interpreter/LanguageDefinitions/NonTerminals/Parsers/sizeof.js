@@ -14,7 +14,7 @@ new NonTerminal({
     compile: (ctx, node) => {
         let type = node.content;
         return {
-            type,
+            type: 'int',
             value: ctx.getTypeSize(type, node.startsAt),
         };
     },
