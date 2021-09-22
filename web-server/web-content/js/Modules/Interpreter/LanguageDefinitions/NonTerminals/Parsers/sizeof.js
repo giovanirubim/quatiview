@@ -7,8 +7,15 @@ new NonTerminal({
         token.pop('sizeof');
         token.pop('left-parentheses');
         const type = ctx.parse('type');
-        const pointerCount = token.popMany('*').length;
+        const pointerCount = token.popMany('asterisk').length;
         token.pop('right-parentheses');
-        return { type, pointerCount };
+        return type.content + '*'.repeat(pointerCount);
+    },
+    compile: (ctx, node) => {
+        let type = node.content;
+        return {
+            type,
+            value: ctx.getTypeSize(type, node.startsAt),
+        };
     },
 });

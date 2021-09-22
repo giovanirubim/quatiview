@@ -70,7 +70,6 @@ const run = async () => {
 	const source = Net.editor.getText();
 	try {
 		await Net.interpreter.run(source);
-		Net.terminal.writeln('');
 		Net.terminal.writeln('Program exited');
 	} catch (error) {
 		if (error instanceof CompilationError) {

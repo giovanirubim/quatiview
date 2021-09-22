@@ -60,11 +60,6 @@ new NonTerminal({
         if (!main) {
             throw new CompilationError(`'main' undeclared`);
         }
-        return {
-            instruction: 'call',
-            fn: main,
-            args: [],
-            type: main.returnType,
-        };
+        return { instruction: 'init' };
     },
 });

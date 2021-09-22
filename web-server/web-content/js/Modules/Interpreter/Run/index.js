@@ -15,6 +15,7 @@ import ge from './Instructions/ge.js';
 import _if from './Instructions/if.js';
 import malloc from './Instructions/malloc.js';
 import free from './Instructions/free.js';
+import init from './Instructions/init.js';
 
 const map = {
     call,
@@ -29,6 +30,7 @@ const map = {
     if: _if,
     malloc,
     free,
+    init,
 };
 
 export default (obj) => {
