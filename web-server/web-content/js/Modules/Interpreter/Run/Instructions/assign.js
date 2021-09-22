@@ -1,2 +1,2 @@
-export default (ctx, data) => {
+export default ({ ctx }) => {
 };

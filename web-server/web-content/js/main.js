@@ -1,2 +1,5 @@
-import * as Interpreter from './Modules/Interpreter/';
-import * as Editor from './Modules/Editor/';
+import Net from './Modules/Net.js';
+
+$(document).ready(() => {
+    Net.editor.init();
+});

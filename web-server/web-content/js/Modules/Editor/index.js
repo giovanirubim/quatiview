@@ -30,7 +30,7 @@ const bindTextarea = () => {
 	});
 };
 
-export const load = () => {
+export const init = () => {
 	textarea = $('#editor-section textarea');
 	loadText();
 	bindTextarea();
