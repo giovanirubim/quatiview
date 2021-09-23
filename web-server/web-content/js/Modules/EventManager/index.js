@@ -1,10 +1,12 @@
-let waitingStep = null;
-
 export class Abortion extends Error {}
 
-export const waitStep = () => new Promise((done, fail) => {
-    waitingStep = { done, fail };
-});
+let waitingStep = null;
+
+export const waitStep = () => {};
+
+// export const waitStep = () => new Promise((done, fail) => {
+//     waitingStep = { done, fail };
+// });
 
 export const step = () => {
     if (waitingStep === null) {

@@ -16,7 +16,6 @@ const bindInputFile = (inputFile) => {
 		const reader = new FileReader();
 		reader.onload = (e) => {
 			Net.editor.setText(e.target.result);
-			Net.editor.storeText();
 		};
 		reader.readAsText(file);
 		inputFile.val('');
@@ -123,6 +122,7 @@ const unpause = async () => {
 };
 
 const run = async () => {
+	console.clear();
 	Net.terminal.clear();
 	const source = Net.editor.getText();
 	try {

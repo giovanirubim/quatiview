@@ -1,9 +1,8 @@
 import solve from './Support/solve.js';
 
 export default async ({ ctx, arg }) => {
-    ctx.returned = true;
-    if (!arg) {
-        return;
+    if (arg) {
+        ctx.returnValue = await solve(arg);
     }
-    ctx.returnValue = solve(arg);
+    ctx.returned = true;
 };
