@@ -3,7 +3,6 @@ import Net from '../../../Net.js';
 import solve from './Support/solve.js';
 
 export default async ({ ctx, args, fn }) => {
-    console.log(`calling ${fn.name}`);
     const values = [];
     for (let arg of args) {
         const value = await solve(arg);
