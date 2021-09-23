@@ -12,14 +12,14 @@ import lt from './Instructions/lt.js';
 import gt from './Instructions/gt.js';
 import le from './Instructions/le.js';
 import ge from './Instructions/ge.js';
-import _if from './Instructions/if.js';
+import fork from './Instructions/if.js';
 import malloc from './Instructions/malloc.js';
 import free from './Instructions/free.js';
 import init from './Instructions/init.js';
 import member from './Instructions/member.js';
-import ptr_acc from './Instructions/ptr-acc.js';
+import ptrAcc from './Instructions/ptr-acc.js';
 import eq from './Instructions/eq.js';
-import inst_ret from './Instructions/ret.js';
+import ret from './Instructions/ret.js';
 
 const map = {
     call,
@@ -31,14 +31,14 @@ const map = {
     sum,
     div, mod, mul,
     lt, gt, le, ge,
-    if: _if,
+    if: fork,
     malloc,
     free,
     init,
     member,
-    'ptr-acc': ptr_acc,
+    'ptr-acc': ptrAcc,
     eq,
-    'ret': inst_ret,
+    ret,
 };
 
 export default (obj) => {

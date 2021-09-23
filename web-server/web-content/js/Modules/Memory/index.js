@@ -55,7 +55,7 @@ class Memory {
 		this.bytes[address] = value;
 	}
 
-	_allocate(size) {
+	allocate(size) {
 
 		// Round to a multiple of 4
 		size = (size + 3) & ~3;
@@ -94,7 +94,7 @@ class Memory {
 		return address;
 	}
 
-	_free(address) {
+	free(address) {
 
 		this.validateAddress(address);
 		if (this.bytes[address] === undefined) {
@@ -150,17 +150,6 @@ class Memory {
 			| (this.read(src + 3) << 24)
 		);
 	}
-
-	allocate(size) {
-		const addr = this._allocate(size);
-		console.log(`+${addr}`);
-		return addr;
-	}
-	free(addr) {
-		console.log(`-${addr}`);
-		this._free(addr);
-	}
-
 }
 
 export default new Memory();

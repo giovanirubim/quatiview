@@ -8,6 +8,7 @@ export default async ({ ctx, args, fn }) => {
         const value = await solve(arg);
         values.push(value);
     }
+    console.log(`allocating vars of ${fn.name}`);
     for (let item of fn.vars) {
         const addr = Net.memory.allocate(item.size);
         item.addr.push(addr);
@@ -19,8 +20,10 @@ export default async ({ ctx, args, fn }) => {
             dst: fn.args[i],
         });
     }
+    console.log(`running ${fn.name}`);
     await Run(fn.run);
     ctx.returned = false;
+    console.log(`freeing vars of ${fn.name}`);
     for (let item of fn.vars) {
         const addr = item.addr.pop();
         Net.memory.free(addr);
