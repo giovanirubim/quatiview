@@ -13,6 +13,9 @@ new NonTerminal({
         );
     },
     compile: (ctx, node) => {
-        console.log(node);
+        return {
+            type: 'int',
+            value: 0,
+        };
     },
 });

@@ -9,7 +9,8 @@ export default class ParsingContext {
         this.structs = {};
         this.consts = [];
         this.operand = null;
-        this.returned = null;
+        this.returned = false;
+        this.returnValue = null;
         this.current = {
             varDec: null,
             struct: null,

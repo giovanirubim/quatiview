@@ -19,6 +19,7 @@ import init from './Instructions/init.js';
 import member from './Instructions/member.js';
 import ptr_acc from './Instructions/ptr-acc.js';
 import eq from './Instructions/eq.js';
+import ret from './Instructions/ret.js';
 
 const map = {
     call,
@@ -37,6 +38,7 @@ const map = {
     member,
     'ptr-acc': ptr_acc,
     eq,
+    ret,
 };
 
 export default (obj) => {

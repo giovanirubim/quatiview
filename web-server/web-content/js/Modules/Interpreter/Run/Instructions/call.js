@@ -20,6 +20,7 @@ export default async ({ ctx, args, fn }) => {
         });
     }
     await Run(fn.run);
+    ctx.returned = false;
     for (let item of fn.vars) {
         const addr = item.addr.pop();
         Net.memory.free(addr);
