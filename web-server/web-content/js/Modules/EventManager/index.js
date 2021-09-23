@@ -1,51 +1,22 @@
-const events = [ 'input', 'step', 'end' ];
-const awaitingNext = Object.fromEntries(
-	events.map(
-		(name) => [name, { done: null, fail: null }],
-	),
-);
-const onAwaitingNextHandler = Object.fromEntries(
-	events.map(
-		(name) => [name, null],
-	),
-);
-const eventHandler = Object.fromEntries(
-	events.map(
-		(name) => [name, null],
-	),
-);
+let waitingStep = null;
 
-export class AbortionEvent extends Error {}
+export class Abortion extends Error {}
 
-// Set an action for when an event is waited for
-export const onAwaitNext = (name, handler) => {
-    onAwaitingNextHandler[name] = handler;
+export const waitStep = () => new Promise((done, fail) => {
+    waitingStep = { done, fail };
+});
+
+export const step = () => {
+    if (waitingStep === null) {
+        return;
+    }
+    const { done } = waitingStep;
+    waitingStep = null;
+    done();
 };
 
-// Set an action for when an event happens
-export const onEvent = (name, handler) => {
-    eventHandler[name] = handler;
-};
-
-// Await for next event
-export const next = (name) => new Promise((done, fail) => {
-    const obj = awaitingNext[name];
-    obj.done = done;
-    obj.fail = fail;
-    onAwaitingNextHandler[name]?.();
-});    
-
-// Trigger an event
-export const trigger = (name) => {
-    awaitingNext[name].done?.();
-    awaitingNext[name].done = null;
-    awaitingNext[name].fail = null;
-    eventHandler[name]?.();
-};
-
-// Abort an event that was being waited for
-export const abort = (name) => {
-	awaitingNext[name].fail?.(new AbortionEvent());
-    awaitingNext[name].done = null;
-    awaitingNext[name].fail = null;
+export const abort = () => {
+    const { fail } = waitingStep;
+    waitingStep = null;
+    fail(new Abortion());
 };

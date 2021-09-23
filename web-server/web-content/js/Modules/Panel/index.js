@@ -1,7 +1,9 @@
 import { CompilationError, LexycalError, SyntaticError } from '../errors.js';
+import ret from '../Interpreter/Run/Instructions/ret.js';
 import Net from '../Net.js';
 import getLineOf from './Support/getLineOf.js';
 
+let paused = true;
 const button = {};
 
 const bindInputFile = (inputFile) => {
@@ -60,6 +62,12 @@ const step = async () => {
 };	
 
 const pause = async () => {
+	if (paused) {
+		return;
+	}
+	paused = true;
+	button.pause.addClass('hidden');
+	button.play.removeClass('hidden');
 };
 
 const play = async () => {
@@ -92,6 +100,7 @@ export const init = () => {
 		inputFile.trigger('click');
 	});
 	button.run.on('click', run);
+	button.pause.on('click', pause);
 	$(window).on('keydown', (e) => {
 		if (!e.ctrlKey && !e.shiftKey && !e.altKey && e.key === 'F10') {
 			e.preventDefault();

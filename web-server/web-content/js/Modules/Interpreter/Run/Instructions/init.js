@@ -18,5 +18,6 @@ export default async ({ ctx }) => {
     });
     for (let item of consts) {
         Net.memory.free(item.value);
+        item.value = null;
     }
 };
