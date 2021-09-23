@@ -2,6 +2,7 @@ import Run from '../';
 import Net from '../../../Net.js';
 
 export default async ({ ctx }) => {
+    window.ctx = ctx;
     const main = ctx.global.get('main');
     const { consts } = ctx;
     for (let item of consts) {

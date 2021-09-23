@@ -15,7 +15,7 @@ const addPutchar = (ctx) => {
 };
 
 const addMalloc = (ctx) => {
-    const arg = { name: 'size', type: 'int', size: 1, addr: [] };
+    const arg = { name: 'size', type: 'int', size: 4, addr: [] };
     const size = { instruction: 'load', src: arg };
     const data = {
         name: 'malloc',

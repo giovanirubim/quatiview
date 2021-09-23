@@ -1,5 +1,7 @@
 import Chunk from './Chunk.js';
 
+const LAZY_MODE = true;
+
 import {
 	InvalidAddress,
 	UnallocatedMemoryAccess,
@@ -20,13 +22,43 @@ class Memory {
 	}
 
 	clear() {
+		
+		console.warn('memory cleared');
 		this.firstAddress = 0x001000;
 		this.lastAddress = 0xffffff;
 		this.bytes = {};
-		this.chunks = new Chunk({
-			address: this.firstAddress,
-			size: this.lastAddress - this.firstAddress + 1,
-		});
+
+		if (LAZY_MODE) {
+			this.nextAddr = this.firstAddress;
+			this.allocationSize = {};
+		} else {
+			this.chunks = new Chunk({
+				address: this.firstAddress,
+				size: this.lastAddress - this.firstAddress + 1,
+			});
+		}
+	}
+
+	lazyAllocate(size) {
+		const addr = this.nextAddr;
+		for (let i=0; i<size; ++i) {
+			this.bytes[addr + i] = UNINITIALIZED_BYTE;
+		}
+		this.nextAddr += size;
+		this.allocationSize[addr] = size;
+		return addr;
+	}
+
+	lazyFree(addr) {
+		this.validateAddress(addr);
+		const size = this.allocationSize[addr];
+		if (size === undefined) {
+			throw new FreeingANonAllocationAddress(addr);
+		}
+		for (let i=0; i<size; ++i) {
+			delete this.bytes[addr + i];
+		}
+		delete this.allocationSize[addr];
 	}
 
 	validateAddress(address) {
@@ -56,6 +88,10 @@ class Memory {
 	}
 
 	allocate(size) {
+
+		if (LAZY_MODE) {
+			return this.lazyAllocate(size);
+		}
 
 		// Round to a multiple of 4
 		size = (size + 3) & ~3;
@@ -95,6 +131,10 @@ class Memory {
 	}
 
 	free(address) {
+
+		if (LAZY_MODE) {
+			return this.lazyFree(address);
+		}
 
 		this.validateAddress(address);
 		if (this.bytes[address] === undefined) {

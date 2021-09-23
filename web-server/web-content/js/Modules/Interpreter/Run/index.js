@@ -41,11 +41,14 @@ const map = {
     ret,
 };
 
-export default (obj) => {
+export default async (obj) => {
     const fn = map[obj.instruction];
     if (!fn) {
         console.error(obj);
         throw new Error(`Undefined method to execute ${obj.instruction}`);
     }
-    return fn(obj);
+    log(`${obj.instruction} started`);
+    const res = await fn(obj);
+    log(`${obj.instruction} ended`);
+    return res;
 };
