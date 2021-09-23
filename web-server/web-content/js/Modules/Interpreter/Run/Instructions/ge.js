@@ -1,4 +1,4 @@
-import solve from './solve.js';
+import solve from './Support/solve.js';
 
 export default async ({ a, b }) => {
     a = await solve(a);

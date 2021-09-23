@@ -20,5 +20,8 @@ export default async ({ src }) => {
             };
         }
     }
-    throw new Error('Load: dunno wat TODO');
+    return {
+        type: src.type,
+        addr: [ src.addr.at(-1) ],
+    };
 };

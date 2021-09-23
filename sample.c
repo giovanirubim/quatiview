@@ -1,12 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void printStrLn(char* s) {
+void puts(char* s) {
 	if (*s == '\0') {
 		putchar('\n');
 	} else {
 		putchar(*s);
-		printStrLn(s + 1);
+		puts(s + 1);
 	}
 }
 
@@ -26,9 +26,9 @@ struct Node {
 struct Node* newNode(int info) {
 	struct Node* node;
 	node = malloc(sizeof(struct Node));
-	(*node).l = NULL;
-	(*node).r = NULL;
-	(*node).info = info;
+	node->l = NULL;
+	node->r = NULL;
+	node->info = info;
 	return node;
 }
 
@@ -36,13 +36,13 @@ struct Node* add(struct Node* node, int info) {
 	if (node == NULL) {
 		return newNode(info);
 	}
-	if ((*node).info == info) {
+	if (node->info == info) {
 		return node;
 	}
-	if (info > (*node).info) {
-		(*node).r = add((*node).r, info);
+	if (info > node->info) {
+		node->r = add(node->r, info);
 	} else {
-		(*node).l = add((*node).l, info);
+		node->l = add(node->l, info);
 	}
 	return node;
 }
@@ -51,13 +51,13 @@ int contains(struct Node* node, int info) {
 	if (node == NULL) {
 		return 0;
 	}
-	if (info < (*node).info) {
-		return contains((*node).l, info);
+	if (info < node->info) {
+		return contains(node->l, info);
 	}
-	if (info > (*node).info) {
-		return contains((*node).r, info);
+	if (info > node->info) {
+		return contains(node->r, info);
 	}
-	return (*node).info == info;
+	return node->info == info;
 }
 
 void printTree(struct Node* node) {
@@ -66,11 +66,11 @@ void printTree(struct Node* node) {
 		return;
 	}
 	putchar('(');
-	printTree((*node).l);
+	printTree(node->l);
 	putchar(',');
-	printInt((*node).info);
+	printInt(node->info);
 	putchar(',');
-	printTree((*node).r);
+	printTree(node->r);
 	putchar(')');
 }
 
@@ -87,6 +87,6 @@ int main() {
 	tree = add(tree, 10);
 	tree = add(tree, 9);
 	tree = add(tree, 12);
-	printStrLn("Imprimindo arvore:");
+	puts("Imprimindo arvore:");
 	printTreeLn(tree);
 }

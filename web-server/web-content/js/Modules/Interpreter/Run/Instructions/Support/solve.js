@@ -1,4 +1,4 @@
-import Run from '../';
+import Run from '../../';
 
 export default async (item) => {
     if (item.instruction != null) {

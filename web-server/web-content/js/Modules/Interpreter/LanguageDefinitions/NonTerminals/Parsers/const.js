@@ -12,4 +12,7 @@ new NonTerminal({
             'str-const',
         );
     },
+    compile: (ctx, node) => {
+        console.log(node);
+    },
 });

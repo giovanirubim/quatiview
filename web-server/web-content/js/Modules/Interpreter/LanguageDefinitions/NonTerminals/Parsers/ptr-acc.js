@@ -8,11 +8,11 @@ new NonTerminal({
     },
     compile: (ctx, { content }) => {
         const { operand } = content;
-        const addr = ctx.compile(operand);
+        const src = ctx.compile(operand);
         return {
             instruction: 'ptr-acc',
-            type: addr.type.replace(/\*$/, ''),
-            addr,
+            type: src.type.replace(/\*$/, ''),
+            src,
         };
     }
 });

@@ -7,6 +7,7 @@ export default async ({ ctx }) => {
     for (let item of consts) {
         const addr = Net.memory.allocate(item.bytes.length);
         item.value = addr;
+        item.bytes.forEach((byte, i) => Net.memory.write(addr + i, byte));
     }
     await Run({
         instruction: 'call',

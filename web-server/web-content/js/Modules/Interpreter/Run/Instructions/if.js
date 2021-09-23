@@ -1,5 +1,5 @@
 import Run from '../';
-import solve from './solve.js';
+import solve from './Support/solve.js';
 
 export default async ({ cond, scopeTrue, scopeFalse }) => {
     cond = await solve(cond);

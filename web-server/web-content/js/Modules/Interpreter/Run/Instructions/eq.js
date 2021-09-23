@@ -6,8 +6,8 @@ export default async ({ a, b }) => {
     if (a.type === 'int' && b.type === 'int') {
         return {
             type: 'int',
-            value: (a.value > b.value) | 0,
+            value: (a.value == b.value) | 0,
         };
     }
-    throw new Error('dunno wat TODO');
+    throw new Error(`dunno wat TODO ${a.type} == ${b.type}`);
 };

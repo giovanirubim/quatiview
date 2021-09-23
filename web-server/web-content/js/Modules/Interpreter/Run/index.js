@@ -16,6 +16,9 @@ import _if from './Instructions/if.js';
 import malloc from './Instructions/malloc.js';
 import free from './Instructions/free.js';
 import init from './Instructions/init.js';
+import member from './Instructions/member.js';
+import ptr_acc from './Instructions/ptr-acc.js';
+import eq from './Instructions/eq.js';
 
 const map = {
     call,
@@ -31,6 +34,9 @@ const map = {
     malloc,
     free,
     init,
+    member,
+    'ptr-acc': ptr_acc,
+    eq,
 };
 
 export default (obj) => {

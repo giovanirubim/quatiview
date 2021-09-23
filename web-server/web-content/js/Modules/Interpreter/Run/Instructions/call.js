@@ -1,6 +1,6 @@
 import Run from '../';
 import Net from '../../../Net.js';
-import solve from './solve.js';
+import solve from './Support/solve.js';
 
 export default async ({ ctx, args, fn }) => {
     const values = [];
