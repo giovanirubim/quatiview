@@ -3,4 +3,5 @@ Array.prototype.at = function(index) {
     return this[(index + this.length)%this.length];
 };
 
-window.log = () => {};
+// window.log = console.log; /*
+window.log = () => {}; // */

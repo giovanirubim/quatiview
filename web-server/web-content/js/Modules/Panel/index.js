@@ -81,7 +81,7 @@ let interval = null;
 const startLoop = () => {
 	interval = setInterval(() => {
 		step();
-	}, 100);
+	}, 0);
 };
 
 const stopLoop = () => {
@@ -122,7 +122,6 @@ const unpause = async () => {
 };
 
 const run = async () => {
-	console.clear();
 	Net.terminal.clear();
 	const source = Net.editor.getText();
 	try {

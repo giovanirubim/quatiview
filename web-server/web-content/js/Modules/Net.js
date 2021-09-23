@@ -3,6 +3,7 @@ import * as Terminal from './Terminal/';
 import * as Panel from './Panel/';
 import * as Interpreter from './Interpreter/';
 import * as EventManager from './EventManager/';
+import * as MemViewer from './MemViewer/';
 import Memory from './Memory/';
 
 export default ({
@@ -12,4 +13,5 @@ export default ({
 	interpreter: Interpreter,
 	eventManager: EventManager,
 	memory: Memory,
+    memViewer: MemViewer,
 });

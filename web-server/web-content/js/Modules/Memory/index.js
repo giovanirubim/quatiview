@@ -1,6 +1,7 @@
 import Chunk from './Chunk.js';
 
 const LAZY_MODE = true;
+const DETERMINISTIC = false;
 
 import {
 	InvalidAddress,
@@ -13,7 +14,10 @@ import {
 const NULL = 0;
 const UNINITIALIZED_BYTE = Symbol('UNINITIALIZED_BYTE');
 
-const pick = (arr) => arr[arr.length*Math.random() | 0];
+let rseed = 0;
+const srand = () => ((++rseed) % Math.PI) / Math.PI;
+const random = DETERMINISTIC ? srand : Math.random;
+const pick = (arr) => arr[arr.length*random() | 0];
 
 class Memory {
 
@@ -23,7 +27,6 @@ class Memory {
 
 	clear() {
 		
-		console.warn('memory cleared');
 		this.firstAddress = 0x001000;
 		this.lastAddress = 0xffffff;
 		this.bytes = {};
@@ -114,7 +117,7 @@ class Memory {
 
 		// Pick an address of a random word to allocate
 		const amountOfWords = chunk.size/4 | 0;
-		const word = amountOfWords*Math.random() | 0;
+		const word = amountOfWords*random() | 0;
 		const address = chunk.address + word*4;
 
 		// Update chunk list

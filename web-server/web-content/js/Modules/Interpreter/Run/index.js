@@ -47,8 +47,6 @@ export default async (obj) => {
         console.error(obj);
         throw new Error(`Undefined method to execute ${obj.instruction}`);
     }
-    log(`${obj.instruction} started`);
     const res = await fn(obj);
-    log(`${obj.instruction} ended`);
     return res;
 };
