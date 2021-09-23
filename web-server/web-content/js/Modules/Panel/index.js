@@ -1,9 +1,9 @@
-import { CompilationError, LexycalError, SyntaticError } from '../errors.js';
-import ret from '../Interpreter/Run/Instructions/ret.js';
+import { CompilationError, LexycalError, RuntimeError, SyntaticError } from '../errors.js';
 import Net from '../Net.js';
 import getLineOf from './Support/getLineOf.js';
 
 let paused = true;
+let running = true;
 const button = {};
 
 const bindInputFile = (inputFile) => {
@@ -34,6 +34,11 @@ const createInputFile = () => {
 	return inputFile;
 };
 
+const reportRuntimeError = (error) => {
+	Net.terminal.writeln('');
+	Net.terminal.writeln('Runtime error: ' + error.message);
+};
+
 const reportCompilationError = (source, error) => {
 	Net.terminal.writeln('Compilation failed');
 	const { index } = error;
@@ -59,7 +64,8 @@ const start = async () => {
 };
 
 const step = async () => {
-};	
+	Net.eventManager.step();
+};
 
 const pause = async () => {
 	if (paused) {
@@ -67,21 +73,69 @@ const pause = async () => {
 	}
 	paused = true;
 	button.pause.addClass('hidden');
-	button.play.removeClass('hidden');
+	button.unpause.removeClass('hidden');
+	button.next.removeClass('hidden');
+	stopLoop();
 };
 
-const play = async () => {
+let interval = null;
+const startLoop = () => {
+	interval = setInterval(() => {
+		step();
+	}, 100);
+};
+
+const stopLoop = () => {
+	if (interval !== null) {
+		clearInterval(interval);
+		interval = null;
+	}
+};
+
+const handleExit = () => {
+	stopLoop();
+	running = false;
+	Net.editor.unlock();
+	button.run.removeClass('hidden');
+	button.unpause.addClass('hidden');
+	button.pause.addClass('hidden');
+	button.next.addClass('hidden');
+};
+
+const handleStart = () => {
+	running = true;
+	paused = true;
+	button.run.addClass('hidden');
+	button.unpause.removeClass('hidden');
+	button.next.removeClass('hidden');
+	Net.editor.lock();
+};
+
+const unpause = async () => {
+	if (!paused) {
+		return;
+	}
+	paused = false;
+	button.pause.removeClass('hidden');
+	button.unpause.addClass('hidden');
+	button.next.addClass('hidden');
+	startLoop();
 };
 
 const run = async () => {
 	Net.terminal.clear();
 	const source = Net.editor.getText();
 	try {
+		handleStart();
 		await Net.interpreter.run(source);
+		handleExit();
 		Net.terminal.writeln('Program exited');
 	} catch (error) {
+		handleExit();
 		if (error instanceof CompilationError) {
 			reportCompilationError(source, error);
+		} else if (error instanceof RuntimeError) {
+			reportRuntimeError(error);
 		} else {
 			console.error(error);
 		}
@@ -101,6 +155,8 @@ export const init = () => {
 	});
 	button.run.on('click', run);
 	button.pause.on('click', pause);
+	button.unpause.on('click', unpause);
+	button.next.on('click', step);
 	$(window).on('keydown', (e) => {
 		if (!e.ctrlKey && !e.shiftKey && !e.altKey && e.key === 'F10') {
 			e.preventDefault();

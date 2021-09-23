@@ -51,11 +51,11 @@ export const highlight = (start, end) => {
 };
 
 export const lock = () => {
-	textarea.attr('disabled', 'true');
+	// textarea.attr('disabled', 'true');
 };
 
 export const unlock = () => {
-	textarea.removeAttr('disabled');
+	// textarea.removeAttr('disabled');
 };
 
 export const isLocked = () => {
