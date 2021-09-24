@@ -32,4 +32,20 @@ $(document).ready(() => {
 		length: 2,
 	});
 
+	Net.memViewer.addStruct('linked_list')
+	.member({
+		offset: 0,
+		type: 'int',
+		col: 0,
+		row: 0,
+		length: 3,
+	})
+	.member({
+		offset: 4,
+		type: 'struct foo*',
+		col: 0,
+		row: 1,
+		length: 3,
+	});
+
 });

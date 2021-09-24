@@ -3,12 +3,15 @@ import Net from '../Net.js';
 let canvas = null;
 let ctx = null;
 
-const fontColor = '#aaa';
 const fontSize = 8;
 const maxScale = 2;
 const cellSize = 20;
-const lineWidth = 3;
-const instances = [];
+const cellPadding = 1;
+const dblCellPadding = 2;
+const arrowTipSize = 2;
+const lineWidth = 1.5;
+const animationDuration = 1250;
+const instances = window.instances = [];
 const transform = [1, 0, 0, 1, 0, 0];
 const templates = {};
 
@@ -22,16 +25,44 @@ const color = {
 		text: '#fff',
 	},
 	ptrLine: '#fff',
+	addr: '#ccc',
+	instance: '#aaa',
 };
 
 let addrMap = {};
 const pointers = [];
+const animations = [];
+
+const animate = (it) => {
+	animations.push({ time: Date.now(), it });
+};
+
+const runAnimations = () => {
+	const now = Date.now();
+	const ongoing = [];
+	for (let animation of animations) {
+		const { time, start, end, it } = animation;
+		const dt = now - time;
+		const x = Math.min(1, dt/animationDuration);
+		const y = (1 - Math.cos(x*Math.PI))/2;;
+		it(y);
+		if (x < 1) {
+			ongoing.push(animation);
+		}
+	}
+	if (ongoing.length < animations.length) {
+		animations.length = 0;
+		animations.push(...ongoing);
+	}
+};
 
 const calcCentralizedZoom = () => {
 	if (instances.length === 0) {
 		return { scale: 1, dx: 0, dy: 0 };
 	}
-	const minMargin = 20;
+	const tsx = canvas[0].width;
+	const tsy = canvas[0].height;
+	const minMargin = Math.min(tsx, tsy)*0.1;
 	let x0 = +Infinity;
 	let x1 = -Infinity;
 	let y0 = +Infinity;
@@ -46,8 +77,6 @@ const calcCentralizedZoom = () => {
 	}
 	const sx = x1 - x0;
 	const sy = y1 - y0;
-	const tsx = canvas[0].width;
-	const tsy = canvas[0].height;
 	const xScale = (tsx - minMargin*2)/sx;
 	const yScale = (tsy - minMargin*2)/sy;
 	const scale = Math.min(maxScale, Math.min(xScale, yScale));
@@ -98,17 +127,19 @@ class StructTemplate {
 		return this;
     }
 	render(addr, x0, y0) {
-		const { members } = this;
+		const { members, sx, sy } = this;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
+		ctx.fillStyle = color.instance;
+		ctx.fillRect(x0 - cellPadding, y0 - cellPadding, sx + dblCellPadding, sy + dblCellPadding);
 		for (let member of members) {
 			const { type, sx, sy, offset } = member;
 			const x = member.x + x0;
 			const y = member.y + y0;
 			const { text, bg } = color[type] ?? color.def;
-			drawBlock(x, y, sx, sy, bg);
+			drawBlock(x + cellPadding, y + cellPadding, sx - dblCellPadding, sy - dblCellPadding, bg);
 			ctx.fillStyle = text;
-			ctx.font = `${fontSize}px monospace`;
+			ctx.font = `bold ${fontSize}px monospace`;
 			const cx = x + sx*0.5;
 			const cy = y + sy*0.5;
 			const valAddr = addr + offset;
@@ -135,8 +166,14 @@ class StructTemplate {
 
 class Instance {
 	constructor(addr, template) {
-		this.x = Math.random()*500;
-		this.y = Math.random()*500;
+		this.real = {
+			x: Math.random()*500,
+			y: Math.random()*500,
+		};
+		this.animated = {
+			x: 0,
+			y: 0,
+		};
 		this.addr = addr;
 		this.template = template;
 		this.rendered = {
@@ -146,18 +183,37 @@ class Instance {
 			y1: null,
 		};
 	}
+	get x() {
+		return this.real.x + this.animated.x;
+	}
+	get y() {
+		return this.real.y + this.animated.y;
+	}
 	render() {
 		const { x, y, template, addr } = this;
 		template.render(addr, x, y);
 		ctx.textBaseline = 'bottom';
 		ctx.textAlign = 'left';
-		ctx.fillStyle = fontColor;
+		ctx.fillStyle = color.addr;
 		ctx.font = `${fontSize}px monospace`;
 		ctx.fillText(addr, x, y);
 		this.rendered.x0 = x;
 		this.rendered.y0 = y;
 		this.rendered.x1 = x + template.sx;
 		this.rendered.y1 = y + template.sy;
+	}
+	moveTo(row, col) {
+		const { real, animated } = this;
+		const x = col*cellSize;
+		const y = row*cellSize;
+		const dif_x = x - real.x;
+		const dif_y = y - real.y;
+		this.real.x = x;
+		this.real.y = y;
+		animate((t) => {
+			this.animated.x = dif_x*t - dif_x;
+			this.animated.y = dif_y*t - dif_y;
+		});
 	}
 }
 
@@ -181,16 +237,29 @@ const render = () => {
 		const x2 = target.x + target.template.sx*0.5;
 		const y2 = target.y;
 		const y1 = (y0 + y2)*0.5;
+		const dir = (y2 - y0)/Math.abs(y2 - y0);
 		ctx.beginPath();
 		ctx.moveTo(x0, y0);
 		ctx.bezierCurveTo(x0, y1, x2, y1, x2, y2);
+		ctx.moveTo(x2 - arrowTipSize, y2 - dir*arrowTipSize);
+		ctx.lineTo(x2, y2);
+		ctx.lineTo(x2 + arrowTipSize, y2 - dir*arrowTipSize);
 		ctx.stroke();
 	}
 };
 
 const frame = () => {
+	runAnimations();
+	updateZoom();
 	render();
 	requestAnimationFrame(frame);
+};
+
+const updateZoom = () => {
+	const { dx, dy, scale } = calcCentralizedZoom();
+	transform[0] = transform[3] = scale;
+	transform[4] = dx;
+	transform[5] = dy;
 };
 
 const resize = () => {
@@ -198,10 +267,7 @@ const resize = () => {
 	const width = Number(parent.css('width').replace('px', ''));
 	const height = Number(parent.css('height').replace('px', ''));
 	canvas.attr({ width, height });
-	const { dx, dy, scale } = calcCentralizedZoom();
-	transform[0] = transform[3] = scale;
-	transform[4] = dx;
-	transform[5] = dy;
+	updateZoom();
 };
 
 export const init = () => {

@@ -3,34 +3,34 @@ const skipableCode = /^(\s+|\/\/[^\n]*|\/\*([^*]|\*[^\/])*\*\/|\/\*\*\*\/)+/;
 export default class SourceConsumer {
 	constructor(sourceCode) {
 		this.sourceCode = sourceCode;
-		this.remainig = sourceCode;
+		this.remaining = sourceCode;
 		this.findNext();
 	}
 	skip(amount) {
-		this.remainig = this.remainig.substr(amount);
+		this.remaining = this.remaining.substr(amount);
 	}
 	findNext() {
-		const match = this.remainig.match(skipableCode);
+		const match = this.remaining.match(skipableCode);
 		if (match === null) {
 			return;
 		}
 		this.skip(match[0].length);
 	}
 	getIndex() {
-		return this.sourceCode.length - this.remainig.length;
+		return this.sourceCode.length - this.remaining.length;
 	}
 	getState() {
 		return this.getIndex();
 	}
 	setState(index) {
-		this.remainig = this.sourceCode.substr(index);
+		this.remaining = this.sourceCode.substr(index);
 		return this;
 	}
 	nextChar() {
-		return this.remainig[0] ?? null;
+		return this.remaining[0] ?? null;
 	}
 	next(pattern) {
-		const match = this.remainig.match(pattern);
+		const match = this.remaining.match(pattern);
 		if (match === null || match.index !== 0) {
 			return null;
 		}
@@ -40,6 +40,6 @@ export default class SourceConsumer {
 		return result;
 	}
 	end() {
-		return this.remainig === '';
+		return this.remaining === '';
 	}
 }
