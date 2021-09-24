@@ -1,22 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-
-void puts(char* s) {
-	if (*s == '\0') {
-		putchar('\n');
-	} else {
-		putchar(*s);
-		puts(s + 1);
-	}
-}
-
-void printInt(int x) {
-	if (x >= 10) {
-		printInt(x/10);
-	}
-	putchar(x%10 + '0');
-}
-
 struct Node {
 	int info;
 	struct Node* l;
@@ -47,36 +28,25 @@ struct Node* add(struct Node* node, int info) {
 	return node;
 }
 
-int contains(struct Node* node, int info) {
-	if (node == NULL) {
-		return 0;
+void print_int(int x) {
+	if (x >= 10) {
+		print_int(x/10);
 	}
-	if (info < node->info) {
-		return contains(node->l, info);
-	}
-	if (info > node->info) {
-		return contains(node->r, info);
-	}
-	return node->info == info;
+	putchar(x%10 + '0');
 }
 
-void printTree(struct Node* node) {
+void print_tree(struct Node* node) {
 	if (node == NULL) {
 		putchar('-');
 		return;
 	}
 	putchar('(');
-	printTree(node->l);
+	print_tree(node->l);
 	putchar(',');
-	printInt(node->info);
+	print_int(node->info);
 	putchar(',');
-	printTree(node->r);
+	print_tree(node->r);
 	putchar(')');
-}
-
-void printTreeLn(struct Node* node) {
-	printTree(node);
-	putchar('\n');
 }
 
 int main() {
@@ -87,6 +57,6 @@ int main() {
 	tree = add(tree, 10);
 	tree = add(tree, 9);
 	tree = add(tree, 12);
-	puts("Imprimindo arvore:");
-	printTreeLn(tree);
+	print_tree(tree);
+	putchar('\n');
 }

@@ -1,5 +1,5 @@
-import Token from './Token.js';
 import Charset from '../../Support/Charset.js';
+import Token from '../../Model/Token.js';
 
 const entries = new Array(256).fill().map((_, index) => {
 	const char = String.fromCharCode(index);

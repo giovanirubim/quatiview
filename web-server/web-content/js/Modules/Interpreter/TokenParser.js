@@ -2,7 +2,7 @@ import * as Tokens from './LanguageDefinitions/Tokens';
 import { LexycalError, SyntaticError } from '../errors.js';
 import ParseTreeNode from './Model/ParseTreeNode.js';
 
-export default class TokenGenerator {
+export default class TokenParser {
 	constructor(sourceConsumer) {
 		this.sourceConsumer = sourceConsumer;
 		this.cache = null;

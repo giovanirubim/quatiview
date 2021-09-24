@@ -167,8 +167,8 @@ class StructTemplate {
 class Instance {
 	constructor(addr, template) {
 		this.real = {
-			x: Math.random()*500,
-			y: Math.random()*500,
+			x: Math.random()*200,
+			y: Math.random()*200,
 		};
 		this.animated = {
 			x: 0,

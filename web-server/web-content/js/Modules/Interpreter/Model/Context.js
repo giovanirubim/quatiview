@@ -3,9 +3,9 @@ import ParseTreeNode from "./ParseTreeNode.js";
 import Scope from './Scope.js';
 import { CompilationError, SyntaticError } from "../../errors.js";
 
-export default class ParsingContext {
-    constructor({ tokenGenerator }) {
-        this.token = tokenGenerator;
+export default class Context {
+    constructor({ tokenParser }) {
+        this.token = tokenParser;
         this.structs = {};
         this.consts = [];
         this.operand = null;
