@@ -59,9 +59,6 @@ const reportCompilationError = (source, error) => {
 	}
 };
 
-const start = async () => {
-};
-
 const step = async () => {
 	Net.eventManager.step();
 };
@@ -81,7 +78,7 @@ let interval = null;
 const startLoop = () => {
 	interval = setInterval(() => {
 		step();
-	}, 0);
+	}, 50);
 };
 
 const stopLoop = () => {
@@ -123,6 +120,7 @@ const unpause = async () => {
 
 const run = async () => {
 	Net.terminal.clear();
+	Net.memViewer.clear();
 	const source = Net.editor.getText();
 	try {
 		handleStart();

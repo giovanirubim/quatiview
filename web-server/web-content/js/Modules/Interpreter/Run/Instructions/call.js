@@ -2,7 +2,7 @@ import Run from '../';
 import Net from '../../../Net.js';
 import solve from './Support/solve.js';
 
-export default async ({ ctx, args, fn }) => {
+export default async ({ ctx, args, fn, structAllocation }) => {
     const callstack = ctx.callstack = ctx.callstack ?? [];
     callstack.push(fn.name);
     const values = [];
@@ -28,5 +28,11 @@ export default async ({ ctx, args, fn }) => {
         Net.memory.free(addr);
     }
     callstack.pop();
+    if (structAllocation != null) {
+        const struct = ctx.structs[structAllocation];
+        const addr = ctx.returnValue.value;
+        const { viewFlag } = struct;
+        Net.memViewer.addInstance(viewFlag, addr);
+    }
     return ctx.returnValue;
 };

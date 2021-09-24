@@ -1,4 +1,5 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
+import typeIsStruct from './Support/typeIsStruct.js';
 
 new NonTerminal({
     name: 'arg-call',
@@ -18,11 +19,19 @@ new NonTerminal({
     compile: (ctx, { content }) => {
         const fn = ctx.operand;
         const args = content.map((item) => ctx.compile(item));
+        let structAllocation = null;
+        if (content.length === 1 && content[0].name === 'sizeof') {
+            const type = content[0].content;
+            if (typeIsStruct(type) && ctx.operand.name === 'malloc') {
+                structAllocation = type.replace(/^struct\s/, '');
+            }
+        }
         const res = {
             instruction: 'call',
             fn,
             args,
             type: fn.returnType,
+            structAllocation,
         };
         return res;
     },

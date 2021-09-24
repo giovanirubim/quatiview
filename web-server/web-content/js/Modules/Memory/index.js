@@ -82,6 +82,27 @@ class Memory {
 		return value;
 	}
 
+	readSafe(address) {
+		const value = this.bytes[address];
+		if (value === undefined || value === UNINITIALIZED_BYTE) {
+			return null;
+		}
+		return value;
+	}
+
+	readWordSafe(address) {
+		const { bytes } = this;
+		let res = 0;
+		for (let i=0; i<4; ++i) {
+			const value = bytes[address + i];
+			if (value === undefined || value === UNINITIALIZED_BYTE) {
+				return null;
+			}
+			res |= value << (i << 3);
+		}
+		return res;
+	}
+
 	write(address, value) {
 		this.validateAddress(address);
 		if (this.bytes[address] === undefined) {

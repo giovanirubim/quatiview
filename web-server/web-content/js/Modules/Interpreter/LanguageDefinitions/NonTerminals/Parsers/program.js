@@ -40,6 +40,18 @@ const addFree = (ctx) => {
     ctx.global.set({ 'free': data });
 };
 
+const flagViewStructs = ({ structs }) => {
+    for (let name in structs) {
+        const struct = structs[name];
+        const ptrType = `struct ${name}*`;
+        const members = Object.values(struct.members);
+        const types = members.map(({ type }) => type).join('; ');
+        if (types === `int; ${ptrType}; ${ptrType}`) {
+            struct.viewFlag = 'binary_search_tree';
+        }
+    }
+};
+
 new NonTerminal({
     name: 'program',
     parse: (ctx) => {
@@ -60,6 +72,7 @@ new NonTerminal({
         if (!main) {
             throw new CompilationError(`'main' undeclared`);
         }
+        flagViewStructs(ctx);
         return { instruction: 'init' };
     },
 });

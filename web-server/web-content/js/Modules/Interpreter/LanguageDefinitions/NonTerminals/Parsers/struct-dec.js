@@ -19,6 +19,7 @@ new NonTerminal({
             name,
             members: {},
             size: null,
+            viewFlag: null,
         };
         ctx.structs[name] = struct;
         ctx.push({ struct });
