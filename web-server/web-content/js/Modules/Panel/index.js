@@ -78,7 +78,7 @@ let interval = null;
 const startLoop = () => {
 	interval = setInterval(() => {
 		step();
-	}, 50);
+	}, 100);
 };
 
 const stopLoop = () => {

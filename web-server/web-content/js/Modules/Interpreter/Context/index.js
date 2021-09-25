@@ -1,7 +1,9 @@
-import NonTerminal from "./NonTerminal.js";
-import ParseTreeNode from "./ParseTreeNode.js";
-import Scope from './Scope.js';
+import NonTerminal from "../Model/NonTerminal.js";
+import ParseTreeNode from "../Model/ParseTreeNode.js";
+import Scope from '../Model/Scope.js';
 import { CompilationError, SyntaticError } from "../../errors.js";
+import preProcessing from "./preProcessing.js";
+import postProcessing from "./postProcessing.js";
 
 export default class Context {
     constructor({ tokenParser }) {
@@ -22,6 +24,7 @@ export default class Context {
         const globalScope = new Scope();
         this.global = globalScope;
         this.local = globalScope;
+        preProcessing(this);
     }
     push(a, b) {
         if (typeof a === 'string') {
@@ -112,5 +115,8 @@ export default class Context {
             }
         }
         throw furthestError;
+    }
+    finish() {
+        postProcessing(this);
     }
 }

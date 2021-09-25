@@ -5,7 +5,7 @@ import TokenParser from './TokenParser.js';
 
 // Load non terminals
 import './LanguageDefinitions/NonTerminals/';
-import Context from './Model/Context.js';
+import Context from './Context/';
 
 export const run = async (source) => {
     const sourceConsumer = new SourceConsumer(source);
@@ -13,6 +13,7 @@ export const run = async (source) => {
     const context = new Context({ tokenParser });
     const parseTree = context.parse('program');
     const program = context.compile(parseTree);
+    context.finish();
     Net.memory.clear();
     return Run(program);
 };

@@ -1,16 +1,17 @@
 import Net from '../Net.js';
+import sortBinTree from './sortBinTree.js';
 
 let canvas = null;
 let ctx = null;
 
 const fontSize = 8;
-const maxScale = 2;
+const maxScale = 1.5;
 const cellSize = 20;
 const cellPadding = 1;
 const dblCellPadding = 2;
 const arrowTipSize = 2;
 const lineWidth = 1.5;
-const animationDuration = 1250;
+const animationDuration = 500;
 const instances = window.instances = [];
 const transform = [1, 0, 0, 1, 0, 0];
 const templates = {};
@@ -93,7 +94,8 @@ const drawBlock = (x, y, sx, sy, color) => {
 };
 
 class StructTemplate {
-    constructor() {
+    constructor(name) {
+		this.name = name;
         this.members = [];
 		this.sx = 0;
 		this.sy = 0;
@@ -167,8 +169,8 @@ class StructTemplate {
 class Instance {
 	constructor(addr, template) {
 		this.real = {
-			x: Math.random()*200,
-			y: Math.random()*200,
+			x: 0,
+			y: 200,
 		};
 		this.animated = {
 			x: 0,
@@ -202,17 +204,18 @@ class Instance {
 		this.rendered.x1 = x + template.sx;
 		this.rendered.y1 = y + template.sy;
 	}
-	moveTo(row, col) {
+	moveTo(x, y) {
 		const { real, animated } = this;
-		const x = col*cellSize;
-		const y = row*cellSize;
 		const dif_x = x - real.x;
 		const dif_y = y - real.y;
-		this.real.x = x;
-		this.real.y = y;
+		if (dif_x === 0 && dif_y === 0) {
+			return;
+		}
+		real.x = x;
+		real.y = y;
 		animate((t) => {
-			this.animated.x = dif_x*t - dif_x;
-			this.animated.y = dif_y*t - dif_y;
+			animated.x = dif_x*t - dif_x;
+			animated.y = dif_y*t - dif_y;
 		});
 	}
 }
@@ -249,6 +252,7 @@ const render = () => {
 };
 
 const frame = () => {
+	sortTrees();
 	runAnimations();
 	updateZoom();
 	render();
@@ -290,9 +294,59 @@ export const clear = () => {
 };
 
 export const addStruct = (name) => {
-	const template = new StructTemplate();
+	const template = new StructTemplate(name);
 	templates[name] = template;
 	return template;
+};
+
+const spread = (node, treeId) => {
+	if (node === null || node.treeId !== null) {
+		return null;
+	}
+	node.treeId = treeId;
+	spread(node.l, treeId);
+	spread(node.r, treeId);
+	if (node.parent !== null) {
+		return spread(node.parent, treeId);
+	}
+	return node;
+};
+
+const sortTrees = () => {
+	const nodes = instances.filter(instance => instance.template.name === 'binary_search_tree');
+	const map = {};
+	for (let ref of nodes) {
+		map[ref.addr] = { ref, l: null, r: null, treeId: null, parent: null };
+	}
+	const trees = [];
+	for (let { addr } of nodes) {
+		const node = map[addr];
+		node.l = map[Net.memory.readWordSafe(addr + 4)] ?? null;
+		node.r = map[Net.memory.readWordSafe(addr + 8)] ?? null;
+		if (node.l !== null) {
+			node.l.parent = node;
+		}
+		if (node.r !== null) {
+			node.r.parent = node;
+		}
+	}
+	for (let { addr } of nodes) {
+		const tree = spread(map[addr], trees.length + 1);
+		if (tree !== null) {
+			trees.push(tree);
+		}
+	}
+	if (trees.length === 1) {
+		sortBinTree(trees[0], {
+			getLeft: (node) => node.l,
+			getRight: (node) => node.r,
+			getWidth: (node) => node.ref.template.sx,
+			getHeight: (node) => node.ref.template.sy,
+			yMargin: cellSize,
+			xMargin: cellSize,
+			setPos: (node, x, y) => node.ref.moveTo(x, y),
+		});
+	}
 };
 
 export const addInstance = (name, addr) => {
@@ -303,5 +357,6 @@ export const addInstance = (name, addr) => {
 	const instance = new Instance(addr, template);
 	addrMap[addr] = instance;
 	instances.push(instance);
+	sortTrees();
 	resize();
 };
