@@ -54,7 +54,7 @@ const reportCompilationError = (source, error) => {
 	if (index != null) {
 		const { line, ch, lineContent } = Net.editor.getLineOf(index);
 		Net.terminal.writeln(`${line.toString().padStart(4, ' ')} | ${lineContent}`);
-		Net.terminal.writeln(`${' '.repeat(4)} |${' '.repeat(ch)}^`);
+		Net.terminal.writeln(`${' '.repeat(4)} |${' '.repeat(ch + 1)}^`);
 		Net.editor.highlight(index, index);
 	}
 };
@@ -68,9 +68,9 @@ const pause = async () => {
 		return;
 	}
 	paused = true;
-	button.pause.addClass('hidden');
-	button.unpause.removeClass('hidden');
-	button.next.removeClass('hidden');
+	button.pause.addClass('disabled');
+	button.unpause.removeClass('disabled');
+	button.next.removeClass('disabled');
 	stopLoop();
 };
 
@@ -107,20 +107,20 @@ const handleExit = () => {
 	stopLoop();
 	running = false;
 	Net.editor.unlock();
-	button.run.removeClass('hidden');
-	button.stop.addClass('hidden');
-	button.unpause.addClass('hidden');
-	button.pause.addClass('hidden');
-	button.next.addClass('hidden');
+	button.run.removeClass('disabled');
+	button.stop.addClass('disabled');
+	button.unpause.addClass('disabled');
+	button.pause.addClass('disabled');
+	button.next.addClass('disabled');
 };
 
 const handleStart = () => {
 	running = true;
 	paused = true;
-	button.run.addClass('hidden');
-	button.stop.removeClass('hidden');
-	button.unpause.removeClass('hidden');
-	button.next.removeClass('hidden');
+	button.run.addClass('disabled');
+	button.stop.removeClass('disabled');
+	button.unpause.removeClass('disabled');
+	button.next.removeClass('disabled');
 	Net.editor.lock();
 };
 
@@ -129,9 +129,9 @@ const unpause = async () => {
 		return;
 	}
 	paused = false;
-	button.pause.removeClass('hidden');
-	button.unpause.addClass('hidden');
-	button.next.addClass('hidden');
+	button.pause.removeClass('disabled');
+	button.unpause.addClass('disabled');
+	button.next.addClass('disabled');
 	startLoop();
 };
 
@@ -168,6 +168,15 @@ const bindSpeedInput = () => {
 	});
 };
 
+const bindButton = (name, action) => {
+	button[name].on('click', function(){
+		if ($(this).hasClass('disabled')) {
+			return;
+		}
+		action.call(this);
+	});
+};
+
 export const init = () => {
 	const buttons = $('#control-panel .panel-button');
 	buttons.each(function() {
@@ -176,14 +185,12 @@ export const init = () => {
 		button[id] = item;
 	});
 	const inputFile = createInputFile();
-	button.upload.on('click', () => {
-		inputFile.trigger('click');
-	});
-	button.run.on('click', run);
-	button.pause.on('click', pause);
-	button.unpause.on('click', unpause);
-	button.next.on('click', step);
-	button.stop.on('click', stop);
+	bindButton('upload', () => inputFile.trigger('click'));
+	bindButton('run', run);
+	bindButton('pause', pause);
+	bindButton('unpause', unpause);
+	bindButton('next', step);
+	bindButton('stop', stop);
 	bindSpeedInput();
 	$(window).on('keydown', (e) => {
 		if (!e.ctrlKey && !e.shiftKey && !e.altKey && e.key === 'F10') {

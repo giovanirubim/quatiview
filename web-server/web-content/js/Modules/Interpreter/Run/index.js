@@ -20,6 +20,7 @@ import member from './Instructions/member.js';
 import ptrAcc from './Instructions/ptr-acc.js';
 import eq from './Instructions/eq.js';
 import ret from './Instructions/ret.js';
+import not from './Instructions/not.js';
 
 const map = {
     call,
@@ -39,6 +40,7 @@ const map = {
     'ptr-acc': ptrAcc,
     eq,
     ret,
+    not,
 };
 
 export default async (obj) => {

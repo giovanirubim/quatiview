@@ -1,5 +1,6 @@
 const USE_CODEMIRROR = true;
 
+let section;
 let textarea;
 let codemirror;
 
@@ -56,8 +57,19 @@ export const getLineOf = (index) => {
 	return { line, ch: index - a - 1, lineContent };
 };
 
+const updateCodemirrorSize = () => {
+	codemirror.setSize(
+		Number(section.css('width').replace('px', '')),
+		Number(section.css('height').replace('px', '')),
+	);
+};
+
+const handleResize = () => {
+	updateCodemirrorSize();
+};
+
 export const init = () => {
-	const section = $('#editor-section');
+	section = $('#editor-section');
 	textarea = section.find('textarea');
 	loadText();
 	if (USE_CODEMIRROR) {
@@ -66,15 +78,17 @@ export const init = () => {
 			theme: 'ayu-mirage',
 			lineNumbers: true,
 			scrollbarStyle: 'overlay',
+			indentWithTabs: true,
+			indentUnit: 4,
+			tabSize: 4,
+			extraKeys: { "Tab": "indentAuto" },
 		});
-		codemirror.setSize(
-			Number(section.css('width').replace('px', '')),
-			Number(section.css('height').replace('px', '')),
-		);
 		bindCodemirror();
+		updateCodemirrorSize();
 	} else {
 		bindTextarea();
 	}
+	$(window).on('resize', updateCodemirrorSize);
 };
 
 export const getText = () => {
@@ -109,14 +123,12 @@ export const lock = () => {
 	if (codemirror) {
 		codemirror.setOption('readOnly', true);
 	}
-	// textarea.attr('disabled', 'true');
 };
 
 export const unlock = () => {
 	if (codemirror) {
 		codemirror.setOption('readOnly', false);
 	}
-	// textarea.removeAttr('disabled');
 };
 
 export const focus = () => {

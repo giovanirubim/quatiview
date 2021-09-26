@@ -22,6 +22,10 @@ body {
 	margin-left: 10px;
 	cursor: pointer;
 }
+#control-panel .panel-button.disabled {
+	opacity: 0.25;
+	cursor: default;
+}
 .panel-speed {
 	float: left;
 	margin-top: 8px;
@@ -101,7 +105,4 @@ body {
 	right: var(--spacing);
 	overflow: hidden;
 	background-color: #222;
-}
-.hidden {
-	display: none;
 }
