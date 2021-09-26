@@ -1,6 +1,7 @@
-import putchar from './Functions/putchar.js';
 import malloc from './Functions/malloc.js';
 import free from './Functions/free.js';
+import getchar from './Functions/getchar.js';
+import putchar from './Functions/putchar.js';
 
 const addFunction = (ctx, { name, returnType, args, run }) => {
     const fn = {
@@ -16,7 +17,8 @@ const addFunction = (ctx, { name, returnType, args, run }) => {
 };
 
 export default (ctx) => {
-    addFunction(ctx, putchar);
     addFunction(ctx, malloc);
     addFunction(ctx, free);
+    addFunction(ctx, getchar);
+    addFunction(ctx, putchar);
 };

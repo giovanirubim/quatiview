@@ -60,7 +60,7 @@ const reportCompilationError = (source, error) => {
 };
 
 const step = async () => {
-	Net.eventManager.step();
+	Net.eventManager.trigger('step');
 };
 
 const pause = async () => {
@@ -99,8 +99,9 @@ const stopLoop = () => {
 
 const stop = () => {
 	if (running) {
-		Net.eventManager.abort();
+		Net.eventManager.abort('step');
 	}
+	Net.terminal.writeln('Execution aborted');
 };
 
 const handleExit = () => {

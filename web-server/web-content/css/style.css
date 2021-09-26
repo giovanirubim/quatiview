@@ -68,7 +68,7 @@ body {
 	left: calc(var(--spacing)*2 + var(--editor-width));
 	right: var(--spacing);
 	height: var(--terminal-height);
-	background-color: #000;
+	background-color: #1a1b1a;
 	--padding: 10px;
 	--input-height: 30px;
 	font-size: 0px;
@@ -94,7 +94,7 @@ body {
 #terminal-section textarea,
 #terminal-section input {
 	background-color: transparent;
-	color: #7f7;
+	color: #68b368;
 	outline: none;
 }
 #mem-view-section {

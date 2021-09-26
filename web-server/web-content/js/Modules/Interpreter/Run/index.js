@@ -21,6 +21,7 @@ import ptrAcc from './Instructions/ptr-acc.js';
 import eq from './Instructions/eq.js';
 import ret from './Instructions/ret.js';
 import not from './Instructions/not.js';
+import getchar from './Instructions/getchar.js';
 
 const map = {
     call,
@@ -41,6 +42,7 @@ const map = {
     eq,
     ret,
     not,
+    getchar,
 };
 
 export default async (obj) => {

@@ -39,11 +39,11 @@ void print_list(struct Node* node) {
 }
 
 int main() {
-	struct Node* tree;
-	tree = NULL;
-	tree = add(tree, 5);
-	tree = add(tree, 2);
-	tree = add(tree, 10);
-	print_list(tree);
+	struct Node* list;
+	list = NULL;
+	list = add(list, 5);
+	list = add(list, 2);
+	list = add(list, 10);
+	print_list(list);
 	putchar('\n');
 }

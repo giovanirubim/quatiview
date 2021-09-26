@@ -1,26 +1,33 @@
 class Abortion extends Error {}
 
-let waitingStep = null;
+const waitingMap = {};
+const awaitHandlerMap = {};
+const eventHandlerMap = {};
 
-// export const waitStep = () => {};
-
-export const waitStep = () => new Promise((done, fail) => {
-    waitingStep = { done, fail };
-});
-
-export const step = () => {
-    if (waitingStep === null) {
-        return;
-    }
-    const { done } = waitingStep;
-    waitingStep = null;
-    done();
+export const on = (name, handler) => {
+    eventHandlerMap[name] = handler;
 };
 
-export const abort = () => {
-    const { fail } = waitingStep;
-    waitingStep = null;
-    fail(new Abortion());
+export const onawait = (name, handler) => {
+    awaitHandlerMap[name] = handler;
+};
+
+export const wait = (name) => new Promise((done, fail) => {
+    waitingMap[name] = { done, fail };
+    awaitHandlerMap[name]?.();
+});
+
+export const abort = (name) => {
+    const fail = waitingMap[name]?.fail;
+    waitingMap[name] = null;
+    fail?.(new Abortion());
+};
+
+export const trigger = (name) => {
+    const done = waitingMap[name]?.done;
+    waitingMap[name] = null;
+    done();
+    eventHandlerMap[name]?.();
 };
 
 export const isAbortion = (error) => error instanceof Abortion;

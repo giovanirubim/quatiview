@@ -1,7 +1,7 @@
 let textarea;
 let input;
+let readyHandler = null;
 const buffer = [];
-const readyHandler = null;
 
 const stringToBytes = (string) => {
 	const chars = string.split('');
@@ -49,7 +49,7 @@ export const getchar = () => {
 		enable();
 		return new Promise((done) => readyHandler = done);
 	}
-	return Promise.resolve(pop(buffer));
+	return buffer.pop();
 };
 
 export const writeln = (string) => {
