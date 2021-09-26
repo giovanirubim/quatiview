@@ -41,7 +41,7 @@ const bindCodemirror = () => {
 
 export const getLineOf = (index) => {
 	const source = getText();
-	let line = 1;
+	let line = 0;
 	for (let i=0; i<index; ++i) {
 		if (source[i] === '\n') ++ line;
 	}
@@ -53,7 +53,7 @@ export const getLineOf = (index) => {
 		++ b;
 	}
 	const lineContent = source.substring(a + 1, b);
-	return { line, ch: index - a, lineContent };
+	return { line, ch: index - a - 1, lineContent };
 };
 
 export const init = () => {
@@ -65,6 +65,7 @@ export const init = () => {
 			mode: 'text/x-csrc',
 			theme: 'ayu-mirage',
 			lineNumbers: true,
+			scrollbarStyle: 'overlay',
 		});
 		codemirror.setSize(
 			Number(section.css('width').replace('px', '')),
@@ -94,9 +95,9 @@ export const setText = (text) => {
 
 export const highlight = (start, end) => {
 	if (codemirror) {
-		const lineA = getLineOf(start).line - 1;
-		const lineB = getLineOf(end).line;
-		codemirror.setSelection({ line: lineA, ch: 0 }, { line: lineB, ch: 0 });
+		const a = getLineOf(start);
+		const b = getLineOf(end);
+		codemirror.setSelection(a, b);
 	} else {
 		textarea.trigger('select');
 		textarea[0].selectionStart = start;

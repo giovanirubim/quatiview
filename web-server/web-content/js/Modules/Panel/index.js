@@ -2,7 +2,7 @@ import { CompilationError, LexycalError, RuntimeError, SyntaticError } from '../
 import Net from '../Net.js';
 
 let paused = true;
-let running = true;
+let running = false;
 const button = {};
 
 const bindInputFile = (inputFile) => {
@@ -74,17 +74,32 @@ const pause = async () => {
 	stopLoop();
 };
 
-let interval = null;
+let lastStep = null;
+let intervalMs = 1000;
+let intervalCode = null;
 const startLoop = () => {
-	interval = setInterval(() => {
-		step();
-	}, 100);
+	if (intervalCode !== null) {
+		return;
+	}
+	lastStep = Date.now();
+	intervalCode = setInterval(() => {
+		const now = Date.now();
+		if (now - lastStep >= intervalMs) {
+			step();
+			lastStep = now;
+		}
+	}, 0);
+};
+const stopLoop = () => {
+	if (intervalCode !== null) {
+		clearInterval(intervalCode);
+		intervalCode = null;
+	}
 };
 
-const stopLoop = () => {
-	if (interval !== null) {
-		clearInterval(interval);
-		interval = null;
+const stop = () => {
+	if (running) {
+		Net.eventManager.abort();
 	}
 };
 
@@ -93,6 +108,7 @@ const handleExit = () => {
 	running = false;
 	Net.editor.unlock();
 	button.run.removeClass('hidden');
+	button.stop.addClass('hidden');
 	button.unpause.addClass('hidden');
 	button.pause.addClass('hidden');
 	button.next.addClass('hidden');
@@ -102,6 +118,7 @@ const handleStart = () => {
 	running = true;
 	paused = true;
 	button.run.addClass('hidden');
+	button.stop.removeClass('hidden');
 	button.unpause.removeClass('hidden');
 	button.next.removeClass('hidden');
 	Net.editor.lock();
@@ -133,10 +150,22 @@ const run = async () => {
 			reportCompilationError(source, error);
 		} else if (error instanceof RuntimeError) {
 			reportRuntimeError(error);
+		} else if (Net.eventManager.isAbortion(error)) {
 		} else {
 			console.error(error);
 		}
 	}
+};
+
+const bindSpeedInput = () => {
+	const input = $('.panel-speed input');
+	const maxDelay = 2000;
+	const pow = 3;
+	const speedToDelay = (speed) => Math.pow(1 - speed, pow)*maxDelay;
+	intervalMs = speedToDelay(input.val());
+	input.on('input', () => {
+		intervalMs = speedToDelay(input.val());
+	});
 };
 
 export const init = () => {
@@ -154,6 +183,8 @@ export const init = () => {
 	button.pause.on('click', pause);
 	button.unpause.on('click', unpause);
 	button.next.on('click', step);
+	button.stop.on('click', stop);
+	bindSpeedInput();
 	$(window).on('keydown', (e) => {
 		if (!e.ctrlKey && !e.shiftKey && !e.altKey && e.key === 'F10') {
 			e.preventDefault();

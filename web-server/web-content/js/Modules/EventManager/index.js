@@ -1,4 +1,4 @@
-export class Abortion extends Error {}
+class Abortion extends Error {}
 
 let waitingStep = null;
 
@@ -22,3 +22,5 @@ export const abort = () => {
     waitingStep = null;
     fail(new Abortion());
 };
+
+export const isAbortion = (error) => error instanceof Abortion;
