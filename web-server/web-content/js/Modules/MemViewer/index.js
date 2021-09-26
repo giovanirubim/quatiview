@@ -1,3 +1,4 @@
+import ret from '../Interpreter/Run/Instructions/ret.js';
 import Net from '../Net.js';
 import sortBinTree from './sortBinTree.js';
 
@@ -357,6 +358,14 @@ export const addInstance = (name, addr) => {
 	const instance = new Instance(addr, template);
 	addrMap[addr] = instance;
 	instances.push(instance);
-	sortTrees();
-	resize();
+};
+
+export const removeInstance = (addr) => {
+	const instance = addrMap[addr];
+	if (instance === undefined) {
+		return;
+	}
+	delete addrMap[addr];
+	const index = instances.indexOf(instance);
+	instances.splice(index, 1);
 };

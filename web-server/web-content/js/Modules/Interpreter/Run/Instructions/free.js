@@ -1,7 +1,8 @@
 import Net from '../../../Net.js';
-import Run from '../';
+import solve from './Support/solve.js';
 
-export default async ({ addr }) => {
-    const { value } = await Run(addr);
+export default async ({ arg }) => {
+    const { value } = await solve(arg);
     Net.memory.free(value);
+    Net.memViewer.removeInstance(value);
 };

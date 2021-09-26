@@ -1,6 +1,5 @@
 import { CompilationError, LexycalError, RuntimeError, SyntaticError } from '../errors.js';
 import Net from '../Net.js';
-import getLineOf from './Support/getLineOf.js';
 
 let paused = true;
 let running = true;
@@ -53,9 +52,10 @@ const reportCompilationError = (source, error) => {
 		Net.terminal.writeln(`Error: ${error.message}`);
 	}
 	if (index != null) {
-		const { line, lineCount, pos } = getLineOf(source, index);
-		Net.terminal.writeln(`${lineCount.toString().padStart(4, ' ')} | ${line}`);
-		Net.terminal.writeln(`${' '.repeat(4)} |${' '.repeat(pos)}^`);
+		const { line, ch, lineContent } = Net.editor.getLineOf(index);
+		Net.terminal.writeln(`${line.toString().padStart(4, ' ')} | ${lineContent}`);
+		Net.terminal.writeln(`${' '.repeat(4)} |${' '.repeat(ch)}^`);
+		Net.editor.highlight(index, index);
 	}
 };
 

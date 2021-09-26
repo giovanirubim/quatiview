@@ -1,8 +1,8 @@
 import Net from '../../../Net.js';
-import Run from '../';
+import solve from './Support/solve.js';
 
-export default async ({ ctx, size }) => {
-    const { value } = await Run(size);
+export default async ({ instruction, ctx, arg }) => {
+    const { value } = await solve(arg);
     const addr = Net.memory.allocate(value);
     ctx.returnValue = {
         type: 'int',

@@ -1,7 +1,7 @@
 import Net from '../../../Net.js';
-import Run from '../';
+import solve from './Support/solve.js';
 
-export default async ({ byte }) => {
-    const { value } = await Run(byte);
+export default async ({ arg }) => {
+    const { value } = await solve(arg);
     Net.terminal.putchar(value);
 };
