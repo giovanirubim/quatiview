@@ -28,6 +28,14 @@ struct Node* add(struct Node* node, int info) {
 	return node;
 }
 
+struct Node* clear(struct Node* node) {
+	if (!node) { return NULL; }
+	clear(node->l);
+	clear(node->r);
+	free(node);
+	return NULL;
+}
+
 void print_int(int x) {
 	if (x >= 10) {
 		print_int(x/10);
@@ -59,4 +67,5 @@ int main() {
 	tree = add(tree, 12);
 	print_tree(tree);
 	putchar('\n');
+	clear(tree);
 }
