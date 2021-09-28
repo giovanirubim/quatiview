@@ -18,11 +18,12 @@ new NonTerminal({
             type: addrType,
             a: array,
             b: index,
+            ctx,
         };
         return {
             instruction: 'ptr-acc',
             type: itemType,
-            addr,
+            src: addr,
         };
     },
 });
