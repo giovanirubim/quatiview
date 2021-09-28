@@ -1,4 +1,3 @@
-import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
 
 const tokenToNonTerminal = {
