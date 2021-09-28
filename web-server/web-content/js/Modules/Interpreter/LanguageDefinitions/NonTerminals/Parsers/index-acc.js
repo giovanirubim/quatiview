@@ -14,11 +14,11 @@ new NonTerminal({
         const itemType = addrType.replace(/\*$/, '');
         const index = ctx.compile(node.content.expr);
         const addr = {
+            ctx,
             instruction: 'sum',
             type: addrType,
             a: array,
             b: index,
-            ctx,
         };
         return {
             instruction: 'ptr-acc',
