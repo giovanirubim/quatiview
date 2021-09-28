@@ -1,8 +1,5 @@
 import Chunk from './Chunk.js';
 
-const LAZY_MODE = true;
-const DETERMINISTIC = false;
-
 import {
 	InvalidAddress,
 	UnallocatedMemoryAccess,
@@ -11,209 +8,122 @@ import {
 	FreeingANonAllocationAddress,
 } from '../errors.js';
 
-const NULL = 0;
 const UNINITIALIZED_BYTE = Symbol('UNINITIALIZED_BYTE');
+const DETERMINISTIC = false;
 
 let rseed = 0;
 const srand = () => ((++rseed) % Math.PI) / Math.PI;
 const random = DETERMINISTIC ? srand : Math.random;
-const pick = (arr) => arr[arr.length*random() | 0];
+const pickRandomly = (arr) => arr[arr.length*random() | 0];
 
-class Memory {
+const FIRST_ADDRESS = 0x0100;
+const LAST_ADDRESS  = 0xffff;
 
-	constructor() {
-		this.clear();
+let bytes;
+let allocations;
+let chunkList;
+
+const validateAddr = (addr) => {
+	if (addr < FIRST_ADDRESS || addr > LAST_ADDRESS) {
+		throw new InvalidAddress(addr);
 	}
+};
 
-	clear() {
-		
-		this.firstAddress = 0x001000;
-		this.lastAddress = 0xffffff;
-		this.bytes = {};
+export const wordCount = (addr) => {
+	return (addr + 3) & ~3;
+};
 
-		if (LAZY_MODE) {
-			this.nextAddr = this.firstAddress;
-			this.allocationSize = {};
-		} else {
-			this.chunks = new Chunk({
-				address: this.firstAddress,
-				size: this.lastAddress - this.firstAddress + 1,
-			});
-		}
-	}
+export const clear = () => {
+	bytes = window.bytes = {};
+	allocations = window.allocations = {};
+	chunkList = window.chunkList = new Chunk({
+		addr: FIRST_ADDRESS,
+		size: LAST_ADDRESS - FIRST_ADDRESS + 1,
+	});
+};
 
-	lazyAllocate(size) {
-		const addr = this.nextAddr;
-		for (let i=0; i<size; ++i) {
-			this.bytes[addr + i] = UNINITIALIZED_BYTE;
-		}
-		this.nextAddr += size;
-		this.allocationSize[addr] = size;
-		return addr;
-	}
-
-	lazyFree(addr) {
-		this.validateAddress(addr);
-		const size = this.allocationSize[addr];
-		if (size === undefined) {
-			throw new FreeingANonAllocationAddress(addr);
-		}
-		for (let i=0; i<size; ++i) {
-			delete this.bytes[addr + i];
-		}
-		delete this.allocationSize[addr];
-	}
-
-	validateAddress(address) {
-		if (address < this.firstAddress || address > this.lastAddress) {
-			throw new InvalidAddress(address);
+export const allocate = (numberOfBytes) => {
+	const size = wordCount(numberOfBytes);
+	const chunks = [];
+	for (let chunk=chunkList; chunk!==null; chunk=chunk.next) {
+		if (chunk.allocated === false && chunk.size >= size) {
+			chunks.push(chunk);
 		}
 	}
-
-	read(address) {
-		this.validateAddress(address);
-		const value = this.bytes[address];
-		if (value === undefined) {
-			throw new UnallocatedMemoryAccess(address);
-		}
-		if (value === UNINITIALIZED_BYTE) {
-			throw new UninitializedMemoryAccess(address);
-		}
-		return value;
+	if (chunks.length === 0) {
+		return 0;
 	}
+	const chunk = pickRandomly(chunks);
+	const freeWords = (chunk.size - size) >> 2;
+	const offset = (Math.random()*(freeWords + 1) | 0) << 2;
+	const addr = chunk.addr + offset;
+	allocations[addr] = chunk.allocate(addr, size);
+	for (let i=0; i<size; ++i) {
+		bytes[addr + i] = UNINITIALIZED_BYTE;
+	}
+	return addr;
+};
 
-	readSafe(address) {
-		const value = this.bytes[address];
-		if (value === undefined || value === UNINITIALIZED_BYTE) {
+export const free = (addr) => {
+	validateAddr(addr);
+	const chunk = allocations[addr];
+	if (chunk === undefined) {
+		throw new FreeingANonAllocationAddress(addr);
+	}
+	const { size } = chunk;
+	for (let i=0; i<size; ++i) {
+		delete bytes[addr + i];
+	}
+	chunk.free();
+	delete allocations[addr];
+};
+
+export const read = (addr) => {
+	validateAddr(addr);
+	const byte = bytes[addr];
+	if (byte === undefined) {
+		throw new UnallocatedMemoryAccess(addr);
+	}
+	if (byte === UNINITIALIZED_BYTE) {
+		throw new UninitializedMemoryAccess(addr);
+	}
+	return byte;
+};
+
+export const write = (addr, byte) => {
+	validateAddr(addr);
+	if (bytes[addr] === undefined) {
+		throw new UnallocatedMemoryAccess(addr);
+	}
+	bytes[addr] = byte;
+};
+
+export const readWord = (addr) => {
+	return (
+		read(addr)
+		| (read(addr + 1) << 8)
+		| (read(addr + 2) << 16)
+		| (read(addr + 3) << 24)
+	);
+};
+
+export const writeWord = (addr, word) => {
+	write(addr, word & 255);
+	write(addr + 1, (word >> 8) & 255);
+	write(addr + 2, (word >> 16) & 255);
+	write(addr + 3, (word >> 24) & 255);
+};
+
+export const readWordSafe = (addr, word) => {
+	let res = 0;
+	for (let i=0; i<4; ++i) {
+		const byte = bytes[addr + i];
+		if (byte === undefined || byte === UNINITIALIZED_BYTE) {
 			return null;
 		}
-		return value;
+		res |= byte << (i << 3);
 	}
+	return res;
+};
 
-	readWordSafe(address) {
-		const { bytes } = this;
-		let res = 0;
-		for (let i=0; i<4; ++i) {
-			const value = bytes[address + i];
-			if (value === undefined || value === UNINITIALIZED_BYTE) {
-				return null;
-			}
-			res |= value << (i << 3);
-		}
-		return res;
-	}
-
-	write(address, value) {
-		this.validateAddress(address);
-		if (this.bytes[address] === undefined) {
-			throw new UnallocatedMemoryAccess(address);
-		}
-		this.bytes[address] = value;
-	}
-
-	allocate(size) {
-
-		if (LAZY_MODE) {
-			return this.lazyAllocate(size);
-		}
-
-		// Round to a multiple of 4
-		size = (size + 3) & ~3;
-
-		// Get all free chunks that fit the amount of bytes
-		const freeChunks = [];
-		let node = this.chunks;
-		while (node != null) {
-			if (!node.allocated && node.size >= size) {
-				freeChunks.push(node);
-			}
-			node = node.next;
-		}
-
-		// Pick a random selected chunk
-		if (freeChunks.length === 0) {
-			return NULL;
-		}
-		const chunk = pick(freeChunks);
-
-		// Pick an address of a random word to allocate
-		const amountOfWords = chunk.size/4 | 0;
-		const word = amountOfWords*random() | 0;
-		const address = chunk.address + word*4;
-
-		// Update chunk list
-		chunk.allocate({ address, size });
-
-		// Allocate bytes
-		const end = address + size;
-		const { bytes } = this;
-		for (let i=address; i<end; ++i) {
-			bytes[i] = UNINITIALIZED_BYTE;
-		}
-
-		return address;
-	}
-
-	free(address) {
-
-		if (LAZY_MODE) {
-			return this.lazyFree(address);
-		}
-
-		this.validateAddress(address);
-		if (this.bytes[address] === undefined) {
-			throw new FreeingUnallocatedMemory(address);
-		}
-
-		// Search for chunk that contains the address
-		let chunk = this.chunks;
-		while (chunk && address >= chunk.address) {
-			if (chunk.contains(address)) {
-				break;
-			}
-			chunk = chunk.next;
-		}
-		if (chunk === null) {
-			throw new FreeingANonAllocationAddress(chunk);
-		}
-
-		// Free chunk found and corresponding bytes
-		const { size } = chunk;
-		chunk.free();
-		const end = address + size;
-		const { bytes } = this;
-		for (let i=address; i<end; ++i) {
-			delete bytes[i];
-		}
-	}
-
-	copy(dst, src, size) {
-		for (let i=0; i<size; ++i) {
-			this.write(dst + i, this.read(src + i));
-		}
-	}
-
-	set(dst, bytes) {
-		for (let i=0; i<bytes.length; ++i) {
-			this.write(dst + i, bytes[i]);
-		}
-	}
-
-	writeWord(dst, word) {
-		this.write(dst, word & 255);
-		this.write(dst + 1, (word >> 8) & 255);
-		this.write(dst + 2, (word >> 16) & 255);
-		this.write(dst + 3, (word >> 24) & 255);
-	}
-
-	readWord(src) {
-		return (
-			this.read(src)
-			| (this.read(src + 1) << 8)
-			| (this.read(src + 2) << 16)
-			| (this.read(src + 3) << 24)
-		);
-	}
-}
-
-export default new Memory();
+clear();

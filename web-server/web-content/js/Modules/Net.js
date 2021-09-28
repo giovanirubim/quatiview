@@ -4,7 +4,7 @@ import * as Panel from './Panel/index.js';
 import * as Interpreter from './Interpreter/index.js';
 import * as MemViewer from './MemViewer/index.js';
 import * as Execution from './Execution/index.js';
-import Memory from './Memory/index.js';
+import * as Memory from './Memory/index.js';
 
 export default ({
     editor: Editor,

@@ -2,66 +2,62 @@ export default class Chunk {
 	constructor({
 		prev = null,
 		next = null,
-		allocated = false,
-		address,
+		addr,
 		size,
+		allocated = false,
 	}) {
 		this.prev = prev;
 		this.next = next;
-		this.allocated = allocated;
-		this.address = address;
+		this.addr = addr;
 		this.size = size;
-	}
-	allocate({ address, size }) {
-		const end = this.address + this.size;
-		const blockEnd = address + size;
-		if (blockEnd < end) {
-			const size = end - blockEnd;
-			this.split({ size, allocated: false });
+		this.allocated = allocated;
+		if (next !== null) {
+			next.prev = this;
 		}
-		let chunk = this;
-		if (address > this.address) {
-			this.split({ size, allocated: true });
-		} else {
-			this.allocated = true;
+		if (prev !== null) {
+			prev.next = this;
+		}
+	}
+	split(size) {
+		const chunk = new Chunk({
+			prev: this,
+			next: this.next,
+			allocated: this.allocated,
+			addr: this.addr + size,
+			size: this.size - size,
+		});
+		this.size = size;
+		return chunk;
+	}
+	allocate(addr, size) {
+		if (addr > this.addr) {
+			const dif = addr - this.addr;
+			const chunk = this.split(dif);
+			return chunk.allocate(addr, size);
+		}
+		if (size < this.size) {
+			this.split(size);
+		}
+		this.allocated = true;
+		return this;
+	}
+	mergeWithNext() {
+		this.size += this.next.size;
+		this.next = this.next.next;
+		if (this.next !== null) {
+			this.next.prev = this;
 		}
 	}
 	free() {
 		this.allocated = false;
 		if (this.next?.allocated === false) {
-			this.merge();
+			this.mergeWithNext();
 		}
 		if (this.prev?.allocated === false) {
-			this.prev.merge();
+			this.prev.mergeWithNext();
 		}
-		return this;
 	}
-	split({ size, allocated }) {
-		const end = this.address + this.size;
-		const address = end - size;
-		const chunk = new Chunk({
-			prev: this,
-			next: this.next,
-			allocated,
-			address,
-			size,
-		});
-		this.next = chunk;
-		this.size = address - this.address;
-		return chunk;
-	}
-	merge() {
-		const chunk = this.next;
-		this.size += chunk.size;
-		this.next = chunk.next;
-		if (this.next) {
-			this.next.prev = this;
-		}
-		return this;
-	}
-	contains(address) {
-		const start = this.address;
-		const end = start + this.size;
-		return address >= start && address < end;
+	contains(addr) {
+		return (addr >= this.addr) && (addr < this.addr + this.size);
 	}
 }
