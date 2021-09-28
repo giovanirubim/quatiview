@@ -26,24 +26,38 @@ struct Node* add(struct Node* node, int info) {
 	return node;
 }
 
-void print_list(struct Node* node) {
-	if (node == NULL) {
-		putchar('-');
-		return;
+struct Node* push_front(struct Node* node, int info) {
+	struct Node* head;
+	head = newNode(info);
+	head->next = node;
+	return head;
+}
+
+struct Node* push_back(struct Node* node, int info) {
+	if (!node) {
+		return newNode(info);
 	}
-	putchar('(');
-	print_int(node->info);
-	putchar(',');
-	print_list(node->next);
-	putchar(')');
+	node->next = push_back(node->next, info);
+	return node;
+}
+
+void print_list(struct Node* node) {
+	putchar('[');
+	putchar(' ');
+	for (; node; node = node->next) {
+		print_int(node->info);
+		putchar(' ');
+	}
+	putchar(']');
+	putchar('\n');
 }
 
 int main() {
 	struct Node* list;
 	list = NULL;
-	list = add(list, 5);
-	list = add(list, 2);
-	list = add(list, 10);
+	list = push_back(list, 2);
+	list = push_back(list, 3);
+	list = push_front(list, 1);
 	print_list(list);
 	putchar('\n');
 }

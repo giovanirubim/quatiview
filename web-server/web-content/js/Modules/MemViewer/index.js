@@ -106,7 +106,7 @@ const getNewPosition = (template) => {
 		max_x = Math.max(max_x, instance.real.x + instance.template.sx);
 		min_x = Math.min(min_x, instance.real.x);
 	}
-	const x = (max_x + min_x)/2 - template.sx/2;
+	const x = (max_x + min_x)/2 - template.sx/2 + cellSize;
 	const y = max_y + cellSize*2;
 	return { x, y };
 };
@@ -268,6 +268,7 @@ const render = () => {
 
 const frame = () => {
 	sortTrees();
+	sortLists();
 	runAnimations();
 	updateZoom();
 	render();
@@ -314,15 +315,15 @@ export const addStruct = (name) => {
 	return template;
 };
 
-const spread = (node, treeId) => {
+const setBinTreeId = (node, treeId) => {
 	if (node === null || node.treeId !== null) {
 		return null;
 	}
 	node.treeId = treeId;
-	spread(node.l, treeId);
-	spread(node.r, treeId);
+	setBinTreeId(node.l, treeId);
+	setBinTreeId(node.r, treeId);
 	if (node.parent !== null) {
-		return spread(node.parent, treeId);
+		return setBinTreeId(node.parent, treeId);
 	}
 	return node;
 };
@@ -399,7 +400,7 @@ const sortTrees = () => {
 		}
 	}
 	for (let { addr } of nodes) {
-		const tree = spread(map[addr], trees.length + 1);
+		const tree = setBinTreeId(map[addr], trees.length + 1);
 		if (tree !== null) {
 			trees.push(tree);
 		}
@@ -414,6 +415,58 @@ const sortTrees = () => {
 			xMargin: cellSize,
 			setPos: (node, x, y) => node.ref.moveTo(x, y),
 		});
+	}
+};
+
+const getNewListHead = (node) => {
+	if (node === null || node.visited === true) return null;
+	node.visited = true;
+	if (node.parent === null) {
+		return node;
+	}
+	return getNewListHead(node.parent);
+};
+
+const sortLists = () => {
+	const map = {};
+	const nodes = instances
+		.filter(instance => instance.template.name === 'linked_list')
+		.map((ref) => {
+			const { addr } = ref;
+			return map[addr] = {
+				ref, addr,
+				visited: false,
+				next: null,
+				parent: null,
+			};
+		});
+	for (let node of nodes) {
+		const { addr } = node;
+		node.next = map[Net.memory.readWordSafe(addr + 4)] ?? null;
+		if (node.next !== null) {
+			node.next.parent = node;
+		}
+	}
+	const heads = [];
+	for (let node of nodes) {
+		const head = getNewListHead(node);
+		if (head !== null) {
+			heads.push(head);
+		}
+	}
+	if (heads.length === 1) {
+		sortList(heads[0]);
+	}
+};
+
+const sortList = (node) => {
+	let y = 0;
+	let x = 0;
+	while (node !== null) {
+		node.ref.moveTo(x, y);
+		y += node.ref.template.sy + cellSize*2;
+		x += cellSize;
+		node = node.next;
 	}
 };
 
