@@ -94,6 +94,23 @@ const drawBlock = (x, y, sx, sy, color) => {
 	ctx.fillRect(x, y, sx, sy);
 };
 
+const getNewPosition = (template) => {
+	if (instances.length === 0) {
+		return { x: 0, y: 0 };
+	}
+	let max_y = -Infinity;
+	let min_x = +Infinity;
+	let max_x = -Infinity;
+	for (let instance of instances) {
+		max_y = Math.max(max_y, instance.real.y + instance.template.sy);
+		max_x = Math.max(max_x, instance.real.x + instance.template.sx);
+		min_x = Math.min(min_x, instance.real.x);
+	}
+	const x = (max_x + min_x)/2 - template.sx/2;
+	const y = max_y + cellSize*2;
+	return { x, y };
+};
+
 class StructTemplate {
     constructor(name) {
 		this.name = name;
@@ -169,10 +186,7 @@ class StructTemplate {
 
 class Instance {
 	constructor(addr, template) {
-		this.real = {
-			x: 0,
-			y: 200,
-		};
+		this.real = getNewPosition(template);
 		this.animated = {
 			x: 0,
 			y: 0,
@@ -312,6 +326,59 @@ const spread = (node, treeId) => {
 	}
 	return node;
 };
+
+// const addToGraph = (node, graphId, graph) => {
+// 	graph.push(node);
+// 	node.graphId = graphId;
+// 	const { neighbors } = node;
+// 	for (let other of neighbors) {
+// 		if (other.graphId === null) {
+// 			addToGraph(other, graphId, graph);
+// 		}
+// 	}
+// };
+
+// export const getGraphs = () => {
+// 	const nodes = [];
+// 	const map = {};
+// 	for (let instance of instances) {
+// 		const node = {
+// 			addr: instance.addr,
+// 			instance,
+// 			neighbors: [],
+// 			children: [],
+// 			graphId: null,
+// 		};
+// 		map[instance.addr] = node;
+// 		nodes.push(node);
+// 	}
+// 	for (let node of nodes) {
+// 		const { instance, addr } = node;
+// 		const { members } = instance.template;
+// 		for (let { type, offset } of members) {
+// 			if (!type.endsWith('*')) continue;
+// 			const ptr = Net.memory.readWordSafe(addr + offset);
+// 			if (ptr == null) {
+// 				node.children.push(null);
+// 			} else {
+// 				const other = map[ptr];
+// 				if (other == null) continue;
+// 				node.children.push(other ?? null);
+// 				node.neighbors.push(other);
+// 				other.neighbors.push(node);
+// 			}
+// 		}
+// 	}
+// 	const graphs = [];
+// 	for (let node of nodes) {
+// 		if (node.graphId === null) {
+// 			const graph = [];
+// 			addToGraph(node, graphs.length + 1, graph);
+// 			graphs.push(graph);
+// 		}
+// 	}
+// 	return graphs;
+// };
 
 const sortTrees = () => {
 	const nodes = instances.filter(instance => instance.template.name === 'binary_search_tree');
