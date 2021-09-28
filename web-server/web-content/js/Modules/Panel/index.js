@@ -1,4 +1,11 @@
-import { CompilationError, LexycalError, RuntimeError, SyntaticError } from '../errors.js';
+import {
+	CompilationError,
+	ExecutionAborted,
+	LexycalError,
+	RuntimeError,
+	SyntaticError,
+} from '../errors.js';
+
 import Net from '../Net.js';
 
 let paused = true;
@@ -60,7 +67,7 @@ const reportCompilationError = (source, error) => {
 };
 
 const step = async () => {
-	Net.eventManager.trigger('step');
+	Net.execution.handleStep();
 };
 
 const pause = async () => {
@@ -90,6 +97,7 @@ const startLoop = () => {
 		}
 	}, 0);
 };
+
 const stopLoop = () => {
 	if (intervalCode !== null) {
 		clearInterval(intervalCode);
@@ -99,12 +107,13 @@ const stopLoop = () => {
 
 const stop = () => {
 	if (running) {
-		Net.eventManager.abort('step');
+		Net.execution.abort();
 	}
 	Net.terminal.writeln('Execution aborted');
+	handleEnd();
 };
 
-const handleExit = () => {
+const handleEnd = () => {
 	stopLoop();
 	running = false;
 	Net.editor.unlock();
@@ -143,15 +152,15 @@ const run = async () => {
 	try {
 		handleStart();
 		await Net.interpreter.run(source);
-		handleExit();
+		handleEnd();
 		Net.terminal.writeln('Program exited');
 	} catch (error) {
-		handleExit();
+		handleEnd();
 		if (error instanceof CompilationError) {
 			reportCompilationError(source, error);
 		} else if (error instanceof RuntimeError) {
 			reportRuntimeError(error);
-		} else if (Net.eventManager.isAbortion(error)) {
+		} else if (error instanceof ExecutionAborted) {
 		} else {
 			console.error(error);
 		}
@@ -198,6 +207,9 @@ export const init = () => {
 			e.preventDefault();
 			e.stopPropagation();
 			run();
+		}
+		if (!e.ctrlKey && !e.shiftKey && !e.altKey && /^(arrow)?right$/i.test(e.key)) {
+			step();
 		}
 	});
 };

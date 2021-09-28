@@ -64,10 +64,6 @@ const updateCodemirrorSize = () => {
 	);
 };
 
-const handleResize = () => {
-	updateCodemirrorSize();
-};
-
 export const init = () => {
 	section = $('#editor-section');
 	textarea = section.find('textarea');
@@ -75,7 +71,7 @@ export const init = () => {
 	if (USE_CODEMIRROR) {
 		codemirror = CodeMirror.fromTextArea(textarea[0], {
 			mode: 'text/x-csrc',
-			theme: 'darcula',
+			theme: 'gruvbox-dark',
 			lineNumbers: true,
 			scrollbarStyle: 'overlay',
 			indentWithTabs: true,

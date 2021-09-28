@@ -1,14 +1,11 @@
+import Net from '../Net.js';
+
 let textarea;
 let input;
-let readyHandler = null;
 const buffer = [];
 
-const stringToBytes = (string) => {
-	const chars = string.split('');
-	return chars.map((char) => char.charCodeAt(0));
-};
-
-const handleInput = () => {
+const disableInput = () => {
+	input.attr({ disabled: 'true' });
 };
 
 const bindInput = () => input.on('keydown', (e) => {
@@ -18,44 +15,47 @@ const bindInput = () => input.on('keydown', (e) => {
 	if (e.ctrlKey && e.shiftKey && e.altKey) {
 		return;
 	}
-	disable();
-	const string = input[0].value + '\n';
+	disableInput();
+	const string = input.val() + '\n';
 	input.val('');
-	buffer.push(...stringToBytes(string));
-	handleInput();
+	for (let char of string) {
+		const byte = char.charCodeAt(0);
+		buffer.push(byte);
+	}
+	Net.execution.handleInput();
 });
+
+export const popChar = () => {
+	if (buffer.length === 0) {
+		return null;
+	}
+	const [ byte ] = buffer.splice(0, 1);
+	return byte;
+};
 
 export const init = () => {
 	textarea = $('#terminal-section textarea');
 	input = $('#terminal-section input');
-	disable();
+	disableInput();
 	bindInput();
-};
+};	
 
-export const enable = () => {
+export const enableInput = () => {
 	input.removeAttr('disabled');
-};
-
-export const disable = () => {
-	input.attr({ disabled: 'true' });
-};
+	input.focus();
+};	
 
 export const putchar = (byte) => {
 	textarea[0].value += String.fromCharCode(byte);
-};
-
-export const getchar = () => {
-	if (buffer.length === 0) {
-		enable();
-		return new Promise((done) => readyHandler = done);
-	}
-	return buffer.pop();
-};
+};	
 
 export const writeln = (string) => {
 	textarea[0].value += string + '\n';
 };
 
 export const clear = () => {
-	textarea[0].value = '';
+	textarea.val('');
+	buffer.length = 0;
+	input.val('');
+	disableInput();
 };

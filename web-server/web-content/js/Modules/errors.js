@@ -47,3 +47,4 @@ export class FreeingANonAllocationAddress extends MemoryError {
 		super(address, `The address ${address} is not an address of an allocation block`);
 	}
 }
+export class ExecutionAborted extends Error {}

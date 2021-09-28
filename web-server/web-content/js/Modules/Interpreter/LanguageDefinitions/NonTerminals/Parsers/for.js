@@ -16,4 +16,15 @@ new NonTerminal({
         const scope = ctx.parse('scope');
         return { init, cond, inc, scope };
     },
+    compile: (ctx, node) => {
+        let { init, cond, inc, scope } = node.content;
+        init = init ? ctx.compile(init) : null;
+        cond = cond ? ctx.compile(cond) : {
+            type: 'int',
+            value: 1,
+        };
+        inc = inc ? ctx.compile(inc) : null;
+        scope = ctx.compile(scope);
+        return { instruction: 'for', init, cond, inc, scope };
+    },
 });

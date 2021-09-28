@@ -22,27 +22,34 @@ import eq from './Instructions/eq.js';
 import ret from './Instructions/ret.js';
 import not from './Instructions/not.js';
 import getchar from './Instructions/getchar.js';
+import forLoop from './Instructions/for.js';
 
 const map = {
-    call,
-    store,
-    run,
-    load,
-    assign,
-    putchar,
-    sum,
-    div, mod, mul,
-    lt, gt, le, ge,
-    if: fork,
-    malloc,
-    free,
-    init,
-    member,
+    'call': call,
+    'store': store,
+    'run': run,
+    'load': load,
+    'assign': assign,
+    'putchar': putchar,
+    'sum': sum,
+    'div': div,
+    'mod': mod,
+    'mul': mul,
+    'lt': lt,
+    'gt': gt,
+    'le': le,
+    'ge': ge,
+    'if': fork,
+    'malloc': malloc,
+    'free': free,
+    'init': init,
+    'member': member,
     'ptr-acc': ptrAcc,
-    eq,
-    ret,
-    not,
-    getchar,
+    'eq': eq,
+    'ret': ret,
+    'not': not,
+    'getchar': getchar,
+    'for': forLoop,
 };
 
 export default async (obj) => {
