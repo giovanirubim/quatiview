@@ -57,15 +57,23 @@ void print_tree(struct Node* node) {
 	putchar(')');
 }
 
+int read_int() {
+	int val;
+	val = 0;
+	char c;
+	while ((c = getchar()) != '\n') {
+		val = val*10;
+		val = val + (c - '0');
+	}
+	return val;
+}
+
 int main() {
+	int x;
 	struct Node* tree;
 	tree = NULL;
-	tree = add(tree, 5);
-	tree = add(tree, 2);
-	tree = add(tree, 10);
-	tree = add(tree, 9);
-	tree = add(tree, 12);
-	print_tree(tree);
-	putchar('\n');
-	clear(tree);
+	for (;;) {
+		x = read_int();
+		tree = add(tree, x);
+	}
 }

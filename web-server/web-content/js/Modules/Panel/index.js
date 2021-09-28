@@ -109,7 +109,7 @@ const stop = () => {
 	if (running) {
 		Net.execution.abort();
 	}
-	Net.terminal.writeln('Execution aborted');
+	Net.terminal.writeln('\nExecution aborted');
 	handleEnd();
 };
 
@@ -153,7 +153,7 @@ const run = async () => {
 		handleStart();
 		await Net.interpreter.run(source);
 		handleEnd();
-		Net.terminal.writeln('Program exited');
+		Net.terminal.writeln('\nProgram exited');
 	} catch (error) {
 		handleEnd();
 		if (error instanceof CompilationError) {

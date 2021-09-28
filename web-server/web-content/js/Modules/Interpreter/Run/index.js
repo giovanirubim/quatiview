@@ -5,6 +5,7 @@ import run from './Instructions/run.js';
 import putchar from './Instructions/putchar.js';
 import assign from './Instructions/assign.js';
 import sum from './Instructions/sum.js';
+import sub from './Instructions/sub.js';
 import div from './Instructions/div.js';
 import mod from './Instructions/mod.js';
 import mul from './Instructions/mul.js';
@@ -56,6 +57,7 @@ const map = {
     'while': whileLoop,
     'break': Break,
     'dif': dif,
+    'sub': sub,
 };
 
 export default async (obj) => {
