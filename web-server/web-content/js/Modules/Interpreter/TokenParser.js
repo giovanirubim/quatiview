@@ -1,4 +1,4 @@
-import * as Tokens from './LanguageDefinitions/Tokens';
+import * as Tokens from './LanguageDefinitions/Tokens/index.js';
 import { LexycalError, SyntaticError } from '../errors.js';
 import ParseTreeNode from './Model/ParseTreeNode.js';
 

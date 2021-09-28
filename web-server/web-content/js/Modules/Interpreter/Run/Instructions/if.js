@@ -1,4 +1,4 @@
-import Run from '../';
+import Run from '../index.js';
 import solve from './Support/solve.js';
 
 export default async ({ cond, scopeTrue, scopeFalse }) => {

@@ -1,4 +1,4 @@
-import Run from '../';
+import Run from '../index.js';
 
 export default async ({ src, dst }) => {
     if (src.instruction != null) {

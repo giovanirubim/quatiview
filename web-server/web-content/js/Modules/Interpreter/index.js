@@ -1,11 +1,11 @@
 import Net from '../Net.js';
-import Run from './Run/';
+import Run from './Run/index.js';
 import SourceConsumer from './Support/SourceConsumer.js';
 import TokenParser from './TokenParser.js';
 
 // Load non terminals
-import './LanguageDefinitions/NonTerminals/';
-import Context from './Context/';
+import './LanguageDefinitions/NonTerminals/index.js';
+import Context from './Context/index.js';
 
 export const run = async (source) => {
     const sourceConsumer = new SourceConsumer(source);

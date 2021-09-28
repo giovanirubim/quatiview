@@ -1,4 +1,4 @@
-import Run from '../';
+import Run from '../index.js';
 import Net from '../../../Net.js';
 import solve from './Support/solve.js';
 

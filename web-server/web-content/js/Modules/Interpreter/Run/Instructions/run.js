@@ -1,5 +1,5 @@
 import Net from '../../../Net.js';
-import Run from '../';
+import Run from '../index.js';
 
 export default async ({ ctx, lines }) => {
     for (let { line, startsAt, endsAt } of lines) {
