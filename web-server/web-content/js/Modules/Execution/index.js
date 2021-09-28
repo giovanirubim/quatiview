@@ -39,6 +39,7 @@ export const handleStep = () => {
 };
 
 export const abort = () => {
+    Net.terminal.flush();
     Net.terminal.disableInput();
     const error = new ExecutionAborted();
     if (waitingStep !== null) {

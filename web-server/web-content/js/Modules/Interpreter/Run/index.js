@@ -20,9 +20,12 @@ import member from './Instructions/member.js';
 import ptrAcc from './Instructions/ptr-acc.js';
 import eq from './Instructions/eq.js';
 import ret from './Instructions/ret.js';
+import Break from './Instructions/break.js';
 import not from './Instructions/not.js';
+import dif from './Instructions/dif.js';
 import getchar from './Instructions/getchar.js';
 import forLoop from './Instructions/for.js';
+import whileLoop from './Instructions/while.js';
 
 const map = {
     'call': call,
@@ -50,12 +53,15 @@ const map = {
     'not': not,
     'getchar': getchar,
     'for': forLoop,
+    'while': whileLoop,
+    'break': Break,
+    'dif': dif,
 };
 
 export default async (obj) => {
     const fn = map[obj.instruction];
     if (!fn) {
-        console.error(obj);
+        console.log(obj);
         throw new Error(`Undefined method to execute ${obj.instruction}`);
     }
     const res = await fn(obj);

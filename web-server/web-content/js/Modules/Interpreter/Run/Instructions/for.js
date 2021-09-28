@@ -6,9 +6,11 @@ export default async ({ ctx, init, cond, inc, scope }) => {
         await Run(init);
     }
     for (;;) {
-        cond = await solve(cond);
-        if (cond.value === 0) {
-            break;
+        if (cond !== null) {
+            const { value } = await solve(cond);
+            if (value === 0) {
+                break;
+            }
         }
         await Run(scope);
         if (ctx.returned || ctx.broke) {
@@ -18,4 +20,5 @@ export default async ({ ctx, init, cond, inc, scope }) => {
             await Run(inc);
         }
     }
+    ctx.broke = false;
 };

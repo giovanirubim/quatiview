@@ -11,4 +11,13 @@ new NonTerminal({
         const scope = ctx.parse('scope');
         return { cond, scope };
     },
+    compile: (ctx, node) => {
+        let { cond, scope } = node.content;
+        cond = ctx.compile(cond);
+        scope = ctx.compile(scope);
+        return {
+            instruction: 'while',
+            cond, scope,
+        };
+    },
 });

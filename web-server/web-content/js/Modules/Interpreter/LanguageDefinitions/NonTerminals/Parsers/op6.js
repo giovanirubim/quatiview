@@ -7,7 +7,7 @@ const compileTree = (ctx, node) => {
     }
     const a = compileTree(ctx, left);
     const b = ctx.compile(right);
-    const name = '==' ? 'eq' : 'dif';
+    const name = operator === '==' ? 'eq' : 'dif';
     const res = {
         instruction: name,
         a,

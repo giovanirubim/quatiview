@@ -4,10 +4,6 @@ let textarea;
 let input;
 const buffer = [];
 
-const disableInput = () => {
-	input.attr({ disabled: 'true' });
-};
-
 const bindInput = () => input.on('keydown', (e) => {
 	if (!/enter/i.test(e.key)) {
 		return;
@@ -15,15 +11,18 @@ const bindInput = () => input.on('keydown', (e) => {
 	if (e.ctrlKey && e.shiftKey && e.altKey) {
 		return;
 	}
-	disableInput();
 	const string = input.val() + '\n';
-	input.val('');
 	for (let char of string) {
 		const byte = char.charCodeAt(0);
 		buffer.push(byte);
 	}
+	disableInput();
 	Net.execution.handleInput();
 });
+
+const clear = () => {
+	textarea.val('');
+};
 
 export const popChar = () => {
 	if (buffer.length === 0) {
@@ -53,9 +52,16 @@ export const writeln = (string) => {
 	textarea[0].value += string + '\n';
 };
 
-export const clear = () => {
-	textarea.val('');
+export const disableInput = () => {
+	input.attr({ disabled: 'true' }).val('');
+};
+
+export const flush = () => {
 	buffer.length = 0;
-	input.val('');
+};
+
+export const reset = () => {
+	clear();
+	flush();
 	disableInput();
 };

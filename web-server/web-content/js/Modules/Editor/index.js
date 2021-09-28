@@ -71,7 +71,7 @@ export const init = () => {
 	if (USE_CODEMIRROR) {
 		codemirror = CodeMirror.fromTextArea(textarea[0], {
 			mode: 'text/x-csrc',
-			theme: 'gruvbox-dark',
+			theme: 'ayu-mirage',
 			lineNumbers: true,
 			scrollbarStyle: 'overlay',
 			indentWithTabs: true,

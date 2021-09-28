@@ -6,4 +6,5 @@ new NonTerminal({
         ctx.token.pop('break');
         ctx.token.pop('semicolon');
     },
+    compile: () => ({ instruction: 'break' }),
 });
