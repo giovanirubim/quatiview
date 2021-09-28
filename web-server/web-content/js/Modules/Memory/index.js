@@ -4,7 +4,6 @@ import {
 	InvalidAddress,
 	UnallocatedMemoryAccess,
 	UninitializedMemoryAccess,
-	FreeingUnallocatedMemory,
 	FreeingANonAllocationAddress,
 } from '../errors.js';
 
