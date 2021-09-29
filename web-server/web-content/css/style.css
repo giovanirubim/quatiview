@@ -4,7 +4,7 @@
 body {
 	--panel-height: 36px;
 	--editor-width: 450px;
-	--terminal-height: 200px;
+	--terminal-height: 220px;
 	--spacing: 5px;
 	background-color: #111;
 }

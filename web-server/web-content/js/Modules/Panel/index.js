@@ -173,9 +173,13 @@ const bindSpeedInput = () => {
 	const maxDelay = 2000;
 	const pow = 3;
 	const speedToDelay = (speed) => Math.pow(1 - speed, pow)*maxDelay;
-	intervalMs = speedToDelay(input.val());
+	const val = localStorage.getItem('speed') ?? input.val();
+	input.val(val);
+	intervalMs = speedToDelay(val);
 	input.on('input', () => {
-		intervalMs = speedToDelay(input.val());
+		const val = input.val();
+		intervalMs = speedToDelay(val);
+		localStorage.setItem('speed', val);
 	});
 };
 
@@ -187,6 +191,8 @@ const bindButton = (name, action) => {
 		action.call(this);
 	});
 };
+
+const commandKeyPressed = (e) => (e.ctrlKey || e.shiftKey || e.altKey);
 
 export const init = () => {
 	const buttons = $('#control-panel .panel-button');
@@ -204,13 +210,25 @@ export const init = () => {
 	bindButton('stop', stop);
 	bindSpeedInput();
 	$(window).on('keydown', (e) => {
-		if (!e.ctrlKey && !e.shiftKey && !e.altKey && e.key === 'F10') {
+		if (commandKeyPressed(e)) {
+			return;
+		}
+		if (e.key === '\n' || /^enter$/i.test(e.key)) {
 			e.preventDefault();
 			e.stopPropagation();
 			run();
 		}
-		if (!e.ctrlKey && !e.shiftKey && !e.altKey && /^(arrow)?right$/i.test(e.key)) {
-			step();
+		if (/^(arrow)?right$/i.test(e.key)) {
+			button.next.trigger('click');
+		}
+		if (e.key === '\x20') {
+			if (running) {
+				if (paused) {
+					unpause();
+				} else {
+					pause();
+				}
+			}
 		}
 	});
 };
