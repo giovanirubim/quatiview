@@ -1,5 +1,6 @@
 import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
+import { isStruct } from './Support/Type.js';
 
 new NonTerminal({
     name: 'ptr-member-acc',
@@ -11,7 +12,7 @@ new NonTerminal({
         const { operand } = ctx;
         const name = node.content;
         const resType = operand.type.replace(/\*$/, '');
-        if (!resType.endsWith('*') || !typeIsStruct(resType)) {
+        if (!resType.endsWith('*') || !isStruct(resType)) {
             new CompilationError(
                 `invalid type argument of '->'`,
                 node.startsAt,

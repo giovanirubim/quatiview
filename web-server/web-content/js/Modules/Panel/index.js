@@ -21,6 +21,7 @@ const bindInputFile = (inputFile) => {
 		const [file] = files;
 		const reader = new FileReader();
 		reader.onload = (e) => {
+			Net.execution.abort();
 			Net.editor.setText(e.target.result);
 		};
 		reader.readAsText(file);

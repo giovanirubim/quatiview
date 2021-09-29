@@ -1,7 +1,6 @@
 import NonTerminal from '../../../Model/NonTerminal.js';
-import typeIsStruct from './Support/typeIsStruct.js';
 import { CompilationError } from '../../../../errors.js';
-import assignIsCompatible from './Support/assignIsCompatible.js';
+import { isAssignable, isStruct } from './Support/Type.js';
 
 new NonTerminal({
     name: 'arg-call',
@@ -25,7 +24,7 @@ new NonTerminal({
         let structAllocation = null;
         if (content.length === 1 && content[0].name === 'sizeof') {
             const type = content[0].content;
-            if (typeIsStruct(type) && ctx.operand.name === 'malloc') {
+            if (isStruct(type) && ctx.operand.name === 'malloc') {
                 structAllocation = type.replace(/^struct\s/, '');
             }
         }
@@ -42,7 +41,7 @@ new NonTerminal({
             );
         }
         for (let i=0; i<args.length; ++i) {
-            if (!assignIsCompatible(fn.args[i].type, args[i].type)) {
+            if (!isAssignable(fn.args[i].type, args[i].type)) {
                 throw new CompilationError(
                     `incompatible type for argument ${i + 1} of '${fn.name}'`,
                     content[i].startsAt,

@@ -1,6 +1,6 @@
 import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
-import typeIsStruct from './Support/typeIsStruct.js';
+import { isStruct } from './Support/Type.js';
 
 new NonTerminal({
     name: 'not',
@@ -11,12 +11,12 @@ new NonTerminal({
     compile: (ctx, { content }) => {
         const { operand } = content;
         const arg = ctx.compile(operand);
-        if (typeIsStruct(arg.type)) {
+        if (isStruct(arg.type)) {
             throw CompilationError(
                 `Invalid operand for operator '!'`,
                 operand.startsAt,
             );
         }
-        return { instruction: 'not', arg };
+        return { instruction: 'not', arg, type: 'int' };
     },
 });

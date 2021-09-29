@@ -1,6 +1,6 @@
 import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
-import typeIsStruct from './Support/typeIsStruct.js';
+import { isStruct } from './Support/Type.js';
 
 new NonTerminal({
     name: 'return',
@@ -28,10 +28,10 @@ new NonTerminal({
             );
         }
         const arg = ctx.compile(expr);
-        if (typeIsStruct(arg.type) != typeIsStruct(fn.returnType)) {
+        if (isStruct(arg.type) != isStruct(fn.returnType)) {
             throw new CompilationError(`incompatible return type`, node.startsAt);
         }
-        if (typeIsStruct(arg.type) && arg.type !== fn.returnType) {
+        if (isStruct(arg.type) && arg.type !== fn.returnType) {
             throw new CompilationError(`incompatible return type`, node.startsAt);
         }
         return { instruction: 'ret', arg };

@@ -57,6 +57,34 @@ void print_tree(struct Node* node) {
 	putchar(')');
 }
 
+struct Node* remove_min(struct Node* node, int* info) {
+	struct Node* aux;
+	if (!node->l) {
+		aux = node->r;
+		*info = node->info;
+		free(node);
+		return aux;
+	}
+	node->l = remove_min(node->l, info);
+	return node;
+}
+
+struct Node* remove(struct Node* node, int info) {
+	if (!node) { return NULL; }
+	if (info > node->r) {
+		node->r = remove(node->r, info);
+		return node;
+	}
+	if (info < node->l) {
+		node->l = remove(node->l, info);
+		return node;
+	}
+	if (!node->l && !node->r) {
+		free(node);
+		return NULL;
+	}
+}
+
 int read_int() {
 	int val;
 	val = 0;

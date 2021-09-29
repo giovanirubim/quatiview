@@ -1,6 +1,6 @@
 import { CompilationError } from '../../../../errors.js';
 import NonTerminal from '../../../Model/NonTerminal.js';
-import typeIsStruct from './Support/typeIsStruct.js';
+import { isStruct } from './Support/Type.js';
 
 new NonTerminal({
     name: 'member-acc',
@@ -11,7 +11,7 @@ new NonTerminal({
     compile: (ctx, node) => {
         const { operand } = ctx;
         const name = node.content;
-        if (!typeIsStruct(operand.type)) {
+        if (!isStruct(operand.type)) {
             new CompilationError(
                 `request for member '${name}' in something not a structure`,
                 node.startsAt,
