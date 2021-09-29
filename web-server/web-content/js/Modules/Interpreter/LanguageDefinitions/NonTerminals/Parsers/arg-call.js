@@ -20,6 +20,12 @@ new NonTerminal({
     compile: (ctx, node) => {
         const { content } = node;
         const fn = ctx.operand;
+		if (!fn.type.includes('(*)')) {
+			throw new CompilationError(
+				`'${fn.type}' is not a function`,
+				node.startsAt,
+			);
+		}
         const args = content.map((item) => ctx.compile(item));
         let structAllocation = null;
         if (content.length === 1 && content[0].name === 'sizeof') {

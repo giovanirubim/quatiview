@@ -4,11 +4,12 @@ import getchar from './Functions/getchar.js';
 import putchar from './Functions/putchar.js';
 
 const addFunction = (ctx, { name, returnType, args, run }) => {
+	const argTypes = args.map((arg) => arg.type);
     const fn = {
         name,
-        type: `${returnType}`,
+        type: `${returnType}(*)(${argTypes.join(',')})`,
         returnType,
-        argTypes: args.map((arg) => arg.type),
+        argTypes,
         args,
         vars: args,
         run: { ...run, ctx },
