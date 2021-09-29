@@ -71,12 +71,13 @@ struct Node* remove_min(struct Node* node, int* info) {
 }
 
 struct Node* remove(struct Node* node, int info) {
+	struct Node* aux;
 	if (!node) { return NULL; }
-	if (info > node->r) {
+	if (info > node->info) {
 		node->r = remove(node->r, info);
 		return node;
 	}
-	if (info < node->l) {
+	if (info < node->info) {
 		node->l = remove(node->l, info);
 		return node;
 	}
@@ -84,13 +85,35 @@ struct Node* remove(struct Node* node, int info) {
 		free(node);
 		return NULL;
 	}
+	if (!node->l) {
+		aux = node->r;
+		free(node);
+		return aux;
+	}
+	if (!node->r) {
+		aux = node->l;
+		free(node);
+		return aux;
+	}
+	if (!node->r->l) {
+		aux = node->r;
+		aux->l = node->l;
+		free(node);
+		return aux;
+	}
+	int* ptr;
+	ptr = malloc(sizeof(int));
+	remove_min(node->r, ptr);
+	node->info = *ptr;
+	free(ptr);
+	return node;
 }
 
 int read_int() {
 	int val;
 	val = 0;
 	char c;
-	while ((c = getchar()) != '\n') {
+	while ((c = getchar()) != '\n' && c != ' ') {
 		val = val*10;
 		val = val + (c - '0');
 	}
@@ -101,10 +124,17 @@ int main() {
 	int x;
 	struct Node* tree;
 	tree = NULL;
-	tree = add(tree, 4);
-	tree = add(tree, 2);
-	tree = add(tree, 3);
-	tree = add(tree, 6);
-	tree = add(tree, 5);
-	tree = add(tree, 7);
+	for (;;) {
+		char op;
+		op = getchar();
+		if (op == '+') {
+			tree = add(tree, read_int());
+		}
+		if (op == '-') {
+			tree = remove(tree, read_int());
+		}
+		if (op == '*') {
+			return 0;
+		}
+	}
 }
