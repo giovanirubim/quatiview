@@ -4,9 +4,19 @@
 body {
 	--panel-height: 36px;
 	--editor-width: 450px;
-	--terminal-height: 300px;
+	--terminal-height: 200px;
 	--spacing: 5px;
 	background-color: #111;
+}
+@media only screen and (min-width: 1600px) {
+	body {
+		--editor-width: 550px;
+	}
+}
+@media only screen and (min-height: 850px) {
+	body {
+		--terminal-height: 300px;
+	}
 }
 #control-panel {
 	position: absolute;
