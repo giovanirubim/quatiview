@@ -117,6 +117,7 @@ export const highlight = (start, end) => {
 
 export const lock = () => {
 	if (codemirror) {
+		codemirror.display.input.blur();
 		codemirror.setOption('readOnly', true);
 	}
 };

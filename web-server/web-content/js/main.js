@@ -19,14 +19,44 @@ $(document).ready(() => {
 	})
 	.member({
 		offset: 4,
-		type: 'struct foo*',
+		type: 'self*',
 		col: 0,
 		row: 1,
 		length: 2,
 	})
 	.member({
 		offset: 8,
-		type: 'struct foo*',
+		type: 'self*',
+		col: 2,
+		row: 1,
+		length: 2,
+	});
+
+	Net.memViewer.addStruct('avl')
+	.member({
+		offset: 0,
+		type: 'int',
+		col: 0,
+		row: 0,
+		length: 3,
+	})
+	.member({
+		offset: 4,
+		type: 'int',
+		col: 3,
+		row: 0,
+		length: 1,
+	})
+	.member({
+		offset: 8,
+		type: 'self*',
+		col: 0,
+		row: 1,
+		length: 2,
+	})
+	.member({
+		offset: 12,
+		type: 'self*',
 		col: 2,
 		row: 1,
 		length: 2,
@@ -42,7 +72,7 @@ $(document).ready(() => {
 	})
 	.member({
 		offset: 4,
-		type: 'struct foo*',
+		type: 'self*',
 		col: 0,
 		row: 1,
 		length: 3,
