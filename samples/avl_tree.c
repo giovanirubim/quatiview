@@ -39,6 +39,57 @@ struct Node* newNode(int info) {
 	return node;
 }
 
+void update(struct Node* node) {
+	if (!node->l && !node->r) {
+		node->height = 0;
+		return;
+	}
+	if (!node->l) {
+		node->height = node->r->height + 1;
+		return;
+	}
+	if (!node->r) {
+		node->height = node->l->height + 1;
+		return;
+	}
+	if (node->l->height > node->r->height) {
+		node->height = node->l->height + 1;
+	} else {
+		node->height = node->r->height + 1;
+	}
+}
+
+int calcBalance(struct Node* node) {
+	if (!node->l && !node->r) { return 0; }
+	if (!node->l) {
+		return 0 - node->r->height - 1;
+	}
+	if (!node->r) {
+		return node->l->height + 1;
+	}
+	return node->l->height - node->r->height;
+}
+
+struct Node* rotate_l(struct Node* node) {
+	struct Node* root;
+	root = node->r;
+	node->r = root->l;
+	root->l = node;
+	update(node);
+	update(root);
+	return root;
+}
+
+struct Node* rotate_r(struct Node* node) {
+	struct Node* root;
+	root = node->l;
+	node->l = root->r;
+	root->r = node;
+	update(node);
+	update(root);
+	return root;
+}
+
 struct Node* add(struct Node* node, int info) {
 	if (!node) {
 		return newNode(info);
@@ -48,6 +99,7 @@ struct Node* add(struct Node* node, int info) {
 	} else {
 		node->r = add(node->r, info);
 	}
+	update(node);
 	return node;
 }
 
@@ -56,12 +108,21 @@ struct Node* remove(struct Node* node, int info) {
 }
 
 int menu() {
+	int x;
+	x = - 10;
+	x = -x;
+	print_int(x);
 	struct Node* tree;
 	tree = NULL;
-	char c;
+	tree = add(tree, 3);
+	tree = add(tree, 2);
+	tree = add(tree, 1);
+	tree = rotate_r(tree);
+	/*
 	for (;;) {
-        tree = add(tree, read_int());
+		tree = add(tree, read_int());
 	}
+	*/
 }
 
 int main() {
