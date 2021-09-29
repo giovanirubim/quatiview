@@ -42,6 +42,12 @@ struct Node* stack(struct Node* node, int info) {
 	return head;
 }
 
+struct Node* append(struct Node* node, int info) {
+	if (!node) { return newNode(info); }
+	node->next = append(node->next, info);
+	return node;
+}
+
 struct Node* clear(struct Node* node) {
 	struct Node* tail;
 	if (node) {
@@ -81,8 +87,9 @@ int menu() {
 	for (;;) {
 		c = getchar();
 		if (c == '-') { list = remove(list, read_int()); }
+		if (c == '<') { list = stack(list, read_int()); }
+		if (c == '>') { list = append(list, read_int()); }
 		if (c == 'c') { list = clear(list); }
-		if (c == 's') { list = stack(list, read_int()); }
 		if (c == 'p') { print(list); }
 		if (c == '*') { break; }
 	}
