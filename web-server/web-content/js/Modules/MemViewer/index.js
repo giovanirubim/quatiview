@@ -396,8 +396,16 @@ const updateTransform = () => {
 	const y1 = (sy - dy)/scale;
 	const raw_sx = x1 - x0;
 	const raw_sy = y1 - y0;
-	const new_raw_sx = raw_sx/new_scale;
-	const new_raw_sy = raw_sy/new_scale;
+	const new_raw_sx = raw_sx/value;
+	const new_raw_sy = raw_sy/value;
+	const raw_offset_x = (raw_sx - new_raw_sx)*mx;
+	const raw_offset_y = (raw_sy - new_raw_sy)*my;
+	const new_x0 = x0 + raw_offset_x;
+	const new_y0 = y0 + raw_offset_y;
+	
+	scale = new_scale;
+	dx = - new_x0*scale;
+	dy = - new_y0*scale;
 
 	transform[0] = transform[3] = scale;
 	transform[4] = dx;
