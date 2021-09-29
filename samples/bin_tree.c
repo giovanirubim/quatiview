@@ -119,9 +119,7 @@ void print_tree(struct Node* node) {
 	putchar('\n');
 }
 
-int menu() {
-	struct Node* tree;
-	tree = NULL;
+int menu(struct Node* tree) {
 	char c;
 	for (;;) {
 		c = getchar();
@@ -134,5 +132,10 @@ int menu() {
 }
 
 int main() {
-	menu();
+	struct Node* tree;
+	tree = NULL;
+	tree = add(tree, 4);
+	tree = add(tree, 2);
+	tree = add(tree, 6);
+	menu(tree);
 }

@@ -80,9 +80,7 @@ void print(struct Node* node) {
 	print_str("]\n");
 }
 
-int menu() {
-	struct Node* list;
-	list = NULL;
+int menu(struct Node* list) {
 	char c;
 	for (;;) {
 		c = getchar();
@@ -96,5 +94,10 @@ int menu() {
 }
 
 int main() {
-	menu();
+	struct Node* list;
+	list = NULL;
+	list = append(list, 2);
+	list = append(list, 4);
+	list = stack(list, 6);
+	menu(list);
 }

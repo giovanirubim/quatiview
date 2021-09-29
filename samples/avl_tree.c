@@ -130,15 +130,17 @@ struct Node* remove(struct Node* node, int info) {
     return NULL;
 }
 
-int menu() {
-	struct Node* tree;
-	tree = NULL;
+void menu(struct Node* tree) {
 	for (;;) {
 		tree = add(tree, read_int());
-		putchar('\n');
 	}
 }
 
 int main() {
-	menu();
+	struct Node* tree;
+	tree = NULL;
+	tree = add(tree, 2);
+	tree = add(tree, 4);
+	tree = add(tree, 6);
+	menu(tree);
 }
