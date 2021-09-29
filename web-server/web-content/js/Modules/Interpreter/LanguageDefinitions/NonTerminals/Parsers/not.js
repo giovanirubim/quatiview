@@ -12,7 +12,7 @@ new NonTerminal({
         const { operand } = content;
         const arg = ctx.compile(operand);
         if (isStruct(arg.type)) {
-            throw CompilationError(
+            throw new CompilationError(
                 `Invalid operand for operator '!'`,
                 operand.startsAt,
             );
