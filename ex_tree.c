@@ -50,6 +50,7 @@ void print_tree(struct Node* node) {
 	}
 	putchar('(');
 	print_tree(node->l);
+	
 	putchar(',');
 	print_int(node->info);
 	putchar(',');
@@ -100,8 +101,10 @@ int main() {
 	int x;
 	struct Node* tree;
 	tree = NULL;
-	for (;;) {
-		x = read_int();
-		tree = add(tree, x);
-	}
+	tree = add(tree, 4);
+	tree = add(tree, 2);
+	tree = add(tree, 3);
+	tree = add(tree, 6);
+	tree = add(tree, 5);
+	tree = add(tree, 7);
 }

@@ -210,13 +210,16 @@ export const init = () => {
 	bindButton('stop', stop);
 	bindSpeedInput();
 	$(window).on('keydown', (e) => {
-		if (commandKeyPressed(e)) {
-			return;
-		}
-		if (e.key === '\n' || /^enter$/i.test(e.key)) {
+		if (e.ctrlKey && (e.key === '\n' || /^enter$/i.test(e.key))) {
 			e.preventDefault();
 			e.stopPropagation();
 			run();
+		}
+		if (commandKeyPressed(e)) {
+			return;
+		}
+		if ($(e.srcElement ?? e.target).is('input,textarea')) {
+			return;
 		}
 		if (/^(arrow)?right$/i.test(e.key)) {
 			button.next.trigger('click');

@@ -1,6 +1,6 @@
-import ret from '../Interpreter/Run/Instructions/ret.js';
 import Net from '../Net.js';
-import sortBinTree from './sortBinTree.js';
+import sortBinTree from './sorting/sortBinTree.js';
+import sortList from './sorting/sortList.js';
 
 let canvas = null;
 let ctx = null;
@@ -31,9 +31,18 @@ const color = {
 	instance: '#aaa',
 };
 
+let bitTic = 0;
+let organizeFlag = false;
 let addrMap = {};
+let byTemplateName = {};
+
 const pointers = [];
 const animations = [];
+
+const arrayRemove = (array, item) => {
+	const index = array.indexOf(item);
+	array.splice(index, 1);
+};
 
 const animate = (it) => {
 	animations.push({ time: Date.now(), it });
@@ -58,7 +67,7 @@ const runAnimations = () => {
 	}
 };
 
-const calcCentralizedZoom = () => {
+const calcTransform = () => {
 	if (instances.length === 0) {
 		return { scale: 1, dx: 0, dy: 0 };
 	}
@@ -98,18 +107,51 @@ const getNewPosition = (template) => {
 	if (instances.length === 0) {
 		return { x: 0, y: 0 };
 	}
-	let max_y = -Infinity;
-	let min_x = +Infinity;
 	let max_x = -Infinity;
 	for (let instance of instances) {
-		max_y = Math.max(max_y, instance.real.y + instance.template.sy);
 		max_x = Math.max(max_x, instance.real.x + instance.template.sx);
-		min_x = Math.min(min_x, instance.real.x);
 	}
-	const x = (max_x + min_x)/2 - template.sx/2 + cellSize;
-	const y = max_y + cellSize*2;
-	return { x, y };
+	return { x: max_x + cellSize*2, y: 0 };
 };
+
+class GraphData {
+	constructor(instance) {
+		this.instance = instance;
+		this.parent = null;
+		this.children = [];
+	}
+	equals(other) {
+		if (this.parent !== other.parent) {
+			return false;
+		}
+		const a = this.children;
+		const b = other.children;
+		if (a.length !== b.length) {
+			return false;
+		}
+		for (let i=0; i<a.length; ++i) {
+			if (a[i] !== b[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
+	clear() {
+		this.parent = null;
+		this.children.length = 0;
+		return this;
+	}
+	append(child = null) {
+		this.children.push(child);
+		if (child !== null) {
+			const { gData } = child;
+			if (gData.parent === null) {
+				gData.parent = this.instance;
+			}
+		}
+		return this;
+	}
+}
 
 class StructTemplate {
     constructor(name) {
@@ -146,12 +188,14 @@ class StructTemplate {
 		this.updateSize();
 		return this;
     }
-	render(addr, x0, y0) {
+	render(instance) {
+		const { addr, x: x0, y: y0 } = instance;
 		const { members, sx, sy } = this;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 		ctx.fillStyle = color.instance;
 		ctx.fillRect(x0 - cellPadding, y0 - cellPadding, sx + dblCellPadding, sy + dblCellPadding);
+		const { gData } = instance;
 		for (let member of members) {
 			const { type, sx, sy, offset } = member;
 			const x = member.x + x0;
@@ -164,19 +208,21 @@ class StructTemplate {
 			const cy = y + sy*0.5;
 			const valAddr = addr + offset;
 			const value = type === 'char' ? Net.memory.readSafe(valAddr) : Net.memory.readWordSafe(valAddr);
-			if (value === null) {
-				continue;
-			}
 			if (type === 'int') {
-				const value = Net.memory.readWordSafe(addr + offset);
-				ctx.fillText(value, cx, cy);
+				if (value !== null) {
+					ctx.fillText(value, cx, cy);
+				}
 			} else if (type.endsWith('*')) {
-				const value = Net.memory.readWordSafe(addr + offset);
-				if (value === 0) {
+				if (value === null) {
+					gData.append(null);
+				} else if (value === 0) {
+					gData.append(null);
 					ctx.fillText('NULL', cx, cy);
 				} else if (addrMap[value] === undefined) {
+					gData.append(null);
 					ctx.fillText(value, cx, cy);
 				} else {
+					gData.append(addrMap[value]);
 					pointers.push({ cx, cy, addr: value });
 				}
 			}
@@ -186,6 +232,7 @@ class StructTemplate {
 
 class Instance {
 	constructor(addr, template) {
+		this.templateName = template.name;
 		this.real = getNewPosition(template);
 		this.animated = {
 			x: 0,
@@ -193,12 +240,12 @@ class Instance {
 		};
 		this.addr = addr;
 		this.template = template;
-		this.rendered = {
-			x0: null,
-			y0: null,
-			x1: null,
-			y1: null,
-		};
+		this.graphData = [
+			new GraphData(this),
+			new GraphData(this),
+		];
+		this.root_cx = null;
+		this.tree_sx = null;
 	}
 	get x() {
 		return this.real.x + this.animated.x;
@@ -206,18 +253,20 @@ class Instance {
 	get y() {
 		return this.real.y + this.animated.y;
 	}
+	get gData() {
+		return this.graphData[bitTic];
+	}
+	get prevGData() {
+		return this.graphData[bitTic ^ 1];
+	}
 	render() {
-		const { x, y, template, addr } = this;
-		template.render(addr, x, y);
+		const { template, x, y, addr } = this;
+		template.render(this, x, y);
 		ctx.textBaseline = 'bottom';
 		ctx.textAlign = 'left';
 		ctx.fillStyle = color.addr;
 		ctx.font = `${fontSize}px monospace`;
 		ctx.fillText(addr, x, y);
-		this.rendered.x0 = x;
-		this.rendered.y0 = y;
-		this.rendered.x1 = x + template.sx;
-		this.rendered.y1 = y + template.sy;
 	}
 	moveTo(x, y) {
 		const { real, animated } = this;
@@ -235,7 +284,52 @@ class Instance {
 	}
 }
 
+const getNewRoot = (instance, visited) => {
+	if (instance === null) return null;
+	if (visited[instance.addr] === true) return null;
+	visited[instance.addr] = true;
+	const { gData } = instance;
+	const { parent } = gData;
+	if (parent === null) {
+		return instance;
+	}
+	if (parent.templateName !== instance.templateName) {
+		return null;
+	}
+	return getNewRoot(parent, visited);
+};
+
+const getRoots = window.getRoots = () => {
+	const visited = {};
+	const roots = [];
+	for (let instance of instances) {
+		const root = getNewRoot(instance, visited);
+		if (root !== null) {
+			roots.push(root);
+		}
+	}
+	return roots;
+};
+
+const organize = () => {
+	const roots = getRoots();
+	let x = 0;
+	for (let root of roots) {
+		const { length } = root.gData.children;
+		if (length === 2) {
+			const { width } = sortBinTree(root, cellSize, x, 0);
+			x += width + cellSize*2;
+		} else if (length === 1) {
+			const { width } = sortList(root, cellSize, x, 0);
+			x += width + cellSize*2;
+		}
+	}
+};
+
 const render = () => {
+	for (let instance of instances) {
+		instance.gData.clear();
+	}
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.fillStyle = '#000';
 	ctx.clearRect(0, 0, canvas[0].width, canvas[0].height);
@@ -264,19 +358,31 @@ const render = () => {
 		ctx.lineTo(x2 + arrowTipSize, y2 - dir*arrowTipSize);
 		ctx.stroke();
 	}
+	if (!organizeFlag) {
+		for (let instance of instances) {
+			if (!instance.gData.equals(instance.prevGData)) {
+				organizeFlag = true;
+				break;
+			}
+		}
+	}
 };
 
 const frame = () => {
-	sortTrees();
-	sortLists();
 	runAnimations();
-	updateZoom();
+	updateTransform();
 	render();
 	requestAnimationFrame(frame);
+	if (organizeFlag === true) {
+		organize();
+		organizeFlag = false;
+		updateTransform();
+	}
+	bitTic ^= 1;
 };
 
-const updateZoom = () => {
-	const { dx, dy, scale } = calcCentralizedZoom();
+const updateTransform = () => {
+	const { dx, dy, scale } = calcTransform();
 	transform[0] = transform[3] = scale;
 	transform[4] = dx;
 	transform[5] = dy;
@@ -287,7 +393,7 @@ const resize = () => {
 	const width = Number(parent.css('width').replace('px', ''));
 	const height = Number(parent.css('height').replace('px', ''));
 	canvas.attr({ width, height });
-	updateZoom();
+	updateTransform();
 };
 
 export const init = () => {
@@ -300,11 +406,13 @@ export const init = () => {
 		resize();
 		frame();
 	}, 0);
-
 };
 
 export const clear = () => {
 	addrMap = {};
+	for (let name in byTemplateName) {
+		byTemplateName[name].length = 0;
+	}
 	instances.length = 0;
 	pointers.length = 0;
 };
@@ -312,162 +420,8 @@ export const clear = () => {
 export const addStruct = (name) => {
 	const template = new StructTemplate(name);
 	templates[name] = template;
+	byTemplateName[name] = [];
 	return template;
-};
-
-const setBinTreeId = (node, treeId) => {
-	if (node === null || node.treeId !== null) {
-		return null;
-	}
-	node.treeId = treeId;
-	setBinTreeId(node.l, treeId);
-	setBinTreeId(node.r, treeId);
-	if (node.parent !== null) {
-		return setBinTreeId(node.parent, treeId);
-	}
-	return node;
-};
-
-// const addToGraph = (node, graphId, graph) => {
-// 	graph.push(node);
-// 	node.graphId = graphId;
-// 	const { neighbors } = node;
-// 	for (let other of neighbors) {
-// 		if (other.graphId === null) {
-// 			addToGraph(other, graphId, graph);
-// 		}
-// 	}
-// };
-
-// export const getGraphs = () => {
-// 	const nodes = [];
-// 	const map = {};
-// 	for (let instance of instances) {
-// 		const node = {
-// 			addr: instance.addr,
-// 			instance,
-// 			neighbors: [],
-// 			children: [],
-// 			graphId: null,
-// 		};
-// 		map[instance.addr] = node;
-// 		nodes.push(node);
-// 	}
-// 	for (let node of nodes) {
-// 		const { instance, addr } = node;
-// 		const { members } = instance.template;
-// 		for (let { type, offset } of members) {
-// 			if (!type.endsWith('*')) continue;
-// 			const ptr = Net.memory.readWordSafe(addr + offset);
-// 			if (ptr == null) {
-// 				node.children.push(null);
-// 			} else {
-// 				const other = map[ptr];
-// 				if (other == null) continue;
-// 				node.children.push(other ?? null);
-// 				node.neighbors.push(other);
-// 				other.neighbors.push(node);
-// 			}
-// 		}
-// 	}
-// 	const graphs = [];
-// 	for (let node of nodes) {
-// 		if (node.graphId === null) {
-// 			const graph = [];
-// 			addToGraph(node, graphs.length + 1, graph);
-// 			graphs.push(graph);
-// 		}
-// 	}
-// 	return graphs;
-// };
-
-const sortTrees = () => {
-	const nodes = instances.filter(instance => instance.template.name === 'binary_search_tree');
-	const map = {};
-	for (let ref of nodes) {
-		map[ref.addr] = { ref, l: null, r: null, treeId: null, parent: null };
-	}
-	const trees = [];
-	for (let { addr } of nodes) {
-		const node = map[addr];
-		node.l = map[Net.memory.readWordSafe(addr + 4)] ?? null;
-		node.r = map[Net.memory.readWordSafe(addr + 8)] ?? null;
-		if (node.l !== null) {
-			node.l.parent = node;
-		}
-		if (node.r !== null) {
-			node.r.parent = node;
-		}
-	}
-	for (let { addr } of nodes) {
-		const tree = setBinTreeId(map[addr], trees.length + 1);
-		if (tree !== null) {
-			trees.push(tree);
-		}
-	}
-	if (trees.length === 1) {
-		sortBinTree(trees[0], {
-			getLeft: (node) => node.l,
-			getRight: (node) => node.r,
-			getWidth: (node) => node.ref.template.sx,
-			getHeight: (node) => node.ref.template.sy,
-			yMargin: cellSize,
-			xMargin: cellSize,
-			setPos: (node, x, y) => node.ref.moveTo(x, y),
-		});
-	}
-};
-
-const getNewListHead = (node) => {
-	if (node === null || node.visited === true) return null;
-	node.visited = true;
-	if (node.parent === null) {
-		return node;
-	}
-	return getNewListHead(node.parent);
-};
-
-const sortLists = () => {
-	const map = {};
-	const nodes = instances
-		.filter(instance => instance.template.name === 'linked_list')
-		.map((ref) => {
-			const { addr } = ref;
-			return map[addr] = {
-				ref, addr,
-				visited: false,
-				next: null,
-				parent: null,
-			};
-		});
-	for (let node of nodes) {
-		const { addr } = node;
-		node.next = map[Net.memory.readWordSafe(addr + 4)] ?? null;
-		if (node.next !== null) {
-			node.next.parent = node;
-		}
-	}
-	const heads = [];
-	for (let node of nodes) {
-		const head = getNewListHead(node);
-		if (head !== null) {
-			heads.push(head);
-		}
-	}
-	if (heads.length === 1) {
-		sortList(heads[0]);
-	}
-};
-
-const sortList = (node) => {
-	let y = 0;
-	let x = 0;
-	while (node !== null) {
-		node.ref.moveTo(x, y);
-		y += node.ref.template.sy + cellSize*2;
-		x += cellSize;
-		node = node.next;
-	}
 };
 
 export const addInstance = (name, addr) => {
@@ -476,8 +430,10 @@ export const addInstance = (name, addr) => {
 		return;
 	}
 	const instance = new Instance(addr, template);
-	addrMap[addr] = instance;
 	instances.push(instance);
+	byTemplateName[template.name].push(instance);
+	addrMap[addr] = instance;
+	organizeFlag = true;
 };
 
 export const removeInstance = (addr) => {
@@ -486,6 +442,7 @@ export const removeInstance = (addr) => {
 		return;
 	}
 	delete addrMap[addr];
-	const index = instances.indexOf(instance);
-	instances.splice(index, 1);
+	arrayRemove(instances, instance);
+	arrayRemove(byTemplateName[instance.templateName], instance);
+	organizeFlag = true;
 };
