@@ -9,6 +9,10 @@ int read_int() {
 }
 
 void print_int(int x) {
+	if (x < 0) {
+		x = -x;
+		putchar('-');
+	}
 	if (x >= 10) {
 		print_int(x/10);
 	}
@@ -62,7 +66,7 @@ void update(struct Node* node) {
 int calcBalance(struct Node* node) {
 	if (!node->l && !node->r) { return 0; }
 	if (!node->l) {
-		return 0 - node->r->height - 1;
+		return - node->r->height - 1;
 	}
 	if (!node->r) {
 		return node->l->height + 1;
@@ -90,6 +94,25 @@ struct Node* rotate_r(struct Node* node) {
 	return root;
 }
 
+struct Node* balance(struct Node* node) {
+	if (!node) { return NULL; }
+	int dif;
+	dif = calcBalance(node);
+	if (dif >= -1 && dif <= 1) { return node; }
+	if (dif < 0) {
+		if (calcBalance(node->r) > 0) {
+			node->r = rotate_r(node->r);
+		}
+		node = rotate_l(node);
+	} else {
+		if (calcBalance(node->l) < 0) {
+			node->l = rotate_l(node->l);
+		}
+		node = rotate_r(node);
+	}
+	return node;
+}
+
 struct Node* add(struct Node* node, int info) {
 	if (!node) {
 		return newNode(info);
@@ -100,7 +123,7 @@ struct Node* add(struct Node* node, int info) {
 		node->r = add(node->r, info);
 	}
 	update(node);
-	return node;
+	return balance(node);
 }
 
 struct Node* remove(struct Node* node, int info) {
@@ -108,21 +131,12 @@ struct Node* remove(struct Node* node, int info) {
 }
 
 int menu() {
-	int x;
-	x = - 10;
-	x = -x;
-	print_int(x);
 	struct Node* tree;
 	tree = NULL;
-	tree = add(tree, 3);
-	tree = add(tree, 2);
-	tree = add(tree, 1);
-	tree = rotate_r(tree);
-	/*
 	for (;;) {
 		tree = add(tree, read_int());
+		putchar('\n');
 	}
-	*/
 }
 
 int main() {
