@@ -16,6 +16,7 @@ const animationDuration = 500;
 const instances = window.instances = [];
 const transform = [1, 0, 0, 1, 0, 0];
 const templates = {};
+const zoom = { value: 1, mx: 0, my: 0 };
 
 const color = {
 	int: {
@@ -382,7 +383,22 @@ const frame = () => {
 };
 
 const updateTransform = () => {
-	const { dx, dy, scale } = calcTransform();
+
+	let { dx, dy, scale } = calcTransform();
+	const { value, mx, my } = zoom;
+
+	const new_scale = scale*value;
+	const sx = canvas[0].width;
+	const sy = canvas[0].height;
+	const x0 = (0 - dx)/scale;
+	const y0 = (0 - dy)/scale;
+	const x1 = (sx - dx)/scale;
+	const y1 = (sy - dy)/scale;
+	const raw_sx = x1 - x0;
+	const raw_sy = y1 - y0;
+	const new_raw_sx = raw_sx/new_scale;
+	const new_raw_sy = raw_sy/new_scale;
+
 	transform[0] = transform[3] = scale;
 	transform[4] = dx;
 	transform[5] = dy;
@@ -396,10 +412,37 @@ const resize = () => {
 	updateTransform();
 };
 
+const sumZoom = (value) => {
+	zoom.value = Math.exp(Math.log(zoom.value) + value);
+};
+
+const bindCanvas = () => {
+	canvas.on('wheel', (e) => {
+		if (e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0) {
+			sumZoom(.2);
+		} else {
+			sumZoom(-.2);
+		}
+	});
+	canvas.on('mousemove', function (e) {
+		const x = e.offsetX;
+		const y = e.offsetY;
+		zoom.mx = x/this.width;
+		zoom.my = y/this.height;
+	});
+	canvas.on('mouseout', (e) => {
+		const { value } = zoom;
+		animate((t) => {
+			zoom.value = value*(1 - t) + t;
+		});
+	});
+};
+
 export const init = () => {
 
 	canvas = $('canvas');
     ctx = canvas[0].getContext('2d');
+	bindCanvas();
 	$(window).on('resize', resize);
 	
 	setTimeout(() => {
