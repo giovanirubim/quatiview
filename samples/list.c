@@ -74,7 +74,7 @@ void print(struct Node* node) {
 	print_str("[ ");
 	while (node) {
 		print_int(node->info);
-		putchar(" ");
+		putchar(' ');
 		node = node->next;
 	}
 	print_str("]\n");
