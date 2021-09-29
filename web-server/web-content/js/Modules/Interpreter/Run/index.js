@@ -1,4 +1,6 @@
 import call from './Instructions/call.js';
+import and from './Instructions/and.js';
+import or from './Instructions/or.js';
 import store from './Instructions/store.js';
 import load from './Instructions/load.js';
 import run from './Instructions/run.js';
@@ -30,7 +32,9 @@ import whileLoop from './Instructions/while.js';
 
 const map = {
     'call': call,
+    'and': and,
     'store': store,
+    'or': or,
     'run': run,
     'load': load,
     'assign': assign,
