@@ -29,6 +29,7 @@ import dif from './Instructions/dif.js';
 import getchar from './Instructions/getchar.js';
 import forLoop from './Instructions/for.js';
 import whileLoop from './Instructions/while.js';
+import neg from './Instructions/neg.js';
 
 const map = {
     'call': call,
@@ -62,6 +63,7 @@ const map = {
     'break': Break,
     'dif': dif,
     'sub': sub,
+    'neg': neg,
 };
 
 export default async (obj) => {
