@@ -126,10 +126,6 @@ struct Node* add(struct Node* node, int info) {
 	return balance(node);
 }
 
-struct Node* remove(struct Node* node, int info) {
-    return NULL;
-}
-
 void menu(struct Node* tree) {
 	for (;;) {
 		tree = add(tree, read_int());

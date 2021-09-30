@@ -161,6 +161,9 @@ class StructTemplate {
 		this.sx = 0;
 		this.sy = 0;
     }
+	getSignature() {
+		return this.members.map((member) => member.type).join(',');
+	}
 	updateSize() {
 		const { members } = this;
 		let x0 = +Infinity;
@@ -444,6 +447,10 @@ const bindCanvas = () => {
 			zoom.value = value*(1 - t) + t;
 		});
 	});
+};
+
+export const getTemplates = () => {
+	return Object.values(templates);
 };
 
 export const init = () => {

@@ -1,15 +1,18 @@
+import Net from '../../Net.js';
+
 export default ({ structs }) => {
+    const templates = Net.memViewer.getTemplates();
+    const signToName = Object.fromEntries(
+        templates.map((template) => [ template.getSignature(), template.name ]),
+    );
     for (let name in structs) {
         const struct = structs[name];
         const selfPtr = `struct ${name}*`;
         const members = Object.values(struct.members);
-        const types = members.map(({ type }) => type).join('; ');
-        if (types === `int; ${selfPtr}; ${selfPtr}`) {
-            struct.viewFlag = 'binary_search_tree';
-        } else if (types === `int; ${selfPtr}`) {
-            struct.viewFlag = 'linked_list';
-        } else if (types === `int; int; ${selfPtr}; ${selfPtr}`) {
-            struct.viewFlag = 'avl';
-		}
+        const sign = members.map((member) => {
+            const { type } = member;
+            return type === selfPtr ? 'self*' : type;
+        }).join(',');
+        struct.viewFlag = signToName[sign];
     }
 };
