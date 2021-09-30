@@ -148,7 +148,6 @@ const unpause = async () => {
 
 const run = async () => {
 	Net.terminal.reset();
-	Net.memViewer.clear();
 	const source = Net.editor.getText();
 	try {
 		handleStart();
