@@ -4,14 +4,27 @@
 body {
 	--panel-height: 36px;
 	--editor-width: 450px;
-	--terminal-height: 275px;
+	--terminal-height: 220px;
+	--spacing: 5px;
+	background-color: #111;
+}
+@media only screen and (min-width: 1600px) {
+	body {
+		--editor-width: 550px;
+	}
+}
+@media only screen and (min-height: 850px) {
+	body {
+		--terminal-height: 300px;
+	}
 }
 #control-panel {
 	position: absolute;
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	height: var(--panel-height);
+	top: var(--spacing);
+	left: var(--spacing);
+	right: var(--spacing);
+	height: calc(var(--panel-height));
+	background-color: #aaa;
 }
 #control-panel .panel-button {
 	float: left;
@@ -19,12 +32,30 @@ body {
 	margin-left: 10px;
 	cursor: pointer;
 }
+#control-panel .panel-button.disabled {
+	opacity: 0.25;
+	cursor: default;
+}
+.panel-speed {
+	float: left;
+	margin-top: 8px;
+	margin-left: 10px;
+}
+.panel-speed div.title,
+.panel-speed input
+{
+	display: inline-block;
+	vertical-align: middle;
+}
+.panel-speed div.title {
+	margin-bottom: 2px;
+}
 #editor-section {
 	position: absolute;
-	left: 0px;
-	top: var(--panel-height);
+	left: var(--spacing);
+	top: calc(var(--panel-height) + var(--spacing)*2);
 	width: var(--editor-width);
-	bottom: var(--terminal-height);
+	bottom: var(--spacing);
 }
 #editor-section textarea {
 	--padding: 10px;
@@ -43,11 +74,11 @@ body {
 }
 #terminal-section {
 	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
+	bottom: var(--spacing);
+	left: calc(var(--spacing)*2 + var(--editor-width));
+	right: var(--spacing);
 	height: var(--terminal-height);
-	background-color: #111;
+	background-color: #1a1b1a;
 	--padding: 10px;
 	--input-height: 30px;
 	font-size: 0px;
@@ -73,14 +104,15 @@ body {
 #terminal-section textarea,
 #terminal-section input {
 	background-color: transparent;
-	color: #7f7;
+	color: #6eea6e;
 	outline: none;
 }
 #mem-view-section {
 	position: absolute;
-	top: var(--panel-height);
-	left: var(--editor-width);
-	bottom: var(--terminal-height);
-	right: 0px;
+	top: calc(var(--panel-height) + var(--spacing)*2);
+	left: calc(var(--editor-width) + var(--spacing)*2);
+	bottom: calc(var(--terminal-height) + var(--spacing)*2);
+	right: var(--spacing);
 	overflow: hidden;
+	background-color: #222;
 }

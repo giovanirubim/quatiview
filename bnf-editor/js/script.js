@@ -61,8 +61,9 @@ const parseLine = (line) => {
 		return {type: 'optional', content}
 	}
 	let popId = () => {
-		if (!next().match(/^\w+$/)) abort()
-		return {type: 'id', content: pop()}
+		if (!next().match(/^[\w\-]+$/)) abort()
+		const content = pop();
+		return {type: 'id', content }
 	}
 	let popWrappedExpr = () => {
 		if (pop() !== '(') abort()
@@ -142,7 +143,7 @@ let toSpan = (text) => {
 		type = 'optional'
 	} else if (text.match(/[\(\)]/)) {
 		type = 'bracket'
-	} else if (text.match(/^\w+$/)) {
+	} else if (text.match(/^[\w\-]+$/)) {
 		type = 'id" name="' + text
 	} else {
 		type = 'unknown'
@@ -183,7 +184,7 @@ const bindInput = (input) => {
 	})
 	input.on('blur', solve)
 }
-const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|\w+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
+const tokenRegex = /(::=|\s+|'([^\\']|\\.)*'|[\w\-]+|\/([^\\\/]|\\.)*\/[a-z]*|.)/g
 const toTokenList = (str) => {
 	const matches = [...str.matchAll(tokenRegex)]
 	return matches.map((match) => match[0])
@@ -230,6 +231,62 @@ const checkUsage = () => {
 		}
 	})
 }
+const addToPath = (path, name) => {
+	if (path.includes(name)) {
+		throw `Left recursion`;
+	}
+	path.push(name);
+};
+const getLeftGen = (map) => {
+	const generates = (item, path) => {
+		const { type, content } = item;
+		if (type === 'terminal') {
+			return [ content ];
+		}
+		if (type === 'fork') {
+			const { content } = item;
+			const array = content
+				.map((item) => call(item, path))
+				.flat();
+			return [ ...new Set(array) ];
+		}
+		if (type === 'concat') {
+			const { content } = item;
+			const array = [];
+			for (let item of content) {
+				array.push(...call(item, path.slice()));
+				if (item.type !== '*' && item.type !== 'optional') {
+					break;
+				}
+			}
+			return [ ...new Set(array) ];
+		}
+		if (type === 'id') {
+			return call(map[content], path);
+		}
+		if (type === '*' || type === 'optional') {
+			return call(content, path);
+		}
+		return [];
+	};
+	const cache = {};
+	const call = (item, path) => {
+		if (item.type !== 'id') {
+			return generates(item, path);
+		}
+		const name = item.content;
+		if (cache[name]) {
+			return cache[name];
+		}
+		addToPath(path, item);
+		return cache[name] = generates(item, path);
+	};
+	for (let name in map) {
+		const path = [ name ];
+		call(map[name], path);
+	}
+	return cache;
+};
 const checkSyntax = () => {
 	let map = {}
 	$('.line,input[type="text"]').each(function(){
@@ -244,8 +301,9 @@ const checkSyntax = () => {
 			return
 		}
 		map[parsed.name] = parsed.content
-	})
-}
+	});
+	window.leftGen = getLeftGen(map);
+};
 const check = () => {
 	checkUsage()
 	checkSyntax()

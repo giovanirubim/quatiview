@@ -1,33 +1,36 @@
-import * as Editor from './modules/Editor';
-import * as MemViewer from './modules/MemViewer';
-import * as Panel from './modules/Panel';
-import Terminal from './modules/Terminal';
+import Net from './Modules/Net.js';
 
-const loadMemView = () => {
-	const wrappingElement = $('#mem-view-section');
-	const updateSize = () => {
-		MemViewer.resize({
-			width: parseInt(wrappingElement.css('width')),
-			height: parseInt(wrappingElement.css('height')),
-		});
-	};
-	MemViewer.setCanvas($('canvas')[0]);
-	$(window).bind('resize', updateSize);
-	updateSize();
-};
+window.Net = Net;
 
 $(document).ready(() => {
-	Editor.load();
-	Editor.focus();
-	loadMemView();
-	MemViewer.start();
-	const terminal = new Terminal({
-		textarea: $('#terminal-section textarea'),
-		input: $('#terminal-input'),
+
+	Net.editor.init();
+	Net.panel.init();
+	Net.terminal.init();
+	Net.memViewer.init();
+
+	Net.memViewer.addStruct('linked_list')
+	.member({
+		offset: 0, type: 'int',
+		col: 0, row: 0, length: 3,
+	})
+	.member({
+		offset: 4, type: 'self*',
+		col: 0, row: 1, length: 3,
 	});
-	Panel.load();
-	Panel.onupload((source) => Editor.setText(source));
-	$('form').on('submit', (e) => e.preventDefault());
-	terminal.writeln('((-,2,-),5,((-,9,-),10,(-,12,-)))');
-	terminal.writeln('Program exited with code 0');
+
+	Net.memViewer.addStruct('binary_search_tree')
+	.member({
+		offset: 0, type: 'int',
+		col: 0, row: 0, length: 4,
+	})
+	.member({
+		offset: 4, type: 'self*',
+		col: 0, row: 1, length: 2,
+	})
+	.member({
+		offset: 8, type: 'self*',
+		col: 2, row: 1, length: 2,
+	});
+
 });
