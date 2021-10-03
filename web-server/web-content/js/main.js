@@ -33,4 +33,22 @@ $(document).ready(() => {
 		col: 2, row: 1, length: 2,
 	});
 
+	Net.memViewer.addStruct('avl_tree')
+	.member({
+		offset: 0, type: 'int',
+		col: 0, row: 0, length: 3,
+	})
+	.member({
+		offset: 4, type: 'int',
+		col: 3, row: 0, length: 1,
+	})
+	.member({
+		offset: 8, type: 'self*',
+		col: 0, row: 1, length: 2,
+	})
+	.member({
+		offset: 12, type: 'self*',
+		col: 2, row: 1, length: 2,
+	});
+
 });
