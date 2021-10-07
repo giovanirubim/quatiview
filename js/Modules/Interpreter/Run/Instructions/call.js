@@ -1,6 +1,7 @@
 import Run from '../index.js';
 import Net from '../../../Net.js';
 import solve from './Support/solve.js';
+import { RuntimeError } from '../../../errors.js';
 
 export default async ({ ctx, args, fn, structAllocation }) => {
     const callstack = ctx.callstack = ctx.callstack ?? [];
@@ -34,5 +35,13 @@ export default async ({ ctx, args, fn, structAllocation }) => {
         const { viewFlag } = struct;
         Net.memViewer.addInstance(viewFlag, addr);
     }
-    return ctx.returnValue;
+    const { returnValue } = ctx;
+    const { returnType } = fn;
+    if (returnType !== 'void' && returnValue == null) {
+        throw new RuntimeError(
+            `execution of function '${fn.name}' did not return any value`
+        );
+    }
+    ctx.returnValue = null;
+    return returnValue;
 };
