@@ -5,8 +5,10 @@ import sortList from './sorting/sortList.js';
 let canvas = null;
 let ctx = null;
 
-const fontSize = 8;
-const maxScale = 1.5;
+const fontSize = 9;
+const addrFontSize = 8;
+const addrMargin = 2;
+const maxScale = 2;
 const cellSize = 20;
 const cellPadding = 1;
 const dblCellPadding = 2;
@@ -269,8 +271,8 @@ class Instance {
 		ctx.textBaseline = 'bottom';
 		ctx.textAlign = 'left';
 		ctx.fillStyle = color.addr;
-		ctx.font = `${fontSize}px monospace`;
-		ctx.fillText(addr, x, y);
+		ctx.font = `${addrFontSize}px monospace`;
+		ctx.fillText(addr, x, y - addrMargin);
 	}
 	moveTo(x, y) {
 		const { real, animated } = this;
