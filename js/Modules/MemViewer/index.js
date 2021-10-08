@@ -181,7 +181,8 @@ class StructTemplate {
 		this.sx = x1 - x0;
 		this.sy = y1 - y0;
 	}
-    member({ offset, type, col, row, length }) {
+    member({ type, col, row, length }) {
+		const offset = this.members.length*4;
 		const member = {
 			offset,
 			type,
