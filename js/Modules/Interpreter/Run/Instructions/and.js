@@ -1,10 +1,13 @@
 import solve from './Support/solve.js';
 
+const TRUE = {type: 'int', value: 1};
+const FALSE = {type: 'int', value: 0};
+
 export default async ({ a, b }) => {
     a = await solve(a);
+	if (a.value === 0) {
+		return FALSE
+	}
     b = await solve(b);
-    return {
-        type: 'int',
-        value: (a.value !== 0) & (b.value !== 0),
-    };
+	return b.value === 1 ? TRUE : FALSE;
 };
